@@ -6,3 +6,4 @@ venv
 runs/
 data/
 cc3m_embeddings.pkl
+*.out
