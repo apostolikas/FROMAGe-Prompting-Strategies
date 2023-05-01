@@ -2,12 +2,12 @@
 
 #SBATCH --partition=gpu_titanrtx_shared_course
 #SBATCH --gres=gpu:1
-#SBATCH --job-name=vist_example
+#SBATCH --job-name=vist_inference
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
 #SBATCH --time=01:00:00
 #SBATCH --mem=64000M
-#SBATCH --output=vist_example_%A.out
+#SBATCH --output=vist_inference_%A.out
 
 module purge
 module load 2021
@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage/
 
-srun python -u vist_example.py
+srun python -u vist_inference.py --num_stories 2 --num_captions 5 --include_images

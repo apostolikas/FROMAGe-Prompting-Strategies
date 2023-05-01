@@ -1,8 +1,10 @@
 import json
 
+import numpy as np
 import pandas as pd
 from PIL import Image
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 from fromage.utils import get_image_from_url
 
@@ -43,7 +45,7 @@ def load_stories(stories_csv_path: str) -> pd.DataFrame:
     return pd.read_csv(stories_csv_path, encoding='utf8', dtype=str)
 
 
-def create_story_list(stories_df: pd.DataFrame, story_id: str, num_captions: int, include_images: bool, as_prompt: bool) -> list[str|Image.Image]:
+def create_story_list(stories_df: pd.DataFrame, story_id: str, num_captions: int, include_images: bool, as_prompt: bool) -> list[str|Image.Image] | None:
     
     if (num_captions < 1) or (num_captions > 5):
         raise ValueError(f'num_captions {num_captions} out of range.')
@@ -75,7 +77,26 @@ def create_story_list(stories_df: pd.DataFrame, story_id: str, num_captions: int
                 pass # ignore last image for prompt
             
             else:
-                image = get_image_from_url(reverse_story_df.iloc[index]['image_url'])
+                try:
+                    image = get_image_from_url(reverse_story_df.iloc[index]['image_url'])
+                except:
+                    print(f"{reverse_story_df.iloc[index]['image_url']} is not working.")
+                    return None
                 story_list.insert(1, image)
         
     return story_list
+
+
+def save_story_predictions(story_output_path, model_outputs, one_img_per_ret=True):
+    for output in model_outputs:
+        if type(output) == list:
+            if one_img_per_ret:
+                plt.figure(figsize=(3, 3))
+                plt.imshow(np.array(output[0]))
+            else:
+                fig, ax = plt.subplots(1, len(output), figsize=(3 * len(output), 3))
+                for i, image in enumerate(output):
+                    image = np.array(image)
+                    ax[i].imshow(image)
+                    ax[i].set_title(f'Retrieval #{i+1}')
+            plt.savefig(story_output_path, facecolor='w')
