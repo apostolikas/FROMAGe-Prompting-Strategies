@@ -63,8 +63,13 @@ for story_id in story_ids:
     if story_prompt is not None:
         
         model_outputs = model.generate_for_images_and_texts(story_prompt, max_img_per_ret=3)
-        story_in_sequence.save_story_predictions(story_output_path, model_outputs, one_img_per_ret=False)
-
+        
+        try:
+            story_in_sequence.save_story_predictions(story_output_path, model_outputs, one_img_per_ret=False)
+        except:
+            print(f'story_id {story_id} : invalid model output.')
+            continue
+        
         counter += 1
         if counter == num_stories:
             break
