@@ -26,17 +26,20 @@ for vqa_dict in vqa_sublist:
     # Input - Output pair used as input for the model
     image1_path = vqa_dict['image_1']
     image1 = Image.open(os.path.join(vist_images_folder,image1_path))
+    image1 = image1.convert('RGB')
     caption1 = vqa_dict['caption_1']
 
     # Input - Output pair used as input for the model
     image2_path = vqa_dict['image_2']
     image2 = Image.open(os.path.join(vist_images_folder,image2_path))
+    image2 = image2.convert('RGB')
     caption2 = vqa_dict['caption_2']
 
     # Prompt 
     question = vqa_dict['question']
     question_image_path = vqa_dict['question_image']
     question_image = Image.open(os.path.join(vist_images_folder,question_image_path))
+    question_image = question_image.convert('RGB')
 
     # Answer
     answer = vqa_dict['answer']
