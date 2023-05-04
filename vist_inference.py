@@ -63,6 +63,7 @@ for story_id in story_ids:
     if story_prompt is not None:
         
         model_outputs = model.generate_for_images_and_texts(story_prompt, max_img_per_ret=3)
+        print(model_outputs)
         
         try:
             story_in_sequence.save_story_predictions(story_output_path, model_outputs, one_img_per_ret=False)

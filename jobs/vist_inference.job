@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage/
 
-srun python -u vist_inference.py --num_stories 2 --num_captions 5 --include_images
+srun python -u vist_inference.py --num_stories 80 --num_captions 5 --include_images
