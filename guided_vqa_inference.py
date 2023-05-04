@@ -37,66 +37,84 @@ with open('./guided_vqa/guided_vqa_shots_1_ways_2_all_questions.json', 'r') as f
 # Take a few instances (the data is a list of dictionaries)
 np.random.seed(0)
 np.random.shuffle(vqa_data)
-vqa_sublist = vqa_data[:2]
+vqa_sublist = vqa_data[:15]
 
 vist_images_folder = './guided_vqa'
 
+num_examples = 5
 
-for vqa_dict in vqa_sublist:
+for i in range(num_examples, len(vqa_sublist), num_examples):
 
-    # Input - Output pair used as input for the model
-    image1_path = vqa_dict['image_1']
-    image1 = Image.open(os.path.join(vist_images_folder,image1_path))
-    image1 = image1.convert('F')
-    caption1 = vqa_dict['caption_1'] #+ ' [EOS]'
+    model_input = []
 
-    # Input - Output pair used as input for the model
-    image2_path = vqa_dict['image_2']
-    image2 = Image.open(os.path.join(vist_images_folder,image2_path))
-    image2 = image2.convert('F')
-    caption2 = vqa_dict['caption_2'] #+ ' [EOS]'
+    
+    for j in range(i-num_examples, i):
 
-    # Prompt 
-    question = vqa_dict['question'] #+ ' [EOS]'
-    question_image_path = vqa_dict['question_image']
-    question_image = Image.open(os.path.join(vist_images_folder,question_image_path))
-    question_image = question_image.convert('F')
+        vqa_dict = vqa_sublist[j]
 
-    # # Answer
-    answer = vqa_dict['answer']
-    # #model_input = [caption1, caption2, question]    
+        # image1_path = vqa_dict['image_1']
+        # image1 = Image \
+        #     .open(os.path.join(vist_images_folder,image1_path)) \
+        #     .resize((224, 224)) \
+        #     .convert('RGB')
+            
+        # caption1 = vqa_dict['caption_1']
 
-    # model_input = [image1, caption1, image2, caption2, question_image, question] 
-    # print("Model input : ",model_input)
-    # model_outputs = model.generate_for_images_and_texts(model_input, num_words=32)
-    # print("Caption 1: ", caption1, "\nCaption 2: ", caption2, "\nQuestion: ",question)
-    # print("Model output :",model_outputs)
-    # print("Ground truth :",answer)
-
-    input_prompts = [image1, caption1, image2, caption2, question_image, question] 
-    input_context = []
-    all_outputs = []
-    text = ''
-    for p in input_prompts:
-        # Add Q+A prefixes for prompting. This is helpful for generating dialogue.
-        if type(p) == str:
-            text += 'Q: ' + p + '\nA:' 
-        # Concatenate image and text.
-        model_prompt = input_context + [text]
-        model_outputs = model.generate_for_images_and_texts(
-            model_prompt, num_words=32)
-        text += ' '.join([s for s in model_outputs if type(s) == str]) + '\n'
+        # image2_path = vqa_dict['image_2']
+        # image2 = Image \
+        #     .open(os.path.join(vist_images_folder,image2_path)) \
+        #     .resize((224, 224)) \
+        #     .convert('RGB')
         
-        # Format outputs.
-        if type(model_outputs[0]) == str:
-            model_outputs[0] = 'FROMAGe:  ' + model_outputs[0]
-        else:
-            # Image output
-            model_outputs = ['FROMAGe:  '] + model_outputs[0]
-        if type(p) == str:
-            all_outputs.append('Input:     ' + p)
-        all_outputs.extend(model_outputs)
+        # caption2 = vqa_dict['caption_2']
 
-    print("Question :" ,question)
-    display_interleaved_outputs(model_outputs)
-    print("Ground truth :" ,answer)
+        question_image_path = vqa_dict['question_image']
+        question_image = Image \
+            .open(os.path.join(vist_images_folder,question_image_path)) \
+            .resize((224, 224)) \
+            .convert('RGB')
+
+        question = vqa_dict['question']
+        
+        answer = vqa_dict['answer']
+
+        model_input += [ question_image, 'Q: ' + question + ' A: ' + answer ]
+    
+    
+    vqa_dict = vqa_sublist[i]
+
+    # image1_path = vqa_dict['image_1']
+    # image1 = Image \
+    #     .open(os.path.join(vist_images_folder,image1_path)) \
+    #     .resize((224, 224)) \
+    #     .convert('RGB')
+        
+    # caption1 = vqa_dict['caption_1']
+
+    # image2_path = vqa_dict['image_2']
+    # image2 = Image \
+    #     .open(os.path.join(vist_images_folder,image2_path)) \
+    #     .resize((224, 224)) \
+    #     .convert('RGB')
+    
+    # caption2 = vqa_dict['caption_2']
+
+    question_image_path = vqa_dict['question_image']
+    question_image = Image \
+        .open(os.path.join(vist_images_folder,question_image_path)) \
+        .resize((224, 224)) \
+        .convert('RGB')
+
+    question = vqa_dict['question']
+
+    answer = vqa_dict['answer']
+
+    model_input += [ question_image, 'Q: ' + question + ' A:']
+
+    print("Model input : ", model_input)
+
+    model_outputs = model.generate_for_images_and_texts(model_input, num_words=10)
+    
+    print("Model output :", model_outputs)
+    print("Ground truth :", answer)
+    print('\n\n')
