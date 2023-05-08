@@ -15,6 +15,6 @@ module load Anaconda3/2021.05
 
 source activate dl2_gpu
 
-cd $HOME/fromage/
+cd $HOME/fromage-2/
 
-srun python -u vist_inference.py --num_stories 80 --num_captions 5 --include_images
+srun python -u vist_inference.py --num_stories 1 --num_captions 5 --include_images
