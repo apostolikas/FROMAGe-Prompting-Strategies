@@ -30,15 +30,18 @@ def get_image_from_url(url: str):
     return img
 
 
-def truncate_caption(caption: str) -> str:
+def truncate_caption(captions: str) -> str:
   """Truncate captions at periods and newlines."""
-  caption = caption.strip('\n')
-  trunc_index = caption.find('\n') + 1
-  if trunc_index <= 0:
-      trunc_index = caption.find('.') + 1
-  if trunc_index > 0:
-    caption = caption[:trunc_index]
-  return caption
+  fin = []
+  for caption in captions:
+    caption = caption.strip('\n')
+    trunc_index = caption.find('\n') + 1
+    if trunc_index <= 0:
+        trunc_index = caption.find('.') + 1
+    if trunc_index > 0:
+      caption = caption[:trunc_index]
+    fin.append(caption)
+  return fin
 
 
 def pad_to_size(x, size=256):
@@ -116,9 +119,11 @@ def get_feature_extractor_for_model(model_name: str, image_size: int = 224, trai
 
 
 def get_pixel_values_for_model(feature_extractor, img):
+  print('get_pixel_values_for_model')
   pixel_values = feature_extractor(
-    img.convert('RGB'),
-    return_tensors="pt").pixel_values[0, ...]  # (3, H, W)
+    img,
+    return_tensors="pt")
+  pixel_values = pixel_values.pixel_values  # (3, H, W)
   return pixel_values
 
 

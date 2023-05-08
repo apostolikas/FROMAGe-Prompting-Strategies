@@ -3,13 +3,14 @@ from collections import namedtuple
 import json
 import glob
 import math
+# from IPython.terminal.ipapp import boolean_flag
 import numpy as np
 import os
 import torch
 from torch import Tensor
 import torch.nn as nn
 import torch.nn.functional as F
-from einops import rearrange
+#from einops import rearrange
 from functools import partial
 import pickle as pkl
 from PIL import Image, UnidentifiedImageError
@@ -18,14 +19,14 @@ from transformers import AutoConfig, AutoModel, AutoModelForCausalLM
 from transformers import OPTForCausalLM, GPT2Tokenizer
 from transformers import CLIPVisionModel, CLIPVisionConfig
 
-from fromage import utils
+import utils
 
 
 class FrozenArgs:
   freeze_lm: bool = True
   freeze_vm: bool = True
-  opt_version: str = 'facebook/opt-6.7b'
-  visual_encoder: str = 'openai/clip-vit-large-patch14'
+  opt_version: str = 'facebook/opt-125m'#'facebook/opt-6.7b'
+  visual_encoder: str = 'openai/clip-vit-base-patch32'#openai/clip-vit-large-patch14'
   n_visual_tokens: int = 1
   image_embed_dropout_prob: float = 0.0
   task: str = 'captioning'
@@ -333,7 +334,8 @@ class FromageModel(nn.Module):
 
   def generate(self, embeddings = torch.FloatTensor, max_len: int = 32,
                temperature: float = 0.0, top_p: float = 1.0, min_word_tokens: int = 0,
-               ret_scale_factor: float = 1.0, filter_value: float = -float('Inf')):
+               ret_scale_factor: float = 1.0, filter_value: float = -float('Inf'),
+               attention_mask: torch.Tensor = None):
     """Runs greedy decoding and returns generated captions.
 
     Args:
@@ -360,7 +362,11 @@ class FromageModel(nn.Module):
 
       for i in range(max_len):
         if 'opt' in self.opt_version:
-          output = self.lm(inputs_embeds=embeddings, use_cache=False, output_hidden_states=True)
+          if attention_mask is None:
+            output = self.lm(inputs_embeds=embeddings, use_cache=False, output_hidden_states=True)
+          else:
+            output = self.lm(inputs_embeds=embeddings, use_cache=False, output_hidden_states=True,
+            attention_mask= attention_mask)
         else:
           if i == 0:
             output = self.lm(inputs_embeds=embeddings, use_cache=True, past_key_values=None, output_hidden_states=True)
@@ -465,13 +471,13 @@ class Fromage(nn.Module):
       return output
 
   def generate_for_images_and_texts(
-    self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
+    self, timesteps: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
     max_num_rets: int = 1, max_img_per_ret: int = 1):
     """
     Encode prompts into embeddings.
 
     Args:
-      prompts: List of interleaved PIL.Image.Image and strings representing input to the model.
+      timesteps: e.g. [[ex1_img1, ex2_img1],[ ex1_text1, ex2_text]]
       num_words: Maximum number of words to generate for. If num_words = 0, the model will run its forward pass and return the outputs.
       ret_scale_factor: Proportion to scale [RET] token logits by. A higher value may increase the probability of the model generating [RET] outputs.
       top_p: If set to < 1, the smallest set of tokens with highest probabilities that add up to top_p or higher are kept for generation.
@@ -481,102 +487,105 @@ class Fromage(nn.Module):
     Returns:
       return_outputs: List consisting of either str or List[PIL.Image.Image] objects, representing image-text interleaved model outputs.
     """
+    #! This method currently supports only text generation not image retrieval
     input_embs = []
-    input_ids = []
-    add_bos = True
-
-    for i, p in enumerate(prompts):
-      if type(p) == Image.Image:
-        # Encode as image.
+    # for every example in the batch add the img, text tensors that are the input to the LM
+    all_tensors = [[] for i in range(len(timesteps[0]))]
+    for i, p in enumerate(timesteps):
+      if type(p[0]) == Image.Image or 'numpy' in str(type(p[0])):
+        # forward pass across all examples in the image
         pixel_values = utils.get_pixel_values_for_model(self.model.feature_extractor, p)
         pixel_values = pixel_values.to(device=self.model.logit_scale.device, dtype=self.model.logit_scale.dtype)
-        pixel_values = pixel_values[None, ...]
-
-        visual_embs = self.model.get_visual_embs(pixel_values, mode='captioning')  # (1, n_visual_tokens, D)
+        
+        print(pixel_values.shape, ' pixel')
+        visual_embs = self.model.get_visual_embs(pixel_values, mode='captioning')  
+        print(visual_embs.shape, ' visemb')
         input_embs.append(visual_embs)
-      elif type(p) == str:
-        text_ids = self.model.tokenizer(p, add_special_tokens=True, return_tensors="pt").input_ids.to(self.model.logit_scale.device)
-        if not add_bos:
-          # Remove <bos> tag.
-          text_ids = text_ids[:, 1:]
-        else:
-          # Only add <bos> once.
-          add_bos = False
 
-        text_embs = self.model.input_embeddings(text_ids)  # (1, T, D)
-        input_embs.append(text_embs)
-        input_ids.append(text_ids)
+        for j in range(visual_embs.shape[0]):
+          all_tensors[j].append(torch.unsqueeze(visual_embs[j],dim=0))
+      elif type(p[0]) == str:
+        for j,el in enumerate(p):#batch size
+          text_ids = self.model.tokenizer(el, add_special_tokens=True, return_tensors="pt").input_ids.to(self.model.logit_scale.device)
+          print(text_ids.shape)
+
+          if i != 0: # Only add <bos> at the beginning of sentence.
+            text_ids = text_ids[:, 1:]
+     
+          text_embs = self.model.input_embeddings(text_ids)  
+          print(text_embs.shape, ' text_emb')
+          #all_embs.append(text_embs)
+          all_tensors[j].append(text_embs)
+
       else:
         raise ValueError(f'Input prompts should be either PIL.Image.Image or str types, got {type(p)} instead.')
-    input_embs = torch.cat(input_embs, dim=1)
-    input_ids = torch.cat(input_ids, dim=1)
+    print('----end of loop-----')
+    final_embeddings = []
+    shapes = []
+    for batch_example in all_tensors: # batch_size
+      print('--------')
+      for l in batch_example: # prompt_size
+        print(l.shape)
+      cur_ex = torch.hstack(batch_example)
+      final_embeddings.append(cur_ex)
+      shapes.append(cur_ex.shape[1])
+      print('CUR-EX ',cur_ex.shape)
+    
+    max_shape = max(shapes)
 
-    if num_words == 0:
-      generated_ids = input_ids
-      outputs = self.model.lm(inputs_embeds=input_embs, use_cache=False, output_hidden_states=True)
-      # Map outputs to embeddings, so we can retrieve embeddings from the [RET] tokens.
-      out = []
-      for x, fc in zip(self.model.args.text_emb_layers, self.model.text_hidden_fcs):
-          out.append(fc(outputs.hidden_states[x]))
-      embeddings = torch.stack(out, dim=-1).sum(dim=-1)
-      embeddings = embeddings / embeddings.norm(dim=-1, keepdim=True)  # (N, T, 256)
-    elif num_words > 0:
-      generated_ids, generated_embeddings, _ = self.model.generate(input_embs, num_words,
-        temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor)
-      embeddings = generated_embeddings[-1][:, input_embs.shape[1]:]
+    pad=self.model.input_embeddings(
+      torch.tensor([self.model.tokenizer.pad_token_id]).cuda())
+    pad = torch.unsqueeze(pad, dim=0)
+    print('pad ',pad.shape)
 
+    # now we have to add padding and create attention_masks
+    attention_masks = [] 
+    for ii, shape in enumerate(shapes):
+      if max_shape != shape:
+        print('before padding ', final_embeddings[ii].shape)
+        local_pad = pad.repeat(1,max_shape-shape,1)
+        att = torch.hstack((torch.ones(final_embeddings[ii].shape[1]), torch.zeros(max_shape-shape
+        )))
+        final_embeddings[ii] = torch.hstack((final_embeddings[ii],local_pad))
+      else:
+        att = torch.ones(final_embeddings[ii].shape[1])
+      attention_masks.append(att)
+
+    attention_masks = torch.stack(attention_masks)
+    print('attention final ',attention_masks.shape)
+    final_embeddings = torch.cat(final_embeddings, dim=0)
+    print('embedding final ', final_embeddings.shape)
+
+    if num_words > 0:
+      print('before generate')
+      # if you remove the attention_mask argument it works fine but you give attention to padding tokens!
+      generated_ids, generated_embeddings, _ = self.model.generate(final_embeddings, num_words,
+        temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor,
+        attention_mask= attention_masks.cuda())
+    
+      print(generated_ids.shape, ' gen_ids')
       # Truncate to newline.
       newline_token_id = self.model.tokenizer('\n', add_special_tokens=False).input_ids[0]
-      trunc_idx = 0
-      for j in range(generated_ids.shape[1]):
-        if generated_ids[0, j] == newline_token_id:
-          trunc_idx = j
-          break
-      if trunc_idx > 0:
-        generated_ids = generated_ids[:, :trunc_idx]
-        embeddings = embeddings[:, :trunc_idx]
-    else:
-      raise ValueError
-
+      final_ids=[]
+      for i in range(generated_ids.shape[0]):
+        trunc_idx = 0
+        for j in range(generated_ids.shape[1]):
+          if generated_ids[0, j] == newline_token_id:
+            trunc_idx = j
+            break
+        if trunc_idx > 0:
+          final_ids.append(generated_ids[:, :trunc_idx])
+    
     # Save outputs as an interleaved list.
     return_outputs = []
     # Find up to max_num_rets [RET] tokens, and their corresponding scores.
     all_ret_idx = [i for i, x in enumerate(generated_ids[0, :] == self.model.retrieval_token_idx) if x][:max_num_rets]
-    seen_image_idx = []  # Avoid showing the same image multiple times.
 
-    last_ret_idx = 0
     if len(all_ret_idx) == 0:
       # No [RET] tokens.
-      caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+      caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
+
       return_outputs.append(utils.truncate_caption(caption))
-    else:
-      for ret_idx in all_ret_idx:
-        ret_emb = embeddings[:, ret_idx, :]
-        scores = self.emb_matrix @ ret_emb.T
-
-        # Downweight seen images.
-        for seen_idx in seen_image_idx:
-          scores[seen_idx, :] -= 1000
-
-        # Get the top max_img_per_ret + 3 (in case some fail) images for each image.
-        _, top_image_idx = scores.squeeze().topk(max_img_per_ret + 3)
-        image_outputs = []
-        for img_idx in top_image_idx:
-          # Find the first image that does not error out.
-          try:
-            seen_image_idx.append(img_idx)
-            img = utils.get_image_from_url(self.path_array[img_idx])
-            image_outputs.append(img)
-            if len(image_outputs) == max_img_per_ret:
-              break
-          except UnidentifiedImageError:
-            pass
-
-        caption = self.model.tokenizer.batch_decode(generated_ids[:, last_ret_idx:ret_idx], skip_special_tokens=True)[0]
-        last_ret_idx = ret_idx + 1
-        return_outputs.append(utils.truncate_caption(caption) + ' [RET]')
-        return_outputs.append(image_outputs)
-
     return return_outputs
 
 
@@ -628,17 +637,16 @@ def load_fromage(model_dir: str) -> Fromage:
   model = model.bfloat16()
   model = model.cuda()
 
-  # Load pretrained linear mappings and [RET] embeddings.
-  checkpoint = torch.load(model_ckpt_path)
+  #Load pretrained linear mappings and [RET] embeddings.
+  checkpoint = torch.load(model_ckpt_path,map_location=torch.device('cpu'))
   model.load_state_dict(checkpoint['state_dict'], strict=False)
   with torch.no_grad():
-      model.model.input_embeddings.weight[model.model.retrieval_token_idx, :].copy_(checkpoint['state_dict']['ret_input_embeddings.weight'].cpu().detach())
+      model.model.input_embeddings.weight[model.model.retrieval_token_idx, :].copy_(checkpoint['state_dict']['ret_input_embeddings.weight'][:768].cpu().detach())
 
   logit_scale = model.model.logit_scale.exp()
   emb_matrix = torch.tensor(emb_matrix, dtype=logit_scale.dtype).to(logit_scale.device)
   emb_matrix = emb_matrix / emb_matrix.norm(dim=1, keepdim=True)
   emb_matrix = logit_scale * emb_matrix
   model.emb_matrix = emb_matrix
-
   return model
 
