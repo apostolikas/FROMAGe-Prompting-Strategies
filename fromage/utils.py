@@ -10,6 +10,7 @@ from transformers import AutoFeatureExtractor
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import requests
 from io import BytesIO
+import numpy as np
 
 import random
 
@@ -116,9 +117,12 @@ def get_feature_extractor_for_model(model_name: str, image_size: int = 224, trai
 
 
 def get_pixel_values_for_model(feature_extractor, img):
+  if not isinstance(img, np.ndarray):
+    img = img.convert('RGB'),
   pixel_values = feature_extractor(
-    img.convert('RGB'),
+    img,#.convert('RGB'),
     return_tensors="pt").pixel_values[0, ...]  # (3, H, W)
+    
   return pixel_values
 
 
