@@ -10,3 +10,4 @@ cc3m_embeddings.pkl
 visual_dialog/
 visual_storytelling/images/
 guided_vqa/
+*.tar.gz
