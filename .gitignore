@@ -8,3 +8,4 @@ data/
 cc3m_embeddings.pkl
 *.out
 visual_dialog/
+visual_storytelling/images/
