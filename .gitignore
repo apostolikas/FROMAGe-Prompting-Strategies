@@ -8,4 +8,8 @@ data/
 cc3m_embeddings.pkl
 *.out
 visual_dialog/
+<<<<<<< HEAD
 visual_storytelling/images/
+=======
+guided_vqa/
+>>>>>>> 37d49e894aa94eaa6b8e2972c0c0c62cfc4b0dcc
