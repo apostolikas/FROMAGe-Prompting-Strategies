@@ -19,7 +19,7 @@ from transformers import AutoConfig, AutoModel, AutoModelForCausalLM
 from transformers import OPTForCausalLM, GPT2Tokenizer
 from transformers import CLIPVisionModel, CLIPVisionConfig
 
-import utils
+from fromage import utils
 
 
 class FrozenArgs:
@@ -436,6 +436,7 @@ class FromageModel(nn.Module):
         if 'opt' in self.opt_version:
           next_embedding = self.input_embeddings(next_token)
           embeddings = torch.cat([embeddings, next_embedding], dim=1)
+          attention_mask = torch.hstack([attention_mask,torch.ones(batch_size,1).to(attention_mask.device)])
         elif (self.tokenizer.eos_token_id and (next_token == self.tokenizer.eos_token_id).all()):
           # End of generation.
           break
@@ -497,9 +498,9 @@ class Fromage(nn.Module):
         pixel_values = utils.get_pixel_values_for_model(self.model.feature_extractor, p)
         pixel_values = pixel_values.to(device=self.model.logit_scale.device, dtype=self.model.logit_scale.dtype)
         
-        print(pixel_values.shape, ' pixel')
+        # print(pixel_values.shape, ' pixel')
         visual_embs = self.model.get_visual_embs(pixel_values, mode='captioning')  
-        print(visual_embs.shape, ' visemb')
+        # print(visual_embs.shape, ' visemb')
         input_embs.append(visual_embs)
 
         for j in range(visual_embs.shape[0]):
@@ -507,42 +508,40 @@ class Fromage(nn.Module):
       elif type(p[0]) == str:
         for j,el in enumerate(p):#batch size
           text_ids = self.model.tokenizer(el, add_special_tokens=True, return_tensors="pt").input_ids.to(self.model.logit_scale.device)
-          print(text_ids.shape)
+          # print(text_ids.shape)
 
           if i != 0: # Only add <bos> at the beginning of sentence.
             text_ids = text_ids[:, 1:]
      
           text_embs = self.model.input_embeddings(text_ids)  
-          print(text_embs.shape, ' text_emb')
+          # print(text_embs.shape, ' text_emb')
           #all_embs.append(text_embs)
           all_tensors[j].append(text_embs)
 
       else:
         raise ValueError(f'Input prompts should be either PIL.Image.Image or str types, got {type(p)} instead.')
-    print('----end of loop-----')
+    # print('----end of loop-----')
     final_embeddings = []
     shapes = []
     for batch_example in all_tensors: # batch_size
-      print('--------')
-      for l in batch_example: # prompt_size
-        print(l.shape)
+      
       cur_ex = torch.hstack(batch_example)
       final_embeddings.append(cur_ex)
       shapes.append(cur_ex.shape[1])
-      print('CUR-EX ',cur_ex.shape)
+      # print('CUR-EX ',cur_ex.shape)
     
     max_shape = max(shapes)
 
     pad=self.model.input_embeddings(
       torch.tensor([self.model.tokenizer.pad_token_id]).cuda())
     pad = torch.unsqueeze(pad, dim=0)
-    print('pad ',pad.shape)
+    # print('pad ',pad.shape)
 
     # now we have to add padding and create attention_masks
     attention_masks = [] 
     for ii, shape in enumerate(shapes):
       if max_shape != shape:
-        print('before padding ', final_embeddings[ii].shape)
+        # print('before padding ', final_embeddings[ii].shape)
         local_pad = pad.repeat(1,max_shape-shape,1)
         att = torch.hstack((torch.ones(final_embeddings[ii].shape[1]), torch.zeros(max_shape-shape
         )))
@@ -552,18 +551,18 @@ class Fromage(nn.Module):
       attention_masks.append(att)
 
     attention_masks = torch.stack(attention_masks)
-    print('attention final ',attention_masks.shape)
+    # print('attention final ',attention_masks.shape)
     final_embeddings = torch.cat(final_embeddings, dim=0)
-    print('embedding final ', final_embeddings.shape)
+    # print('embedding final ', final_embeddings.shape)
 
     if num_words > 0:
-      print('before generate')
+      # print('before generate')
       # if you remove the attention_mask argument it works fine but you give attention to padding tokens!
       generated_ids, generated_embeddings, _ = self.model.generate(final_embeddings, num_words,
         temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor,
         attention_mask= attention_masks.cuda())
     
-      print(generated_ids.shape, ' gen_ids')
+      # print(generated_ids.shape, ' gen_ids')
       # Truncate to newline.
       newline_token_id = self.model.tokenizer('\n', add_special_tokens=False).input_ids[0]
       final_ids=[]
@@ -576,17 +575,10 @@ class Fromage(nn.Module):
         if trunc_idx > 0:
           final_ids.append(generated_ids[:, :trunc_idx])
     
-    # Save outputs as an interleaved list.
-    return_outputs = []
-    # Find up to max_num_rets [RET] tokens, and their corresponding scores.
-    all_ret_idx = [i for i, x in enumerate(generated_ids[0, :] == self.model.retrieval_token_idx) if x][:max_num_rets]
+    # caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
 
-    if len(all_ret_idx) == 0:
-      # No [RET] tokens.
-      caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
-
-      return_outputs.append(utils.truncate_caption(caption))
-    return return_outputs
+    # caption = utils.truncate_caption(caption)
+    return generated_ids.cpu()
 
 
 def load_fromage(model_dir: str) -> Fromage:
@@ -641,7 +633,7 @@ def load_fromage(model_dir: str) -> Fromage:
   checkpoint = torch.load(model_ckpt_path,map_location=torch.device('cpu'))
   model.load_state_dict(checkpoint['state_dict'], strict=False)
   with torch.no_grad():
-      model.model.input_embeddings.weight[model.model.retrieval_token_idx, :].copy_(checkpoint['state_dict']['ret_input_embeddings.weight'][:768].cpu().detach())
+      model.model.input_embeddings.weight[model.model.retrieval_token_idx, :].copy_(checkpoint['state_dict']['ret_input_embeddings.weight'].cpu().detach())
 
   logit_scale = model.model.logit_scale.exp()
   emb_matrix = torch.tensor(emb_matrix, dtype=logit_scale.dtype).to(logit_scale.device)
