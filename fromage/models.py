@@ -486,7 +486,7 @@ class Fromage(nn.Module):
     add_bos = True
 
     for i, p in enumerate(prompts):
-      if type(p) == Image.Image or 'numpy' in str(type(prompts[i])):
+      if type(p) == Image.Image or 'numpy' in str(type(p)):
         # Encode as image.
         pixel_values = utils.get_pixel_values_for_model(self.model.feature_extractor, p)
         pixel_values = pixel_values.to(device=self.model.logit_scale.device, dtype=self.model.logit_scale.dtype)

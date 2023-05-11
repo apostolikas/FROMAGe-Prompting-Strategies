@@ -117,7 +117,7 @@ def get_feature_extractor_for_model(model_name: str, image_size: int = 224, trai
 
 
 def get_pixel_values_for_model(feature_extractor, img):
-  if not isinstance(img, np.ndarray):
+  if not 'numpy' in str(type(img)): 
     img = img.convert('RGB'),
   pixel_values = feature_extractor(
     img,#.convert('RGB'),
