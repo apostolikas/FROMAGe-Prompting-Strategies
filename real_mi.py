@@ -8,8 +8,7 @@ import time
 from PIL import Image, UnidentifiedImageError
 
 tic = time.perf_counter()
-pairs = load_pickle('rand25mi.pickle')
-print(pairs)
+
 set_seed(0)
 
 # dict_model_input = load_pickle('dict_model_input_int.pickle')
@@ -38,14 +37,15 @@ dict_model_input = load_pickle('dict_model_input_int.pickle')
 # Load model used in the paper.
 model_dir = './fromage_model/'
 model = models.load_fromage(model_dir)
-
+pairs=[]
 for i in tqdm(dict_model_input):
   prompts = dict_model_input[i]
   ans = dict_question_captions[i]
-  model_outputs = model.generate_for_images_and_texts(prompts, num_words=30)
+  model_outputs = model.generate_for_images_and_texts(prompts, num_words=14)
   pairs.append((model_outputs, ans))
   if i%100==0:
-    create_pickle('first_1200_mini_net.pickle',pairs)
-  if i == 1200:
+    create_pickle('all_mini_net.pickle',pairs)
+  if i==1250:
+    print('1250')
     break
-create_pickle('first_1200_mini_net.pickle',pairs)
+create_pickle('first_1250_mini_net.pickle',pairs)

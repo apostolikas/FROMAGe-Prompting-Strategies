@@ -486,7 +486,7 @@ class Fromage(nn.Module):
     add_bos = True
 
     for i, p in enumerate(prompts):
-      if type(p) == Image.Image or 'numpy' in str(type(p)):
+      if type(p) == Image.Image:
         # Encode as image.
         pixel_values = utils.get_pixel_values_for_model(self.model.feature_extractor, p)
         pixel_values = pixel_values.to(device=self.model.logit_scale.device, dtype=self.model.logit_scale.dtype)
@@ -551,6 +551,8 @@ class Fromage(nn.Module):
       return_outputs.append(utils.truncate_caption(caption))
     else:
       for ret_idx in all_ret_idx:
+        if ret_idx > embeddings.shape[1]:
+          continue
         ret_emb = embeddings[:, ret_idx, :]
         scores = self.emb_matrix @ ret_emb.T
 
@@ -641,4 +643,3 @@ def load_fromage(model_dir: str) -> Fromage:
   model.emb_matrix = emb_matrix
 
   return model
-
