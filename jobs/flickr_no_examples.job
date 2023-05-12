@@ -5,9 +5,9 @@
 #SBATCH --job-name=flickr
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
-#SBATCH --time=00:10:00
+#SBATCH --time=00:25:00
 #SBATCH --mem=64000M
-#SBATCH --output=flickr_caption_inference_%A.out
+#SBATCH --output=flickr_no-examples_%A.out
 
 module purge
 module load 2021
@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage-2/
 
-srun python -u flickr_inf.py 
+srun python -u flickr_no_examples.py 
