@@ -93,7 +93,6 @@ for i in range(num_examples, len(vqa_sublist), num_examples):
                 else:
                     continue
         # Give as input the original image and the retrieved one
-        model_input += [image1, similar_image1, caption1]
 
         #! Input 2
         image2_path = vqa_keys[1]
@@ -114,7 +113,6 @@ for i in range(num_examples, len(vqa_sublist), num_examples):
                     # similar_image3 = out1[2]
                 else:
                     continue
-        model_input += [image2, similar_image4, caption2]
 
 
         question_image_path = vqa_keys[2]
@@ -124,9 +122,12 @@ for i in range(num_examples, len(vqa_sublist), num_examples):
             .convert('RGB')
         
         #! Question and Answer - Example i
-        question = 'Caption the image'
+        question = 'Give a caption for the image'
         answer = vqa_values[2]
-        model_input += [ question_image, 'Q: ' + question + ' A: ' + answer ]
+        #model_input += [ question_image, 'Q: ' + question + ' A: ' + answer ]
+        model_input += [ image1, similar_image1, caption1, image2, similar_image4, question_image, question, answer]
+
+
     
     #! Test scenario
     vqa_dict = vqa_sublist[i]
@@ -152,7 +153,6 @@ for i in range(num_examples, len(vqa_sublist), num_examples):
                 # similar_image3 = out1[2]
             else:
                 continue
-    model_input += [image1, similar_image1, caption1]
 
     #! Image 2 
     image2_path = vqa_keys[1]
@@ -175,7 +175,6 @@ for i in range(num_examples, len(vqa_sublist), num_examples):
                 # similar_image3 = out1[2]
             else:
                 continue
-    model_input += [image2, similar_image4, caption2]
 
     #! Question without answer
     question_image_path = vqa_keys[2]
@@ -183,9 +182,10 @@ for i in range(num_examples, len(vqa_sublist), num_examples):
         .open(os.path.join(vqa_images_folder,question_image_path)) \
         .resize((224, 224)) \
         .convert('RGB')    
-    question = 'Caption the image'
+    question = 'Give a caption for the image'
     answer = vqa_values[2]
-    model_input += [ question_image, 'Q: ' + question + ' A: ' ]
+    #model_input += [ question_image, 'Q: ' + question + ' A: ' ]
+    model_input += [ image1, similar_image1, caption1, image2, similar_image4, question_image, question]
 
 
     #! Model output
