@@ -6,3 +6,10 @@ venv
 runs/
 data/
 cc3m_embeddings.pkl
+Images/
+*.out
+*.tsv
+*.jpg
+flicklr30k-images/
+real_name_mi/
+*.pickle
