@@ -4,8 +4,7 @@ import os
 import numpy as np
 from fromage import models
 import matplotlib as plt
-import torch
-import torchmetrics
+from torchvision.transforms import ToTensor
 from torchmetrics.multimodal import CLIPScore
 
 
@@ -57,7 +56,6 @@ for ic_dict in ic_data:
         .open(os.path.join('./Flicker8k_Dataset/',image_path)) \
         .resize((224, 224)) \
         .convert('RGB')
-
     caption = list(ic_dict.values())[0]
 
     #! First check if the model retrieves a good image based on the caption
@@ -78,5 +76,7 @@ for ic_dict in ic_data:
     #images_dict[caption] = zip(image, new_retrieved_image)
 
     #TODO ClipScore 0-100%
-    score = metric(torch.randint(255, (3, 224, 224)), "a photo of a cat")
-    print(score.detach())
+    transform = ToTensor()
+    score_with_original_image = metric(transform(image), caption)
+    score_with_new_image = metric(transform(new_retrieved_image), caption)
+    print("Example ", i, "\t Original img score :", score_with_original_image.detach().item,"%", "\t New img score :", score_with_new_image.detatch().item,"%")
