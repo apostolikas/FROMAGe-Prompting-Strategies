@@ -37,11 +37,11 @@ with open('./guided_vqa/guided_vqa_shots_1_ways_2_all_questions.json', 'r') as f
 # Take a few instances (the data is a list of dictionaries)
 np.random.seed(0)
 np.random.shuffle(vqa_data)
-vqa_sublist = vqa_data[:15]
+vqa_sublist = vqa_data[:16]
 
 vist_images_folder = './guided_vqa'
 
-num_examples = 5
+num_examples = 4
 
 for i in range(num_examples, len(vqa_sublist), num_examples):
 
@@ -101,8 +101,21 @@ for i in range(num_examples, len(vqa_sublist), num_examples):
         question = vqa_dict['question']
         answer = vqa_dict['answer']
 
+        prompt3_for_ret = question[:-1] + '[RET]' 
+        prompt3 = [question_image, prompt3_for_ret]
+        outs3 = model.generate_for_images_and_texts(prompt3, max_img_per_ret=1) 
+        for out3 in outs3:
+                if type(outs3) == str:
+                    continue
+                elif type(out3) == list:
+                    similar_image7 = out2[0]
+                    # similar_image2 = out1[1]
+                    # similar_image3 = out1[2]
+                else:
+                    continue
+
         #model_input += [ question_image, 'Q: ' + question + ' A: ' + answer ]
-        model_input += [image1, similar_image1, caption1, image2, similar_image4, caption2, question_image, 'Q: ' + question + ' A: ' + answer ]
+        model_input += [image1, similar_image1, caption1, image2, similar_image4, caption2, question_image, similar_image7, 'Q: ' + question ]#+ ' A: ' + answer ]
     
 
     #! Test loop
@@ -157,8 +170,22 @@ for i in range(num_examples, len(vqa_sublist), num_examples):
     question = vqa_dict['question']
     answer = vqa_dict['answer']
 
+    prompt3_for_ret = question[:-1] + '[RET]' 
+    prompt3 = [question_image, prompt3_for_ret]
+    outs3 = model.generate_for_images_and_texts(prompt3, max_img_per_ret=1) 
+    for out3 in outs3:
+            if type(outs3) == str:
+                continue
+            elif type(out3) == list:
+                similar_image7 = out2[0]
+                # similar_image2 = out1[1]
+                # similar_image3 = out1[2]
+            else:
+                continue
+
+
     #! Model output
-    model_input += [ question_image, 'Q: ' + question + ' A:']
+    model_input += [ question_image, similar_image7, 'Q: ' + question] #+ ' A:']
     print("Model input : ", model_input)
     model_outputs = model.generate_for_images_and_texts(model_input, num_words=10)
     print("Model output :", model_outputs)
