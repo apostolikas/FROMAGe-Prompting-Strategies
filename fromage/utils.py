@@ -23,7 +23,7 @@ def dump_git_status(out_file=sys.stdout, exclude_file_patterns=['*.ipynb', '*.th
 
 
 def get_image_from_url(url: str):
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)
     img = Image.open(BytesIO(response.content))
     img = img.resize((224, 224))
     img = img.convert('RGB')
