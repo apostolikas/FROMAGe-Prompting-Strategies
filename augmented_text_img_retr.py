@@ -4,18 +4,21 @@ import os
 import numpy as np
 from fromage import models
 import matplotlib as plt
+import torch
+import torchmetrics
+from torchmetrics.multimodal import CLIPScore
 
 
 #! Load and preprocess data
 df = pd.read_csv('./Flickr8k_text/ExpertAnnotations.txt',delimiter='\t')
-cropped_df = df.loc[df['expert1'] == 1]
+cropped_df = df.loc[df['expert1'] == 4]
 img_cap_list = list(zip(cropped_df.image_id, cropped_df.caption_id))
 cap_df = pd.read_csv('./Flickr8k_text/Flickr8k.token.txt',delimiter='\t')
 cap_dict = pd.Series(cap_df.cap.values,index=cap_df.cap_id).to_dict()
 data_dict = {}
 for img_id, cap_id in zip(cropped_df.image_id, cropped_df.caption_id):
     caption = cap_dict[cap_id]
-    data_dict[img_id] = caption
+    data_dict[img_id] = caption 
 
 
 #! function to make a dictionary -> list of dictionaries (len(list)=chunk_size) (in our case 1)
@@ -43,12 +46,18 @@ model_dir = './fromage_model/'
 model = models.load_fromage(model_dir)
 
 i=0 # counter for print 
-
-images_dict = {}
+metric = CLIPScore(model_name_or_path="openai/clip-vit-base-patch16")
+#images_dict = {}
+scores = []
 
 for ic_dict in ic_data:
     i+=1
-    image = list(ic_dict.keys())[0]
+    image_path = list(ic_dict.keys())[0]
+    image = Image \
+        .open(os.path.join('./Flicker8k_Dataset/',image_path)) \
+        .resize((224, 224)) \
+        .convert('RGB')
+
     caption = list(ic_dict.values())[0]
 
     #! First check if the model retrieves a good image based on the caption
@@ -66,7 +75,8 @@ for ic_dict in ic_data:
     # Optional - Qualitative check on new retrieved_image
     # new_retrieved_image.save(str(i) + 'new_retrieved_image.jpg')
 
-    images_dict[caption] = zip(image, new_retrieved_image)
+    #images_dict[caption] = zip(image, new_retrieved_image)
 
-
-#TODO ClipScore 
+    #TODO ClipScore 0-100%
+    score = metric(torch.randint(255, (3, 224, 224)), "a photo of a cat")
+    print(score.detach())
