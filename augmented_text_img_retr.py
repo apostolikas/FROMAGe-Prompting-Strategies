@@ -39,33 +39,8 @@ def split_dictionary(input_dict, chunk_size):
     return res
 
 #! final data for task
-num_of_samples = 200
 ic_data = split_dictionary(data_dict,1)
-np.random.seed(0)
-np.random.shuffle(ic_data)
-ic_data = ic_data[:num_of_samples]
-
-#! load model
-model_dir = './fromage_model/'
-model = models.load_fromage(model_dir)
-
-
-#! function to make a dictionary -> list of dictionaries (len(list)=chunk_size) (in our case 1)
-def split_dictionary(input_dict, chunk_size):
-    res = []
-    new_dict = {}
-    for k, v in input_dict.items():
-        if len(new_dict) < chunk_size:
-            new_dict[k] = v
-        else:
-            res.append(new_dict)
-            new_dict = {k: v}
-    res.append(new_dict)
-    return res
-
-#! final data for task
-ic_data = split_dictionary(data_dict,1)
-ic_data = ic_data[:2]
+#ic_data = ic_data[6:10]
 
 #! load model
 model_dir = './fromage_model/'
@@ -73,8 +48,8 @@ model = models.load_fromage(model_dir)
 
 i=0 # counter for print 
 metric = CLIPScore(model_name_or_path="openai/clip-vit-base-patch16")
-scores = []
-
+scores_orig = []
+scores_augm = []
 for ic_dict in ic_data:
 
     i+=1
@@ -83,17 +58,31 @@ for ic_dict in ic_data:
         .open(os.path.join('./Flicker8k_Dataset/',image_path)) \
         .resize((224, 224)) \
         .convert('RGB') 
-    caption = list(ic_dict.values())[0]
+    caption_tuple = list(ic_dict.values())[0]
 
     # Retrieve image based on the augmented caption
-    augmented_caption = list(ic_dict.values())[1]
+    original_caption = caption_tuple[0]
+    augmented_caption = caption_tuple[1]
     augmented_prompt = [augmented_caption[:-1] + ' [RET] ']
-    model_output = model.generate_for_images_and_texts(augmented_prompt, max_img_per_ret=1, max_num_rets=1)
-    retrieved_image = model_output[0]
-    retrieved_image.save(str(i)+'ret_img.jpg')
+    model_output = model.generate_for_images_and_texts(augmented_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
+    #print(model_output)
+    retrieved_image = model_output[-1][0]
+    #retrieved_image.save(str(i)+'_ret_img.jpg')
 
     # Compare augmented caption with original and retrieved image
     transform = ToTensor()
+    score_orig_cap_orig_img = metric(transform(image), original_caption)
     score_with_original_image = metric(transform(image), augmented_caption)
     score_with_new_image = metric(transform(retrieved_image), augmented_caption)
-    print("Example ", i, "\t Original img score :", score_with_original_image.detach().item,"%", "\t New img score :", score_with_new_image.detatch().item,"%")
+    scores_orig.append(score_with_original_image.detach().item())
+    scores_augm.append(score_with_new_image.detach().item())
+
+    print("Example ", i)
+    print("Original Caption  - Original img score :", score_orig_cap_orig_img.detach().item() ,"%")
+    print("Augmented Caption - Original img score :", score_with_original_image.detach().item() ,"%")
+    print("Augmented Caption - Retrieved img score :", score_with_new_image.detach().item() ,"%")
+    print("------------------------------------------------")
+
+print("\nIn total:")
+print("The average augmented caption - original img score is ", np.mean(scores_orig),"%")
+print("The average augmented caption - retrieved img score is ", np.mean(scores_augm),"%")
