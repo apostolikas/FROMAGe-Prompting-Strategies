@@ -5,6 +5,7 @@ import glob
 import math
 import numpy as np
 import os
+import pickle
 import torch
 from torch import Tensor
 import torch.nn as nn
@@ -436,6 +437,117 @@ class FromageModel(nn.Module):
 
     return out, output_embeddings, output_logits
 
+  def generate_content_free(self, embeddings = torch.FloatTensor, max_len: int = 32,
+               temperature: float = 0.0, top_p: float = 1.0, min_word_tokens: int = 0,
+               ret_scale_factor: float = 1.0, filter_value: float = -float('Inf'), content_free_logits: list = []):
+    """Runs greedy decoding and returns generated captions.
+
+    Args:
+      embeddings: Input condition that the model uses for autoregressive generation.
+      max_len: Maximum number of tokens to generate.
+      temperature: Used to modulate logit distribution.
+      top_p: If set to < 1, the smallest set of tokens with highest probabilities that add up to top_p or higher are kept for generation.
+      min_word_tokens: Minimum number of words to generate before allowing a [RET] output.
+      ret_scale_factor: Proportion to scale [RET] token logits by. A higher value may increase the probability of the model generating [RET] outputs.
+      filter_value: Value to assign to tokens that should never be generated.
+    Outputs:
+      out: (N, T) int32 sequence of output tokens.
+      output_embeddings: (N, T, 256) sequence of text output embeddings.
+    """
+    self.lm.eval()
+
+    with torch.no_grad():  # no tracking history
+      batch_size, s, _ = embeddings.shape
+      # init output with image tokens
+      out = None
+      past_key_values = None
+      output_embeddings = []
+      output_logits = []
+
+      for i in range(max_len):
+        if 'opt' in self.opt_version:
+          output = self.lm(inputs_embeds=embeddings, use_cache=False, output_hidden_states=True)
+        else:
+          if i == 0:
+            output = self.lm(inputs_embeds=embeddings, use_cache=True, past_key_values=None, output_hidden_states=True)
+          else:
+            output = self.lm(input_ids=out[:, -1:], use_cache=True, past_key_values=past_key_values, output_hidden_states=True)
+
+        # Collect and sum the hidden states.
+        hidden_states = []
+        if self.args.shared_emb_dim is not None:
+          for idx, fc_layer in zip(self.args.text_emb_layers, self.text_hidden_fcs):
+            hidden_states.append(fc_layer(output.hidden_states[idx]))  # (N, seq_len, 2048)
+        else:
+          for idx in self.args.text_emb_layers:
+            hidden_states.append(output.hidden_states[idx])
+        # Add hidden states together.
+        last_hidden_state = torch.stack(hidden_states, dim=-1).sum(dim=-1)  # (N, T, 256)
+        last_embedding = last_hidden_state / last_hidden_state.norm(dim=-1, keepdim=True)
+        output_embeddings.append(last_embedding)
+
+        logits = output.logits[:, -1, :]  # (N, vocab_size)
+
+        if top_p == 1.0:
+          logits = logits.cpu()
+        
+        #! new code subtract the content_free logits
+        if i == 0:
+          logits -= content_free_logits[i]
+        
+        output_logits.append(logits)
+
+        if self.retrieval_token_idx != -1 and self.retrieval_token_idx is not None:
+          if i < min_word_tokens:
+            # Eliminate probability of generating [RET] if this is earlier than min_word_tokens.
+            logits[:, self.retrieval_token_idx] = filter_value
+          else:
+            # Multiply by scaling factor.
+            logits[:, self.retrieval_token_idx] = logits[:, self.retrieval_token_idx] * ret_scale_factor
+
+        past_key_values = output.past_key_values
+
+        if temperature == 0.0:
+          if top_p != 1.0:
+            raise ValueError('top_p cannot be set if temperature is 0 (greedy decoding).')
+          next_token = torch.argmax(logits, keepdim=True, dim=-1)  # (N, 1)
+        else:
+          logits = logits / temperature
+
+          # Apply top-p filtering.
+          if top_p < 1.0:
+            assert top_p > 0, f'top_p should be above 0, got {top_p} instead.'
+            sorted_logits, sorted_indices = torch.sort(logits, descending=True)  # (N, D) and (N, D)
+            cumulative_probs = torch.cumsum(F.softmax(sorted_logits, dim=-1), dim=-1) # (N, D)
+
+            # Remove tokens with cumulative probability above the threshold
+            sorted_indices_to_remove = cumulative_probs > top_p
+            # Shift the indices to the right to keep also the first token above the threshold
+            sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()
+            sorted_indices_to_remove[..., 0] = 0
+
+            for j in range(sorted_indices.shape[0]):
+              indices_to_remove = sorted_indices[j, sorted_indices_to_remove[j, :]]
+              logits[j, indices_to_remove] = filter_value
+
+          token_weights = logits.exp()   # (N, vocab_size)
+          next_token = torch.multinomial(token_weights, 1)  # (N, 1)
+
+        next_token = next_token.long().to(embeddings.device)
+        if out is not None:
+          out = torch.cat([out, next_token], dim=-1)
+        else:
+          out = next_token
+
+        if 'opt' in self.opt_version:
+          next_embedding = self.input_embeddings(next_token)
+          embeddings = torch.cat([embeddings, next_embedding], dim=1)
+        elif (self.tokenizer.eos_token_id and (next_token == self.tokenizer.eos_token_id).all()):
+          # End of generation.
+          break
+
+    return out, output_embeddings, output_logits
+
 
 class Fromage(nn.Module):
   def __init__(self, tokenizer, model_args: Optional[FrozenArgs] = None,
@@ -463,6 +575,155 @@ class Fromage(nn.Module):
         input_prefix = input_prefix,
         inference = inference)
       return output
+
+  def calculate_black_image(self):
+    '''
+      Calculate embeddings for a black image to use for the content-free input
+    '''
+    black_image = Image.fromarray(np.zeros((224,224,3),dtype=np.uint8))
+    pixel_values = utils.get_pixel_values_for_model(self.model.feature_extractor, black_image)
+    pixel_values = pixel_values.to(device=self.model.logit_scale.device, dtype=self.model.logit_scale.dtype)
+    pixel_values = pixel_values[None, ...]
+    black_visual_embs = self.model.get_visual_embs(pixel_values, mode='captioning')
+    self.black_visual_embs = black_visual_embs
+
+  def get_black_visual_embs(self):
+    return self.black_visual_embs
+
+  def generate_with_content_free(self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
+    max_num_rets: int = 1, max_img_per_ret: int = 1, id:int=1):
+    """
+    Encode prompts into embeddings.
+    Check also this paper https://arxiv.org/pdf/2102.09690.pdf
+    Args:
+      prompts: List of interleaved PIL.Image.Image and strings representing input to the model.
+      num_words: Maximum number of words to generate for. If num_words = 0, the model will run its forward pass and return the outputs.
+      ret_scale_factor: Proportion to scale [RET] token logits by. A higher value may increase the probability of the model generating [RET] outputs.
+      top_p: If set to < 1, the smallest set of tokens with highest probabilities that add up to top_p or higher are kept for generation.
+      temperature: Used to modulate logit distribution.
+      max_num_rets: Maximum number of images to return in one generation pass.
+      max_img_per_ret: Maximum number of images to return for each [RET] token.
+    Returns:
+      return_outputs: List consisting of either str or List[PIL.Image.Image] objects, representing image-text interleaved model outputs.
+    """
+    input_embs = []
+    input_ids = []
+    add_bos = True
+
+    for i, p in enumerate(prompts):
+      if type(p) == Image.Image:
+        # Encode as image.
+        pixel_values = utils.get_pixel_values_for_model(self.model.feature_extractor, p)
+        pixel_values = pixel_values.to(device=self.model.logit_scale.device, dtype=self.model.logit_scale.dtype)
+        pixel_values = pixel_values[None, ...]
+
+        visual_embs = self.model.get_visual_embs(pixel_values, mode='captioning')  # (1, n_visual_tokens, D)
+        input_embs.append(visual_embs)
+      elif type(p) == str:
+        text_ids = self.model.tokenizer(p, add_special_tokens=True, return_tensors="pt").input_ids.to(self.model.logit_scale.device)
+        if not add_bos:
+          # Remove <bos> tag.
+          text_ids = text_ids[:, 1:]
+        else:
+          # Only add <bos> once.
+          add_bos = False
+
+        text_embs = self.model.input_embeddings(text_ids)  # (1, T, D)
+        input_embs.append(text_embs)
+        input_ids.append(text_ids)
+      else:
+        raise ValueError(f'Input prompts should be either PIL.Image.Image or str types, got {type(p)} instead.')
+      
+    black_visual_emb = self.get_black_visual_embs()
+    # same prompt and we replace the question image with a black image
+    content_free_embs = input_embs[:-2]+[black_visual_emb, input_embs[-1]]
+    content_free_embs = torch.cat(content_free_embs, dim=1)
+    # do inference for the content-free input
+    content_free_generated_ids, _, content_free_logits = self.model.generate(content_free_embs, 5,
+        temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor)
+    
+    # save
+    with open('content_free_logits_id_'+str(id)+'.pt', 'wb') as f:
+        pickle.dump(content_free_logits[:4], f)
+    
+    input_embs = torch.cat(input_embs, dim=1)
+    input_ids = torch.cat(input_ids, dim=1)
+    print('content_free shape ', content_free_embs.shape, ' input_embs shape ',input_embs.shape)
+    
+    if num_words == 0:
+      generated_ids = input_ids
+      outputs = self.model.lm(inputs_embeds=input_embs, use_cache=False, output_hidden_states=True)
+      # Map outputs to embeddings, so we can retrieve embeddings from the [RET] tokens.
+      out = []
+      for x, fc in zip(self.model.args.text_emb_layers, self.model.text_hidden_fcs):
+          out.append(fc(outputs.hidden_states[x]))
+      embeddings = torch.stack(out, dim=-1).sum(dim=-1)
+      embeddings = embeddings / embeddings.norm(dim=-1, keepdim=True)  # (N, T, 256)
+    elif num_words > 0:
+
+      generated_ids, generated_embeddings, generated_logits = self.model.generate_content_free(input_embs, num_words,
+        temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor, content_free_logits =content_free_logits)
+      embeddings = generated_embeddings[-1][:, input_embs.shape[1]:]
+      # save
+      with open('generated_logits_id_'+str(id)+'.pt', 'wb') as f:
+          pickle.dump(generated_logits[:4], f)
+      # save
+      # with open('generated_ids_'+str(id)+'.pt', 'wb') as f:
+      #     pickle.dump(generated_ids.cpu(), f)
+      # Truncate to newline.
+      newline_token_id = self.model.tokenizer('\n', add_special_tokens=False).input_ids[0]
+      trunc_idx = 0
+      for j in range(generated_ids.shape[1]):
+        if generated_ids[0, j] == newline_token_id:
+          trunc_idx = j
+          break
+      if trunc_idx > 0:
+        generated_ids = generated_ids[:, :trunc_idx]
+        embeddings = embeddings[:, :trunc_idx]
+    else:
+      raise ValueError
+
+    # Save outputs as an interleaved list.
+    return_outputs = []
+    # Find up to max_num_rets [RET] tokens, and their corresponding scores.
+    all_ret_idx = [i for i, x in enumerate(generated_ids[0, :] == self.model.retrieval_token_idx) if x][:max_num_rets]
+    seen_image_idx = []  # Avoid showing the same image multiple times.
+
+    last_ret_idx = 0
+    if len(all_ret_idx) == 0:
+      # No [RET] tokens.
+      caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+      return_outputs.append(utils.truncate_caption(caption))
+    else:
+      for ret_idx in all_ret_idx:
+        ret_emb = embeddings[:, ret_idx, :]
+        scores = self.emb_matrix @ ret_emb.T
+
+        # Downweight seen images.
+        for seen_idx in seen_image_idx:
+          scores[seen_idx, :] -= 1000
+
+        # Get the top max_img_per_ret + 3 (in case some fail) images for each image.
+        _, top_image_idx = scores.squeeze().topk(max_img_per_ret + 3)
+        image_outputs = []
+        for img_idx in top_image_idx:
+          # Find the first image that does not error out.
+          try:
+            seen_image_idx.append(img_idx)
+            img = utils.get_image_from_url(self.path_array[img_idx])
+            image_outputs.append(img)
+            if len(image_outputs) == max_img_per_ret:
+              break
+          except UnidentifiedImageError:
+            pass
+
+        caption = self.model.tokenizer.batch_decode(generated_ids[:, last_ret_idx:ret_idx], skip_special_tokens=True)[0]
+        last_ret_idx = ret_idx + 1
+        return_outputs.append(utils.truncate_caption(caption) + ' [RET]')
+        return_outputs.append(image_outputs)
+
+    return return_outputs
+
 
   def generate_for_images_and_texts(
     self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
@@ -551,8 +812,6 @@ class Fromage(nn.Module):
       return_outputs.append(utils.truncate_caption(caption))
     else:
       for ret_idx in all_ret_idx:
-        if ret_idx > embeddings.shape[1]:
-          continue
         ret_emb = embeddings[:, ret_idx, :]
         scores = self.emb_matrix @ ret_emb.T
 
@@ -580,7 +839,6 @@ class Fromage(nn.Module):
         return_outputs.append(image_outputs)
 
     return return_outputs
-
 
 def load_fromage(model_dir: str) -> Fromage:
   model_args_path = os.path.join(model_dir, 'model_args.json')
