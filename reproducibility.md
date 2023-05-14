@@ -17,12 +17,12 @@ From those different settings, it was observed that the performance in image ret
 
 To work around this problem, the only possible solution was to make our own manual annotations on 100 random samples. Based on our judgment, we would annotate if the retrieved image was good or not. To be able to evaluate our annotations we used accuracy as metric, which would allow us to observe the trend of the performance when more context was provided as input.
 
-Our results are shown the table bellow. We can see that ???
+Our results are shown the table bellow. We can see that ????????????
 
 | Input                | Accuracy |
 | -------------------- | -------- |
 | 1 caption            |   ???    |
-| 5 captions, 4 images |   ???    |
+| 5 captions, 4 images |   35%    |
 
 ### Experiment 2: Text retrieval from visual and text input
 
