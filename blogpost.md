@@ -23,7 +23,7 @@ Model Architecture
 ---------
 ![](images_report/fromage_architecture.png)
 
-First, let’s review the model architecture. Fromage combines a vision encoder and a decoder language model while keeping their parameters fixed. To map the visual space into the text space and vice versa, learnable linear layers are utilized. Fromage has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
+First, let’s review the model architecture. Fromage combines a vision encoder and a decoder language model while keeping their parameters fixed. Specifically, it employs the CLIP model as a vision encoder and OPT as a language model to be able to handle multimodal data. To map the visual space into the text space and vice versa, learnable linear layers are utilized. Fromage has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
 
 <!--- I am not sure whether talking about Conceptual Caption is a 
 good idea because of the image-captioning dataset. Besides, 
@@ -63,11 +63,21 @@ BertScore leverages the pre-trained contextual embeddings from BERT and essentia
 
 ### Image Retrieval from Text 
 
-In this task, we used the Flickr-8k dataset, by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3 model asking it to provide more information about each caption. Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. As an evaluation metric, we used ClipScore, which evaluates the correlation between a caption for an image and the actual content of the image.
+In this task, we used the Flickr-8k dataset, by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3 model asking it to provide more information about each caption. Specifically, we asked it to add more descriptive words (query expansion). Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. The following figure explains the aforementioned procedure.
 
-![](images_report/txt2image.png)
+![](/images_report/Text_augmentation_of_prompt.png)
 
-Image classification
+As an evaluation metric, cosine-similarity was used to compare the visual embeddings of the retrieved image using the original caption and the target image. The same was applied for the retrieved image using the augmented caption. The final step was to compare whether the cosine similarity was higher with the augmented caption or not. The visual embeddings were obtained by using the CLIP component of the FROMAGe model. The cosine-similarity displayed below is the average for all the samples seen by the model.
+
+|  Caption  	| Cosine Similarity 	|
+|:---------:	|:-----------------:	|
+|  Original 	|                   	|
+| Augmented 	|                   	|
+
+&nbsp;
+
+### Image classification
+
 |Model |Accuracy|
 |-----|--------|
 |Frozen|33.7      |
@@ -80,6 +90,11 @@ We also evaluated our model on the mini-Imagenet dataset. Specifically, we worke
 
 
 ### Guided VQA - To be added after discussion with the TA 
+
+
+
+&nbsp;
+
 
 ### Insights
 
