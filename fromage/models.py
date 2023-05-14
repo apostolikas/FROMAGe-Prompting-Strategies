@@ -163,6 +163,37 @@ class FromageModel(nn.Module):
     if self.args.freeze_vm:
       self.visual_model.eval()
 
+  def calculate_class_ids(self):
+    classes=[' electric guitar',			
+    ' golden retriever',
+    ' malamute',
+    ' mixing bowl',
+    ' cuirass',
+    ' dalmatian',
+    ' african hunting dog',
+    ' lion',
+    ' crate',
+    ' bookshop',
+    ' vase',
+    ' nematode',
+    ' hourglass',
+    ' ant',
+    ' king crab',
+    ' black-footed ferret',
+    ' scoreboard',
+    ' theater curtain',
+    ' school bus',
+    ' trifle']
+    set_class_ids = set()
+    for class_ in classes:
+        ids = self.tokenizer.encode_plus(class_)['input_ids'][1:]
+        set_class_ids.update(ids)
+
+    class_ids = torch.tensor(list(set_class_ids))
+    self.class_ids = class_ids
+
+  def get_class_ids(self):
+    return self.class_ids
 
   def forward(
     self,
@@ -487,51 +518,56 @@ class FromageModel(nn.Module):
         output_embeddings.append(last_embedding)
 
         logits = output.logits[:, -1, :]  # (N, vocab_size)
-
+        
         if top_p == 1.0:
           logits = logits.cpu()
-        
         #! new code subtract the content_free logits
-        if i == 0:
+        if i <= 4:
           logits -= content_free_logits[i]
-        
+        logits = torch.index_select(logits, 1, self.get_class_ids()) # take subset of logits
+
+        subset_id = torch.argmax(logits, keepdim=True, dim=-1).item()  # (1, 1) find max in subset
+        next_token = self.get_class_ids()[subset_id] #find original id of the max in subset
+
+        next_token = next_token.unsqueeze(dim=0).unsqueeze(dim=0)
+
         output_logits.append(logits)
 
-        if self.retrieval_token_idx != -1 and self.retrieval_token_idx is not None:
-          if i < min_word_tokens:
-            # Eliminate probability of generating [RET] if this is earlier than min_word_tokens.
-            logits[:, self.retrieval_token_idx] = filter_value
-          else:
-            # Multiply by scaling factor.
-            logits[:, self.retrieval_token_idx] = logits[:, self.retrieval_token_idx] * ret_scale_factor
+        # if self.retrieval_token_idx != -1 and self.retrieval_token_idx is not None:
+        #   if i < min_word_tokens:
+        #     # Eliminate probability of generating [RET] if this is earlier than min_word_tokens.
+        #     logits[:, self.retrieval_token_idx] = filter_value
+        #   else:
+        #     # Multiply by scaling factor.
+        #     logits[:, self.retrieval_token_idx] = logits[:, self.retrieval_token_idx] * ret_scale_factor
 
         past_key_values = output.past_key_values
 
-        if temperature == 0.0:
-          if top_p != 1.0:
-            raise ValueError('top_p cannot be set if temperature is 0 (greedy decoding).')
-          next_token = torch.argmax(logits, keepdim=True, dim=-1)  # (N, 1)
-        else:
-          logits = logits / temperature
+        # if temperature == 0.0:
+        #   if top_p != 1.0:
+        #     raise ValueError('top_p cannot be set if temperature is 0 (greedy decoding).')
+        #   next_token = torch.argmax(logits, keepdim=True, dim=-1)  # (N, 1)
+        # else:
+        #   logits = logits / temperature
 
-          # Apply top-p filtering.
-          if top_p < 1.0:
-            assert top_p > 0, f'top_p should be above 0, got {top_p} instead.'
-            sorted_logits, sorted_indices = torch.sort(logits, descending=True)  # (N, D) and (N, D)
-            cumulative_probs = torch.cumsum(F.softmax(sorted_logits, dim=-1), dim=-1) # (N, D)
+        #   # Apply top-p filtering.
+        #   if top_p < 1.0:
+        #     assert top_p > 0, f'top_p should be above 0, got {top_p} instead.'
+        #     sorted_logits, sorted_indices = torch.sort(logits, descending=True)  # (N, D) and (N, D)
+        #     cumulative_probs = torch.cumsum(F.softmax(sorted_logits, dim=-1), dim=-1) # (N, D)
 
-            # Remove tokens with cumulative probability above the threshold
-            sorted_indices_to_remove = cumulative_probs > top_p
-            # Shift the indices to the right to keep also the first token above the threshold
-            sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()
-            sorted_indices_to_remove[..., 0] = 0
+        #     # Remove tokens with cumulative probability above the threshold
+        #     sorted_indices_to_remove = cumulative_probs > top_p
+        #     # Shift the indices to the right to keep also the first token above the threshold
+        #     sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()
+        #     sorted_indices_to_remove[..., 0] = 0
 
-            for j in range(sorted_indices.shape[0]):
-              indices_to_remove = sorted_indices[j, sorted_indices_to_remove[j, :]]
-              logits[j, indices_to_remove] = filter_value
+        #     for j in range(sorted_indices.shape[0]):
+        #       indices_to_remove = sorted_indices[j, sorted_indices_to_remove[j, :]]
+        #       logits[j, indices_to_remove] = filter_value
 
-          token_weights = logits.exp()   # (N, vocab_size)
-          next_token = torch.multinomial(token_weights, 1)  # (N, 1)
+        #   token_weights = logits.exp()   # (N, vocab_size)
+        #   next_token = torch.multinomial(token_weights, 1)  # (N, 1)
 
         next_token = next_token.long().to(embeddings.device)
         if out is not None:
@@ -587,9 +623,6 @@ class Fromage(nn.Module):
     black_visual_embs = self.model.get_visual_embs(pixel_values, mode='captioning')
     self.black_visual_embs = black_visual_embs
 
-  def get_black_visual_embs(self):
-    return self.black_visual_embs
-
   def generate_with_content_free(self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
     max_num_rets: int = 1, max_img_per_ret: int = 1, id:int=1):
     """
@@ -634,7 +667,7 @@ class Fromage(nn.Module):
       else:
         raise ValueError(f'Input prompts should be either PIL.Image.Image or str types, got {type(p)} instead.')
       
-    black_visual_emb = self.get_black_visual_embs()
+    black_visual_emb = self.black_visual_embs
     # same prompt and we replace the question image with a black image
     content_free_embs = input_embs[:-2]+[black_visual_emb, input_embs[-1]]
     content_free_embs = torch.cat(content_free_embs, dim=1)
@@ -643,12 +676,11 @@ class Fromage(nn.Module):
         temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor)
     
     # save
-    with open('content_free_logits_id_'+str(id)+'.pt', 'wb') as f:
+    with open('const_content_free_logits_id_'+str(id)+'.pt', 'wb') as f:
         pickle.dump(content_free_logits[:4], f)
     
     input_embs = torch.cat(input_embs, dim=1)
     input_ids = torch.cat(input_ids, dim=1)
-    print('content_free shape ', content_free_embs.shape, ' input_embs shape ',input_embs.shape)
     
     if num_words == 0:
       generated_ids = input_ids
@@ -665,7 +697,7 @@ class Fromage(nn.Module):
         temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor, content_free_logits =content_free_logits)
       embeddings = generated_embeddings[-1][:, input_embs.shape[1]:]
       # save
-      with open('generated_logits_id_'+str(id)+'.pt', 'wb') as f:
+      with open('const_generated_logits_id_'+str(id)+'.pt', 'wb') as f:
           pickle.dump(generated_logits[:4], f)
       # save
       # with open('generated_ids_'+str(id)+'.pt', 'wb') as f:
@@ -723,7 +755,6 @@ class Fromage(nn.Module):
         return_outputs.append(image_outputs)
 
     return return_outputs
-
 
   def generate_for_images_and_texts(
     self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
