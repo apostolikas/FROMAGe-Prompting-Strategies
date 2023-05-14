@@ -40,7 +40,7 @@ def split_dictionary(input_dict, chunk_size):
 
 #! final data for task
 ic_data = split_dictionary(data_dict,1)
-#ic_data = ic_data[6:10]
+#ic_data = ic_data[:50]
 
 #! load model
 model_dir = './fromage_model/'
@@ -48,8 +48,11 @@ model = models.load_fromage(model_dir)
 
 i=0 # counter for print 
 metric = CLIPScore(model_name_or_path="openai/clip-vit-base-patch16")
-scores_orig = []
-scores_augm = []
+scores_orig_img_orig_cap = []
+scores_ret_img_orig_cap = []
+scores_orig_img_aug_cap = []
+scores_ret_img_aug_cap = []
+
 for ic_dict in ic_data:
 
     i+=1
@@ -62,27 +65,40 @@ for ic_dict in ic_data:
 
     # Retrieve image based on the augmented caption
     original_caption = caption_tuple[0]
+    original_prompt = [original_caption[:-1] + ' [RET] ']
+    model_output_orig = model.generate_for_images_and_texts(original_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
+    orig_img = model_output_orig[-1][0]
+    #orig_img.save(str(i)+'_orig_img.jpg')
+
     augmented_caption = caption_tuple[1]
     augmented_prompt = [augmented_caption[:-1] + ' [RET] ']
     model_output = model.generate_for_images_and_texts(augmented_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
-    #print(model_output)
     retrieved_image = model_output[-1][0]
     #retrieved_image.save(str(i)+'_ret_img.jpg')
+
 
     # Compare augmented caption with original and retrieved image
     transform = ToTensor()
     score_orig_cap_orig_img = metric(transform(image), original_caption)
-    score_with_original_image = metric(transform(image), augmented_caption)
-    score_with_new_image = metric(transform(retrieved_image), augmented_caption)
-    scores_orig.append(score_with_original_image.detach().item())
-    scores_augm.append(score_with_new_image.detach().item())
+    score_aug_cap_orig_img = metric(transform(image), augmented_caption)
+    score_ret_img_orig_cap = metric(transform(retrieved_image), original_caption)
+    score_ret_img_augm_cap = metric(transform(retrieved_image), augmented_caption)
+
+    scores_orig_img_orig_cap.append(score_orig_cap_orig_img.detach().item())
+    scores_ret_img_aug_cap.append(score_ret_img_augm_cap.detach().item())
+    scores_orig_img_aug_cap.append(score_aug_cap_orig_img.detach().item())
+    scores_ret_img_orig_cap.append(score_ret_img_orig_cap.detach().item())
+
 
     print("Example ", i)
     print("Original Caption  - Original img score :", score_orig_cap_orig_img.detach().item() ,"%")
-    print("Augmented Caption - Original img score :", score_with_original_image.detach().item() ,"%")
-    print("Augmented Caption - Retrieved img score :", score_with_new_image.detach().item() ,"%")
+    print("Original Caption  - Retrieved img score :", score_ret_img_orig_cap.detach().item() ,"%")
+    print("Augmented Caption - Original img score :", score_aug_cap_orig_img.detach().item() ,"%")
+    print("Augmented Caption - Retrieved img score :", score_ret_img_augm_cap.detach().item() ,"%")
     print("------------------------------------------------")
 
 print("\nIn total:")
-print("The average augmented caption - original img score is ", np.mean(scores_orig),"%")
-print("The average augmented caption - retrieved img score is ", np.mean(scores_augm),"%")
+print("The average original caption - original img score is ", np.mean(scores_orig_img_orig_cap),"%")
+print("The average original caption - retrieved img score is ", np.mean(scores_ret_img_orig_cap),"%")
+print("The average augmented caption - original img score is ", np.mean(scores_orig_img_aug_cap),"%")
+print("The average augmented caption - retrieved img score is ", np.mean(scores_ret_img_aug_cap),"%")
