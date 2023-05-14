@@ -63,7 +63,7 @@ BertScore leverages the pre-trained contextual embeddings from BERT and essentia
 
 ### Image Retrieval from Text 
 
-In this task, we used the Flickr-8k dataset, by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3 model asking it to provide more information about each caption. Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. The following figure explains the aforementioned procedure.
+In this task, we used the Flickr-8k dataset, by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3 model asking it to provide more information about each caption. Specifically, we asked it to add more descriptive words (query expansion). Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. The following figure explains the aforementioned procedure.
 
 ![](/images_report/Text_augmentation_of_prompt.png)
 
