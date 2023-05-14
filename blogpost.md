@@ -22,7 +22,7 @@ Fromage model
 Model Architecture
 ---------
 
-First, let’s review the model architecture. Fromage combines a vision and a language model while mainting their parameters fixed. To map the visual space into the text space and vice versa, learnable linear layers are utilized. Fromage is trained on the Conceptual Caption dataset (cite) containing 3.3 million image-text pairs. 
+First, let’s review the model architecture. Fromage combines a vision and a language model while mainting their parameters fixed. To map the visual space into the text space and vice versa, learnable linear layers are utilized. Fromage is trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs. 
 <!--- I am not sure whether talking about Conceptual Caption is a 
 good idea because of the image-captioning dataset. Besides, 
 we need to add a picture here
@@ -67,5 +67,6 @@ Conclusion
 References
 ==========
 
+<a id="cc3m"></a> [1] P. Sharma, N. Ding, S. Goodman, R. Soricut, Conceptual Captions: A Cleaned, Hypernymed, Image Alt-text Dataset For Automatic Image Captioning, in: Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Association for Computational Linguistics, Melbourne, Australia, 2018: pp. 2556–2565. https://doi.org/10.18653/v1/P18-1238.
 
     
