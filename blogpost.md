@@ -12,7 +12,7 @@ In recent years, the domains of computer vision and natural language processing(
 
 <!--- Maybe we can put this image later when we describe the image classification task and put here an image from the image captioning task.For  image captioning it is more clear that it needs both image and text models. 
 -->
-In-context learning or priming (cite) leverage additional context added to the input, which guide the model towards the required result without requiring any gradient updates. A common approach is to add input-label pairs, also known as demonstrations, together with a task instruction as a natural language prompt to an evaluation example. <br>
+In-context learning or priming leverage additional context added to the input, which guide the model towards the required result without requiring any gradient updates. A common approach is to add input-label pairs, also known as demonstrations, together with a task instruction as a natural language prompt to an evaluation example. <br>
 In-context learning seems very appealing because it reduces the need for task-specific data. Hence, zero-shot and few-shot learning can be used. Additionally, no parameters are updated so catastrophic forgetting cannot occur and we can use the same model for multiple tasks. Furthermore, by employing in-context learning in an interface even inexperienced users could easily use AI systems. <br>
 Despite its intriguing properties, the models may be sensitive to the prompt that is added to the input. Therefore, exploration of prompting strategies is useful to improve the performance of large models. We will explore the in-context learning abilities of Fromage. <br>
 
@@ -21,8 +21,10 @@ Fromage model
 
 Model Architecture
 ---------
+![](images_report/fromage_architecture.png)
 
-First, let’s review the model architecture. Fromage combines a vision and a language model while mainting their parameters fixed. To map the visual space into the text space and vice versa, learnable linear layers are utilized. Fromage is trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs. 
+First, let’s review the model architecture. Fromage combines a vision encoder and a decoder language model while keeping their parameters fixed. To map the visual space into the text space and vice versa, learnable linear layers are utilized. Fromage has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
+
 <!--- I am not sure whether talking about Conceptual Caption is a 
 good idea because of the image-captioning dataset. Besides, 
 we need to add a picture here
@@ -30,9 +32,10 @@ we need to add a picture here
 
 --------------------------
 
-
 Historical Review
 -----------------
+There are several vision-language models desrcibed in the literature. Models such as Clip and ALIGN use vision and text encoders and calculate the similarity between the different modalities representations. <!--- Nonetheless, these models are restricted to cases where pre-defined labels are available.--> Other models like our model, Fromage, differ by using a text decoder. This allows them to generate text and be used for more open-ended tasks like image-captioning. Fromage in contrast to other models like Flamingo is also able to generate images from the Conceptual Caption Dataset on which it was trained. <br>
+Another important distinction between different vision-language models is the way they bridge different modalities. Existing approaches include finetuning cross-attention layers (Flamingo), only vision encoders (Frozen), only text  lightweight transformer blocks (Blip2), directly feeding the   
 
 
 
@@ -50,6 +53,14 @@ Image Retrieval from Text
 
 In this task, we used the Flickr-8k dataset, by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3 model asking it to provide more information about each caption. Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. As an evaluation metric, we used ClipScore.
 
+Image classification
+|Model |Accuracy|
+|-----|--------|
+|Frozen|33.7      |
+|Fromage  |35.56      |
+
+
+We also evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add to the input two demonstrations -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predict the label of the demonstration that is closest in proximity to the test input.
 
 ### Insights
 
