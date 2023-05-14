@@ -42,14 +42,32 @@ Results
 The approach followed was to first replicate the results of the paper and then explore the possibilities of in-context learning of the model, by working with different prompting strategies. Although the replication of the results was virtually impossible due to the need of manual annotators, we came up with a workaround to verify whether the results for the datasets used are accurate. Next, we tried to explore the in-context learning potential of FROMAGe, by evaluating it on several tasks (e.g. Video Captioning, Visual Question Answering, etc.). Last but not least, several prompt augmentation methods were used to explore different prompting strategies in order to determine the importance of the input for the model's output.
 <!--- Not sure where we should put these paragraphs -->
 
-Image Captioning
+
+&nbsp;
+### Image Captioning
 
 Although the model was trained on the CC3M dataset, it is useful to check how it performs on other datasets as well. For this purpose, we used the Flickr-8k dataset, from which we used a specific subset that according to experts, the captions are fully representative of the corresponding image. Furthermore, we augmented the input visually by adding more images. This means that given the original image that the model needed to caption, we instead asked the model to retrieve 2 similar images. After retrieving the similar images, we added them to the prompt and asked the model to perform Image Captioning for the original image. Simply put, instead of giving directly the input image, we retrieved 2 similar ones and gave all three as input, but only asked the model to caption the original one. To evaluate the model, we used the BertScore metric, which compared the model's generated caption with the target. 
 
-Image Retrieval from Text 
+![](images_report/Visual_augmentation_of_prompt.png)
 
-In this task, we used the Flickr-8k dataset, by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3 model asking it to provide more information about each caption. Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. As an evaluation metric, we used ClipScore.
+BertScore leverages the pre-trained contextual embeddings from BERT and essentially what it does is that it computes the cosine similarity for each token in the text output of the model with each token in the original caption. The results obtained for this experiment can be seen in the following table.
 
+
+|      Dataset      	| Average F1 score 	| Average Precision 	| Average Recall 	|
+|:-----------------:	|:----------------:	|:-----------------:	|:--------------:	|
+| Flickr-8k cropped 	|      0.9749      	|       0.9752      	|     0.9746     	|
+
+&nbsp;
+
+### Image Retrieval from Text 
+
+In this task, we used the Flickr-8k dataset, by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3 model asking it to provide more information about each caption. Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. As an evaluation metric, we used ClipScore, which evaluates the correlation between a caption for an image and the actual content of the image.
+
+
+
+
+
+### Guided VQA - To be added after discussion with the TA 
 
 ### Insights
 
