@@ -21,7 +21,7 @@ Fromage model
 
 Model Architecture
 ---------
-![](images_report/fromage_architecture.png)
+![](images_report/fromage_architecture.PNG)
 
 First, let’s review the model architecture. Fromage combines a vision encoder and a decoder language model while keeping their parameters fixed. Specifically, it employs the CLIP model as a vision encoder and OPT as a language model to be able to handle multimodal data. To map the visual space into the text space and vice versa, learnable linear layers are utilized. Fromage has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
 
@@ -121,7 +121,7 @@ As an evaluation metric, cosine-similarity was used to compare the visual embedd
 |Fromage  |35.56      |
 
 
-We also evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add to the input two demonstrations -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predict the label of the demonstration that is closest in proximity to the test input. (We plan to apply visual augmentation here as well)
+We also evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add to the input two demonstrations -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predict the label of the demonstration that is closest in proximity to the test input. (We plan to apply visual augmentation here as well and try to handle order sensitivity)
 
 
 
