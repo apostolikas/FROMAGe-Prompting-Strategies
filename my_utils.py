@@ -3,25 +3,24 @@ import torch
 import numpy as np
 import random
 
-class Mi_Dataset(torch.utils.data.Dataset):
-  def __init__(self, timesteps, dict_question_captions):
-        self.timesteps = timesteps
-        self.dict_question_captions = dict_question_captions
+def change_order(dict_model_input, similaties):
+    max_first = 0
+    ordered_dict_model_input = {}
+    for i,(score1, score2) in enumerate(similaties):
+        key = i+1
+        img_ex1, text_ex1, img_ex2, text_ex2, img_q, text_q_prompt = dict_model_input[key]
+        if score1 > score2:
+            max_first+=1
+            ordered_dict_model_input[key] = [img_ex2, text_ex2, img_ex1, text_ex1, img_q, text_q_prompt]
+        else:
+            ordered_dict_model_input[key] = [img_ex1, text_ex1, img_ex2, text_ex2, img_q, text_q_prompt]
+            # dict_model_input[key][0] = img_ex2
+            # dict_model_input[key][1] = text_ex2
 
-  def __len__(self):
-        return len(self.timesteps[0])
-
-  def __getitem__(self, index):
-        'Generates one sample of data'
-        # Select sample
-        X = [self.timesteps[i][index] for i in range(len(self.timesteps))]
-        y = self.dict_question_captions[index]
-
-        return X, y
-
-def collate_fn(data):
-    # do max padding but based on the input to the LM not the input to the Vision model
-    a = 1
+            # dict_model_input[key][2] = img_ex1
+            # dict_model_input[key][3] = text_ex1
+    print('',max_first)
+    return ordered_dict_model_input
 
 def create_pickle(filename, object):
     with open(filename, 'wb') as f:
@@ -44,24 +43,6 @@ def remove_caption_prefix(caption_text_q_prompt):
 def add_caption_prefix(caption, prompt_text):
     caption = prompt_text +' '+ caption
     return caption
-
-def examples2Timesteps(examples):
-    '''
-    e.g. Convert input of the form
-        [[ ex_1_text1, ex_1_img1, ex_1_text2, ex_1_img2 ] ,
-        [ ex_2_text1, ex_2_img1, ex_2_text2, ex_2_img2 ]
-        ] 
-    to 
-        [[ ex_1_text1, ex_2_text1]
-        [ex_1_img1, ex_2_img1 ] ,
-        [ ex_1_text2, ex_2_text2],
-        [ex_1_img2, ex_2_img2 ]
-        ] 
-    '''
-    timesteps = [[el[i] for el in examples] for i in range(len(examples[0]))]
-    return timesteps
-
-
 
 def set_seed(seed):
     if torch.cuda.is_available():
