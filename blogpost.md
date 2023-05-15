@@ -59,6 +59,8 @@ BertScore leverages the pre-trained contextual embeddings from BERT and essentia
 |:-----------------:	|:----------------:	|:-----------------:	|:--------------:	|
 | Flickr-8k cropped 	|      0.9749      	|       0.9752      	|     0.9746     	|
 
+It can be seen from the table that giving some similar examples along with the query image leads to the model generating a representative caption of the original image.
+
 &nbsp;
 
 ### Image Retrieval from Text 
@@ -71,8 +73,10 @@ As an evaluation metric, cosine-similarity was used to compare the visual embedd
 
 |  Caption  	| Cosine Similarity 	|
 |:---------:	|:-----------------:	|
-|  Original 	|                   	|
-| Augmented 	|                   	|
+|  Original 	|         0.67        	|
+| Augmented 	|         0.70         	|
+
+Looking at the results table above, the conclusion is that in most cases, a text augmentation of the input can actually help me the model retrieve a better image (i.e. more similar to the target image).
 
 &nbsp;
 
