@@ -49,17 +49,18 @@ The approach followed was to first replicate the results of the paper and then e
 &nbsp;
 ### Image Captioning
 
-Although the model was trained on the CC3M dataset, it is useful to check how it performs on other datasets as well. For this purpose, we used the Flickr-8k dataset, from which we used a specific subset that according to experts, the captions are fully representative of the corresponding image. Furthermore, we augmented the input visually by adding more images. This means that given the original image that the model needed to caption, we instead asked the model to retrieve 2 similar images. After retrieving the similar images, we added them to the prompt and asked the model to perform Image Captioning for the original image. Simply put, instead of giving directly the input image, we retrieved 2 similar ones and gave all three as input, but only asked the model to caption the original one. To evaluate the model, we used the BertScore metric, which compared the model's generated caption with the target. 
+Although the model was trained on the CC3M dataset, it is useful to check how it performs on other datasets as well. For this purpose, we used the Flickr-8k dataset, from which we used a specific subset that according to experts, the captions are fully representative of the corresponding image. Furthermore, we augmented the input visually by adding more images. This means that given the original image that the model needed to caption, we instead asked the model to retrieve 2 similar images. After retrieving the similar images, we added them to the prompt and asked the model to perform Image Captioning for the original image. Simply put, instead of giving directly the input image, we retrieved 2 similar ones and gave all three as input, but only asked the model to caption the original one. To evaluate the model, we employed a language model to compute the text embeddings of the generated caption using visual augmentation, the generated caption without using any augmentation and the original caption.  
 
 ![](images_report/Visual_augmentation_of_prompt.png)
 
-BertScore leverages the pre-trained contextual embeddings from BERT and essentially what it does is that it computes the cosine similarity for each token in the text output of the model with each token in the original caption. The results obtained for this experiment can be seen in the following table.
+After obtaining the embeddings, the cosine similarity was computed using each token in the text output of the model with each token in the original caption for both cases (i.e. using visual augmentation or not). The results for this experiment can be seen in the following table.
 
-|      Dataset      	| Average F1 score 	| Average Precision 	| Average Recall 	|
-|:-----------------:	|:----------------:	|:-----------------:	|:--------------:	|
-| Flickr-8k cropped 	|      0.9749      	|       0.9752      	|     0.9746     	|
+|  Prompt  	| Cosine Similarity 	|
+|:---------:	|:-----------------:	|
+| With augmentation 	|         0.478         |
+| No augmentation 	    |         0.343         |
 
-It can be seen from the table that giving some similar examples along with the query image leads to the model generating a representative caption of the original image.
+It can be seen from the table that giving some similar examples along with the query image leads to the model generating a representative caption of the original image. This means that the generated caption using visual augmentation is closer to the original caption, which serves as a target.
 
 &nbsp;
 
