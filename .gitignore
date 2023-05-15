@@ -7,4 +7,6 @@ runs/
 data/
 cc3m_embeddings.pkl
 *.out
-visual_dialog/
+visual_dialog/VisualDialog_val2018/
+model_output_txt_files/
+dialog_incontext_outfiles/
