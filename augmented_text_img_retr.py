@@ -59,37 +59,42 @@ for ic_dict in ic_data:
         .convert('RGB') 
     caption_tuple = list(ic_dict.values())[0]
 
-    # Retrieve image based on the original caption
-    original_caption = caption_tuple[0]
-    original_prompt = [original_caption[:-1] + ' [RET] ']
-    model_output_orig = model.generate_for_images_and_texts(original_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
-    unaugmented_output = model_output_orig[-1][0]
-    #unaugmented_output.save(str(i)+'_orig_img.jpg')
+    try:
+        # Retrieve image based on the original caption
+        original_caption = caption_tuple[0]
+        original_prompt = [original_caption[:-1] + ' [RET] ']
+        model_output_orig = model.generate_for_images_and_texts(original_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
+        unaugmented_output = model_output_orig[-1][0]
+        #unaugmented_output.save(str(i)+'_orig_img.jpg')
 
-    # Retrieve image based on the augmented caption
-    augmented_caption = caption_tuple[1]
-    augmented_prompt = [image, augmented_caption[:-1] + ' [RET] ']
-    model_output = model.generate_for_images_and_texts(augmented_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
-    augmented_output = model_output[-1][0]
-    #retrieved_image.save(str(i)+'_ret_img.jpg')
+        # Retrieve image based on the augmented caption
+        augmented_caption = caption_tuple[1]
+        augmented_prompt = [image, augmented_caption[:-1] + ' [RET] ']
+        model_output = model.generate_for_images_and_texts(augmented_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
+        augmented_output = model_output[-1][0]
+        #retrieved_image.save(str(i)+'_ret_img.jpg')
 
-    # Compare augmented caption with original and retrieved image
-    transform = ToTensor()
-    model = model.to(torch.float16)
-    with torch.no_grad():
-        embedding_augmented = model.model.get_visual_embs((transform(augmented_output)).unsqueeze(0).half().cuda())
-        embedding_unaugmented = model.model.get_visual_embs((transform(unaugmented_output)).unsqueeze(0).half().cuda())
-        embedding_original = model.model.get_visual_embs((transform(image)).unsqueeze(0).half().cuda())
-    model = model.bfloat16()
-    similarity_score_unaugmented = torch.nn.functional.cosine_similarity(embedding_unaugmented.float(), embedding_original.float())
-    similarity_score_augmented = torch.nn.functional.cosine_similarity(embedding_augmented.float(), embedding_original.float())
-    augmented_scores.append(similarity_score_augmented.mean(1).item())
-    unaugmented_scores.append(similarity_score_unaugmented.mean(1).item())
-    
-    print("Example ", i)
-    print("Similarity of Unaugmented - Original ",similarity_score_unaugmented.mean(1).item())
-    print("Similarity of Augmented - Original ",similarity_score_augmented.mean(1).item())
-    print("------------------------------------------------")
+        # Compare augmented caption with original and retrieved image
+        transform = ToTensor()
+        model = model.to(torch.float16)
+        with torch.no_grad():
+            embedding_augmented = model.model.get_visual_embs((transform(augmented_output)).unsqueeze(0).half().cuda())
+            embedding_unaugmented = model.model.get_visual_embs((transform(unaugmented_output)).unsqueeze(0).half().cuda())
+            embedding_original = model.model.get_visual_embs((transform(image)).unsqueeze(0).half().cuda())
+        model = model.bfloat16()
+        similarity_score_unaugmented = torch.nn.functional.cosine_similarity(embedding_unaugmented.float(), embedding_original.float())
+        similarity_score_augmented = torch.nn.functional.cosine_similarity(embedding_augmented.float(), embedding_original.float())
+        augmented_scores.append(similarity_score_augmented.mean(1).item())
+        unaugmented_scores.append(similarity_score_unaugmented.mean(1).item())
+        
+        print("Example ", i)
+        print("Similarity of Unaugmented - Original ",similarity_score_unaugmented.mean(1).item())
+        print("Similarity of Augmented - Original ",similarity_score_augmented.mean(1).item())
+        print("------------------------------------------------")
+    except:
+        continue
+
+
 
 print("\nIn total:")
 print("Using the original caption, the average cosine similarity with the target image is ", np.mean(unaugmented_scores))

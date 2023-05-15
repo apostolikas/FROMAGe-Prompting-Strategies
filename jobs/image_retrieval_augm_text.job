@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage-2/
 
-srun python -u augmented_text_img_retr.py 
+srun python -u augmented_text_img_retr.py
