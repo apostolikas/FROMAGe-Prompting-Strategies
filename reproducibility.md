@@ -9,20 +9,20 @@ The authors assessed the performance of FROMAGe in retrieving the appropriate im
 
 ![](images_report/vist-story-from-paper.png)
 
-The goal of this experiment was to observe the performance of FROMAGe in image retrieval when more context was provided as input. The first setting provided only the last sentence of the dialog and the last setting provided the whole dialog (sentences and images except the last image of course).
+The goal of this experiment was to observe the performance of FROMAGe in image retrieval when more context was provided as input. One setting provided only the sentences of the dialog and another setting provided the whole dialog (sentences and images except the last image of course).
 
 From those different settings, it was observed that the performance in image retrieval increased when more context was given as input. A lot of manual annotation was necessary for the evaluation of this experiment, which was infeasible in the context of this project.
 
 ![](images_report/vist-trend-from-paper.png)
 
-To work around this problem, the only possible solution was to make our own manual annotations on 100 random samples. Based on our judgment, we would annotate if the retrieved image was good or not. To be able to evaluate our annotations we used accuracy as metric, which would allow us to observe the trend of the performance when more context was provided as input.
-
-Our results are shown the table bellow. (The missing accuracy is going to determine whether we confirm the upward trend the authors report or not.)
+To work around this problem, the only possible solution was to make our own manual annotations on 100 random samples. Based on our judgment, we would annotate if the retrieved image was good or not. To be able to evaluate our annotations we used accuracy as metric, which would allow us to observe the trend of the performance when more context was provided as input. Our results are shown the table bellow.
 
 | Input                | Accuracy |
 | -------------------- | -------- |
-| 1 caption            |   ???    |
+| 5 captions, 0 images |   36%    |
 | 5 captions, 4 images |   35%    |
+
+No strong conclusions can be made from our replication efforts, but it looks like providing more visual context does not have the expected impact.
 
 ### Experiment 2: Text retrieval from visual and text input
 
