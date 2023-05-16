@@ -11,3 +11,9 @@ visual_dialog/
 visual_storytelling/images/
 guided_vqa/
 *.tar.gz
+Flicker8k_Dataset/
+Flickr8k_text/
+guided_vqa/
+*.out
+*.pt 
+real_name_mi/
