@@ -103,6 +103,7 @@ def get_prompt_list(dialogs_df, num_rows, prompt_length, ret_img=True):
                 url_dialog.append(image_id)
                 url_dialog.append(text)
 
+            # Append the dialog when a new dialog will start next
             input_dialog_list.append(dialog)
             url_dialog_list.append(url_dialog)
             dialog, url_dialog = [], []
@@ -150,13 +151,16 @@ def display_output(story_list):
                 print(element)
 
 # Save prompts and output into file with name corresponding to experiment
-def save_dialogs(prompts, outputs, num_examples, num_qa, ret_img=True):
-    path = f"visual_dialog/{num_examples}_examples_{num_qa}_qa_{'ret_img' if ret_img else 'ret_text'}.json"
+def save_dialogs(prompts, outputs, num_examples, num_qa, ret_img):
+    path = f"visual_dialog/{num_examples}_examples_{num_qa}_qa_{'ret_img' if ret_img==True else 'ret_text'}.json"
 
     data = {
         "prompts": prompts,
         "outputs": outputs
     }
+
+    print(path)
+    print(data)
 
     # Save the JSON strings to a file
     with open(path, 'w') as file:

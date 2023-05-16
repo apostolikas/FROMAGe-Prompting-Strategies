@@ -5,7 +5,7 @@
 #SBATCH --job-name=dialog_incontext
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
-#SBATCH --time=00:30:00
+#SBATCH --time=00:50:00
 #SBATCH --mem=64000M
 #SBATCH --output=dialog_incontext_%A.out
 
@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage-2/
 
-srun python -u dialog_in_context.py --num_tests 10 --num_prompts_per_test 5 --num_qa_per_dialog 5 --ret_img=False
+srun python -u dialog_in_context.py --num_tests 10 --num_prompts_per_test 5 --ret_img "False" --num_qa_per_dialog 1 

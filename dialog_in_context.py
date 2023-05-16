@@ -8,7 +8,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--num_tests", type=int, required=True)
 parser.add_argument("--num_prompts_per_test", type=int, required=True)
-parser.add_argument("--ret_img", type=bool, required=True)
+# parser.add_argument("--ret_img", type=bool, required=True)
+parser.add_argument('--ret_img', type=lambda x: (str(x).lower() == 'true'), default=False)
 parser.add_argument("--num_qa_per_dialog", type=int, required=True)
 
 args = parser.parse_args()
@@ -18,6 +19,8 @@ num_pt = args.num_prompts_per_test
 ret_img = args.ret_img
 num_qa_per_dialog = args.num_qa_per_dialog
 
+print(f"number of experiments = {num_tests}, number of dailogs per test = {num_pt}, number of qa's per dialog = {num_qa_per_dialog}, return image is {ret_img}")
+
 # Load model used in the paper.
 model_dir = './fromage_model/'
 model = models.load_fromage(model_dir)
@@ -26,12 +29,12 @@ model = models.load_fromage(model_dir)
 dialogs_csv_path = 'visual_dialog/dialogs.csv'
 dialogs_df = dialog_utils.load_dialogs(dialogs_csv_path)
 
-compensate_error_amount = 3
+# Obtain a certain amount of dialogs (more than needed to be able to handle errors)
+num_rows = 10000
+if num_rows > len(dialogs_df):
+    num_rows = len(dialogs_df)
 
-# Obtain a certain amount of dialogs
-num_rows = num_tests * num_pt * compensate_error_amount
-# num_rows = len(dialogs_df)
-dialog_list, url_dialog_list = dialog_utils.get_prompt_list(dialogs_df, num_rows, num_qa_per_dialog, ret_img=ret_img)
+dialog_list, url_dialog_list = dialog_utils.get_prompt_list(dialogs_df, num_rows, num_qa_per_dialog, ret_img)
 
 prompt, prompt_to_save = [], []
 prompt_list, model_outputs = [], []
@@ -42,52 +45,63 @@ init_prompt = False
 for i in range(len(dialog_list)):
     if init_prompt and i % num_pt == 0:
         if ret_img == True:
-            prompt += ["Retrieve images based on 10 Question and Answer pairs denoted as Q and A"]
-            prompt_to_save += ["Retrieve images based on 10 Question and Answer pairs denoted as Q and A"]
+            prompt += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
+            prompt_to_save += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
         else:
-            prompt += ["Generate 10 question and answer pairs denoted with Q and A for each images"]
-            prompt_to_save += ["Retrieve images based on 10 Question and Answer pairs denoted as Q and A"]
+            prompt += [f"Generate {num_qa_per_dialog} question and answer pairs denoted with Q and A for each image"]
+            prompt_to_save += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
 
-    if i < num_pt * num_tests:
-        if i % num_pt == num_pt-1:
-            prompt += [dialog_list[i][0]]
-            prompt_to_save += [url_dialog_list[i][0]]
+    if i % num_pt == num_pt-1:
+        prompt += [dialog_list[i][0]]
+        prompt_to_save += [url_dialog_list[i][0]]
 
-            if ret_img == True:
-                num_words = 0
-                prompt += ['[RET]']
-            else:
-                num_words = 400
+        if ret_img == True:
+            num_words = 0
+            prompt += ['[RET]']
+            max_num_rets=1
+        else:
+            num_words = 300
+            max_num_rets=0
 
-            print("Test num is", (i+1)/num_pt)
+        print(prompt)
+        print()
+        print(prompt_to_save)
+        print("=================")
+        print()
 
-            # Make sure that invalid output will be skipped
-            try:
-                image_outputs, output_urls = model.generate_for_images_and_texts(prompt, max_img_per_ret=3, num_words=num_words)
-                # Add the prompts with the image id to the prompt list and the output containing urls to the model outputs
-                if image_outputs is not None:
-                    prompt_list.append(prompt_to_save)
-                    model_outputs.append(output_urls)
-                    prompt, prompt_to_save = [], []
-                # Skip if the model did not return images
-                else:
-                    print(f'Test {(i+1)/num_pt} failed because model returned None.')
-                    prompt, prompt_to_save = [], []
-                    counter -= 1
-                    continue
-            except:
-                print(f'Test {(i+1)/num_pt} failed because of invalid model output.')
+        print("Test num is", (i+1)/num_pt)
+
+        # Make sure that invalid output will be skipped
+        try:
+            image_outputs, output_urls_or_caption = model.generate_for_images_and_texts(prompt, max_img_per_ret=3, max_num_rets=max_num_rets, num_words=num_words)
+            # Add the prompts with the image id to the prompt list and the output containing urls to the model outputs
+            print("@@@@@@@@@@@@@@@@@@@")
+            print(image_outputs)
+            print("@@@@@@@@@@@@@@@@@@@")
+            print(output_urls_or_caption)
+            if image_outputs is not None:
+                prompt_list.append(prompt_to_save)
+                model_outputs.append(output_urls_or_caption)
                 prompt, prompt_to_save = [], []
+            # Skip if the model did not return images
+            else:
+                print(f'Test {(i+1)/num_pt} failed because model returned None.')
+                prompt, prompt_to_save = [], []
+                counter -= 1
                 continue
-            
-            # Stop running when the amount of tests is reached
-            counter += 1
-            if counter == num_tests:
-                break
-        # Add the dialogs with url to the prompts that will be stored in a json file
-        # Add the dialogs with PIL.Image objects to the prompts such that the model can handle them
-        else:
-            prompt_to_save += url_dialog_list[i]
-            prompt += dialog_list[i]
+        except:
+            print(f'Test {(i+1)/num_pt} failed because of invalid model output.')
+            prompt, prompt_to_save = [], []
+            continue
+        
+        # Stop running when the amount of tests is reached
+        counter += 1
+        if counter == num_tests:
+            break
+    # Add the dialogs with url to the prompts that will be stored in a json file
+    # Add the dialogs with PIL.Image objects to the prompts such that the model can handle them
+    else:
+        prompt_to_save += url_dialog_list[i]
+        prompt += dialog_list[i]
 
-dialog_utils.save_dialogs(prompt_list, model_outputs, num_pt, num_qa_per_dialog, ret_img=ret_img)
+dialog_utils.save_dialogs(prompt_list, model_outputs, num_pt, num_qa_per_dialog, ret_img)

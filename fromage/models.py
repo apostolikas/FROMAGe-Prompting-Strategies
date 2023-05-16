@@ -545,10 +545,12 @@ class Fromage(nn.Module):
     seen_image_idx = []  # Avoid showing the same image multiple times.
 
     last_ret_idx = 0
+    urls_or_caption = []
     if len(all_ret_idx) == 0:
       # No [RET] tokens.
       caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
       return_outputs.append(utils.truncate_caption(caption))
+      urls_or_caption.append(utils.truncate_caption(caption))
     else:
       for ret_idx in all_ret_idx:
         ret_emb = embeddings[:, ret_idx, :]
@@ -561,14 +563,13 @@ class Fromage(nn.Module):
         # Get the top max_img_per_ret + 3 (in case some fail) images for each image.
         _, top_image_idx = scores.squeeze().topk(max_img_per_ret + 3)
         image_outputs = []
-        urls = []
         for img_idx in top_image_idx:
           # Find the first image that does not error out.
           try:
             seen_image_idx.append(img_idx)
             img = utils.get_image_from_url(self.path_array[img_idx])
             image_outputs.append(img)
-            urls.append(self.path_array[img_idx])
+            urls_or_caption.append(self.path_array[img_idx])
             if len(image_outputs) == max_img_per_ret:
               break
           except UnidentifiedImageError:
@@ -579,7 +580,7 @@ class Fromage(nn.Module):
         return_outputs.append(utils.truncate_caption(caption) + ' [RET]')
         return_outputs.append(image_outputs)
 
-    return return_outputs, urls
+    return return_outputs, urls_or_caption
 
 
 def load_fromage(model_dir: str) -> Fromage:
