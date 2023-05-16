@@ -6,3 +6,9 @@ venv
 runs/
 data/
 cc3m_embeddings.pkl
+Flicker8k_Dataset/
+Flickr8k_text/
+guided_vqa/
+*.out
+*.pt 
+real_name_mi/
