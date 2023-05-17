@@ -40,8 +40,11 @@ prompt, prompt_to_save = [], []
 prompt_list, model_outputs = [], []
 counter = 0
 
-# Give an initial instruction to the prompt
+# Adjustable parameters
+provide_context = False
 init_prompt = False
+
+# Give an initial instruction to the prompt
 for i in range(len(dialog_list)):
     if init_prompt and i % num_pt == 0:
         if ret_img == True:
@@ -101,7 +104,8 @@ for i in range(len(dialog_list)):
     # Add the dialogs with url to the prompts that will be stored in a json file
     # Add the dialogs with PIL.Image objects to the prompts such that the model can handle them
     else:
-        prompt_to_save += url_dialog_list[i]
-        prompt += dialog_list[i]
+        if provide_context == True:
+            prompt_to_save += url_dialog_list[i]
+            prompt += dialog_list[i]
 
-dialog_utils.save_dialogs(prompt_list, model_outputs, num_pt, num_qa_per_dialog, ret_img)
+dialog_utils.save_dialogs(prompt_list, model_outputs, num_pt, num_qa_per_dialog, ret_img, provide_context)

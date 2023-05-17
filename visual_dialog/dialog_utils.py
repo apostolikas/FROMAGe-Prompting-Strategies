@@ -151,9 +151,11 @@ def display_output(story_list):
                 print(element)
 
 # Save prompts and output into file with name corresponding to experiment
-def save_dialogs(prompts, outputs, num_examples, num_qa, ret_img):
-    path = f"visual_dialog/{num_examples}_examples_{num_qa}_qa_{'ret_img' if ret_img==True else 'ret_text'}.json"
-
+def save_dialogs(prompts, outputs, num_examples, num_qa, ret_img, provide_context):
+    if provide_context == True:
+        path = f"visual_dialog/{num_examples}_examples_{num_qa}_qa_{'ret_img' if ret_img==True else 'ret_text'}.json"
+    else:
+        path = f"visual_dialog/{num_examples}_examples_{num_qa}_qa_{'ret_img' if ret_img==True else 'ret_text'}_nocontext.json"
     data = {
         "prompts": prompts,
         "outputs": outputs
