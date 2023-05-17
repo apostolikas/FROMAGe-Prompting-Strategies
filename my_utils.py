@@ -4,6 +4,10 @@ import numpy as np
 import random
 
 def change_order(dict_model_input, similaties):
+    '''
+        Change the order of the in-context examples based on the images similarities
+        between the images in the input
+    '''
     max_first = 0
     ordered_dict_model_input = {}
     for i,(score1, score2) in enumerate(similaties):
@@ -14,12 +18,8 @@ def change_order(dict_model_input, similaties):
             ordered_dict_model_input[key] = [img_ex2, text_ex2, img_ex1, text_ex1, img_q, text_q_prompt]
         else:
             ordered_dict_model_input[key] = [img_ex1, text_ex1, img_ex2, text_ex2, img_q, text_q_prompt]
-            # dict_model_input[key][0] = img_ex2
-            # dict_model_input[key][1] = text_ex2
 
-            # dict_model_input[key][2] = img_ex1
-            # dict_model_input[key][3] = text_ex1
-    print('',max_first)
+    print('Max similarity first',max_first)
     return ordered_dict_model_input
 
 def create_pickle(filename, object):
@@ -36,7 +36,7 @@ def remove_caption_prefix(caption_text_q_prompt):
         Convert 'This is a {class_name}' to 'class_name'
     '''
 
-    assert('This is a' == caption_text_q_prompt)
+    assert('This is a' in caption_text_q_prompt)
     only_caption_q_no_text = caption_text_q_prompt.replace('This is a ','')
     return only_caption_q_no_text
 
