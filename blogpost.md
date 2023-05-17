@@ -1,8 +1,18 @@
-Exploring in-context learning abilities of Fromage 🧀
-================================================================
-
+# Exploring in-context learning abilities of Fromage 🧀
 28 Mar 2023 | Nikolaos Apostolikas, Panagiotis Tsakas, Vasileios Vythoulkas, Bram Slangen, Denny Smit
 
+---------------
+
+In this blog post, we will discuss the paper "Grounding Language Models to Images for Multimodal Generation". The paper proposes a method to ground pretrained text-only language models to the visual domain, enabling them to process and generate arbitrarily interleaved image-and-text data. 
+
+The goal of this blog post is :
+
+1. Provide an overview of the original paper.
+2. Replicate the results (wherever applicable) in order to verify the claims of the authors.
+3. Discover the in-context abilities of the model with thorough cross-domain experiments.
+
+#
+## Introduction
 <!---Humans can learn a new task without requiring huge task-specific supervised datasets. -->
 
 In recent years, the domains of computer vision and natural language processing(NLP) have witnessed the emergence of large-scale models. These models have a vast number of parameters and are pre-trained on huge datasets to acquire extensive knowledge across domains. This development has opened up new possibilities to explore the abilities of these models when few training data are available and without the need to update any of the model's parameters.
@@ -16,6 +26,7 @@ In-context learning or priming leverage additional context added to the input, w
 In-context learning seems very appealing because it reduces the need for task-specific data. Hence, zero-shot and few-shot learning can be used. Additionally, no parameters are updated so catastrophic forgetting cannot occur and we can use the same model for multiple tasks. Furthermore, by employing in-context learning in an interface even inexperienced users could easily use AI systems. <br>
 Despite its intriguing properties, the models may be sensitive to the prompt that is added to the input. Therefore, exploration of prompting strategies is useful to improve the performance of large models. We will explore the in-context learning abilities of Fromage. <br>
 
+---------
 Fromage model
 ==================================
 
