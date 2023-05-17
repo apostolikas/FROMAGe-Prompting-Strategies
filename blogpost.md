@@ -49,16 +49,64 @@ There are several vision-language models desrcibed in the literature. Models suc
 <!---Another important distinction between different vision-language models is the way they bridge different modalities. Existing approaches include finetuning cross-attention layers (Flamingo), only vision encoders (Frozen), only text  lightweight transformer blocks (Blip2), directly feeding the   -->
 In-context learning became known with the remarkable success of the GPT-3 model in text tasks. Lately, in-context learning has been applied to both the vision-only models and vision-language models. A popular technique to boost the performance of in-context learning is demonstration selection by image or text retrieval. Other techniques include instruction tuning first on other datasets, making the LM generate the prompt, changing the order of the demonstrations or changing the instructions given to the model.
 
+---------------
 
-Results
------------------
+
+# Results
 
 The approach followed was to first replicate the results of the paper and then explore the possibilities of in-context learning of the model, by working with different prompting strategies. Although the replication of the results was virtually impossible due to the need of manual annotators, we came up with a workaround to verify whether the results for the datasets used are accurate. Next, we tried to explore the in-context learning potential of FROMAGe, by evaluating it on several tasks (e.g. Video Captioning, Visual Question Answering, etc.). Last but not least, several prompt augmentation methods were used to explore different prompting strategies in order to determine the importance of the input for the model's output.
 <!--- Not sure where we should put these paragraphs -->
 
+-----------------
 
+
+## Reproducibility
+
+
+Two of the main experiments conducted by the authors were: 
+1. Image retrieval from visual and text input (Visual Storytelling).
+2. Text retrieval from visual and text input (Visual Dialog). 
+
+The first experiment could be reproduced up to a point. On the contraty, the second experiment could not be replicated. That is because the authors mention that they computed the perplexity of each question and answer sequence to measure performance, but they do not give enough details on how the needed probabilities were obtained. Therefore, this experiment was skipped due to lack of information about the perplexity scores.
+
+-----------------
+
+
+## Experiment 1: Image retrieval from visual and text input
+
+
+The authors assessed the performance of FROMAGe in retrieving the appropriate image conditioned on a sequence of interleaved image-text inputs from the Visual Storytelling (VIST) dataset [[?]](#vist). One example of a story sample from the dataset is shown bellow. 
+
+![](images_report/vist-story-from-paper.png)
+
+The goal of this experiment was to observe the performance of FROMAGe in image retrieval when more context was provided as input. The first setting provided only the last sentence of the dialog and the last setting provided the whole dialog (sentences and images except the last image of course).
+
+From those different settings, it was observed that the performance in image retrieval increased when more context was given as input. A lot of manual annotation was necessary for the evaluation of this experiment, which was infeasible in the context of this project.
+
+![](images_report/vist-trend-from-paper.png)
+
+To work around this problem, the only possible solution was to make our own manual annotations on 100 random samples. Based on our judgment, we would annotate if the retrieved image was good or not. To be able to evaluate our annotations we used accuracy as metric, which would allow us to observe the trend of the performance when more context was provided as input.
+
+Our results are shown the table bellow. (The missing accuracy is going to determine whether we confirm the upward trend the authors report or not.)
+
+| Input                | Accuracy |
+| -------------------- | -------- |
+| 1 caption            |   ???    |
+| 5 captions, 4 images |   35%    |
+
+-----------------
 &nbsp;
+
+## Extension 
+-----------------
+Our extension can be divided into two parts. The first part is to explore in depth the in-context abilities of FROMAGe. This will be done by using new tasks and datasets. Specifically, in-context learning aims to make the model able to perform a task just by conditioning on input-output examples, without updating the actual parameters. In simple words, we will first give some input-output examples to the model, so it understands the task and then we will evaluate it on the query example. The second part of the extension is to prove whether prompt augmentations (visual and text) can lead to enhanced performance for the new tasks.
+
+-----------------
+&nbsp;
+
+
 ### Image Captioning
+
 
 Although the model was trained on the CC3M dataset, it is useful to check how it performs on other datasets as well. For this purpose, we used the Flickr-8k dataset, from which we used a specific subset that according to experts, the captions are fully representative of the corresponding image. Furthermore, we augmented the input visually by adding more images. This means that given the original image that the model needed to caption, we instead asked the model to retrieve 2 similar images. After retrieving the similar images, we added them to the prompt and asked the model to perform Image Captioning for the original image. Simply put, instead of giving directly the input image, we retrieved 2 similar ones and gave all three as input, but only asked the model to caption the original one. To evaluate the model, we employed a language model to compute the text embeddings of the generated caption using visual augmentation, the generated caption without using any augmentation and the original caption.  
 
@@ -73,7 +121,9 @@ After obtaining the embeddings, the cosine similarity was computed using each to
 
 It can be seen from the table that giving some similar examples along with the query image leads to the model generating a representative caption of the original image. This means that the generated caption using visual augmentation is closer to the original caption, which serves as a target.
 
+-----------------
 &nbsp;
+
 
 ### Image Retrieval from Text 
 
@@ -90,7 +140,7 @@ As an evaluation metric, cosine-similarity was used to compare the visual embedd
 
 Looking at the results table above, the conclusion is that in most cases, a text augmentation of the input can actually help me the model retrieve a better image (i.e. more similar to the target image).
 
-&nbsp;
+-----------------
 
 ### Image classification
 
@@ -102,6 +152,8 @@ Looking at the results table above, the conclusion is that in most cases, a text
 
 We also evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add to the input two demonstrations -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predict the label of the demonstration that is closest in proximity to the test input. (We plan to apply visual augmentation here as well)
 
+-----------------
+&nbsp;
 
 
 
