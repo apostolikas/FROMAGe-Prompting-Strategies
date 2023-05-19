@@ -46,13 +46,14 @@ init_prompt = False
 
 # Give an initial instruction to the prompt
 for i in range(len(dialog_list)):
-    if init_prompt and i % num_pt == 0:
-        if ret_img == True:
-            prompt += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
-            prompt_to_save += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
-        else:
-            prompt += [f"Generate {num_qa_per_dialog} question and answer pairs denoted with Q and A for each image"]
-            prompt_to_save += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
+    if i % num_pt == 0:
+        if init_prompt:
+            if ret_img == True:
+                prompt += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
+                prompt_to_save += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
+            else:
+                prompt += [f"Generate {num_qa_per_dialog} question and answer pairs denoted with Q and A for each image"]
+                prompt_to_save += [f"Retrieve images based on {num_qa_per_dialog} Question and Answer pairs denoted as Q and A"]
 
     if i % num_pt == num_pt-1:
         prompt += [dialog_list[i][0]]

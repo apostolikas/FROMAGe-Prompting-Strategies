@@ -85,6 +85,8 @@ def get_prompt_list(dialogs_df, num_rows, prompt_length, ret_img=True):
     for i in range(num_rows-1):
         if int(dialogs_df['round'][i]) == 1:
             image_id = dialogs_df['image_id'][i]
+            caption = dialogs_df['caption'][i]
+            text += caption
             img = get_image(image_id)
             # dialog.append(img)
         if int(dialogs_df['round'][i]) <= prompt_length:
