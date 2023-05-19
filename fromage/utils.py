@@ -23,7 +23,11 @@ def dump_git_status(out_file=sys.stdout, exclude_file_patterns=['*.ipynb', '*.th
 
 
 def get_image_from_url(url: str):
-    response = requests.get(url, timeout=30)
+    try:
+        response = requests.get(url, timeout=30)
+    except:
+        print("Didn't retrieve image, reached time limit")
+        return
     img = Image.open(BytesIO(response.content))
     img = img.resize((224, 224))
     img = img.convert('RGB')
