@@ -9,7 +9,7 @@ The authors assessed the performance of FROMAGe in retrieving the appropriate im
 
 ![](images_report/vist-story-from-paper.png)
 
-The goal of this experiment was to observe the performance of FROMAGe in image retrieval when more context was provided as input. One setting provided only the sentences of the dialog and another setting provided the whole dialog (sentences and images except the last image of course).
+The goal of this experiment was to observe the performance of FROMAGe in image retrieval when more context was provided as input. The first setting provided only the last sentence of dialog, the second setting provided all but only the sentences of the dialog and the third setting provided the whole dialog (sentences and images except the last image of course).
 
 From those different settings, it was observed that the performance in image retrieval increased when more context was given as input. A lot of manual annotation was necessary for the evaluation of this experiment, which was infeasible in the context of this project.
 
@@ -19,10 +19,13 @@ To work around this problem, the only possible solution was to make our own manu
 
 | Input                | Accuracy |
 | -------------------- | -------- |
+| 1 caption, 0 images  |   75%    |
 | 5 captions, 0 images |   36%    |
 | 5 captions, 4 images |   35%    |
 
-No strong conclusions can be made from our replication efforts, but it looks like providing more visual context does not have the expected impact.
+From our replication efforts, we observe a decreasing trend of performance instead of increasing. It looks like providing more text or visual context has negative impact on the performance because it is more difficult to retrieve an image that fits a more detailed description. 
+
+We are not sure if this contradiction to the authors results happens because of annotating fewer samples or because the way we annotated the samples was different from the instructions given to the real annotators (which were not disclosed).
 
 ### Experiment 2: Text retrieval from visual and text input
 
