@@ -470,7 +470,8 @@ class FromageModel(nn.Module):
 
   def generate_content_free(self, embeddings = torch.FloatTensor, max_len: int = 32,
                temperature: float = 0.0, top_p: float = 1.0, min_word_tokens: int = 0,
-               ret_scale_factor: float = 1.0, filter_value: float = -float('Inf'), content_free_logits: list = []):
+               ret_scale_factor: float = 1.0, filter_value: float = -float('Inf'), content_free_logits: list = [],
+               constrained_ids:Tensor=None):
     """Runs greedy decoding and returns generated captions.
 
     Args:
@@ -499,7 +500,7 @@ class FromageModel(nn.Module):
         if 'opt' in self.opt_version:
           output = self.lm(inputs_embeds=embeddings, use_cache=False, output_hidden_states=True)
         else:
-          if i == 0:
+          if i <= 4:
             output = self.lm(inputs_embeds=embeddings, use_cache=True, past_key_values=None, output_hidden_states=True)
           else:
             output = self.lm(input_ids=out[:, -1:], use_cache=True, past_key_values=past_key_values, output_hidden_states=True)
@@ -522,12 +523,12 @@ class FromageModel(nn.Module):
         if top_p == 1.0:
           logits = logits.cpu()
         #! new code subtract the content_free logits
-        if i <= 4:
+        if content_free_logits!= [] and i <= 4:
           logits -= content_free_logits[i]
-        logits = torch.index_select(logits, 1, self.get_class_ids()) # take subset of logits
+        logits = torch.index_select(logits, 1, constrained_ids) # take subset of logits
 
-        subset_id = torch.argmax(logits, keepdim=True, dim=-1).item()  # (1, 1) find max in subset
-        next_token = self.get_class_ids()[subset_id] #find original id of the max in subset
+        subset_id = torch.argmax(logits, keepdim=True, dim=-1).item()  # find max in subset
+        next_token = constrained_ids[subset_id] #find original id of the max in subset
 
         next_token = next_token.unsqueeze(dim=0).unsqueeze(dim=0)
 
@@ -623,8 +624,20 @@ class Fromage(nn.Module):
     black_visual_embs = self.model.get_visual_embs(pixel_values, mode='captioning')
     self.black_visual_embs = black_visual_embs
 
+  def calculate_white_image(self):
+    '''
+      Calculate embeddings for a white image to use for the content-free input
+    '''
+    white_image = Image.fromarray(255*np.ones((224,224,3),dtype=np.uint8))
+    pixel_values = utils.get_pixel_values_for_model(self.model.feature_extractor, white_image)
+    pixel_values = pixel_values.to(device=self.model.logit_scale.device, dtype=self.model.logit_scale.dtype)
+    pixel_values = pixel_values[None, ...]
+    white_visual_embs = self.model.get_visual_embs(pixel_values, mode='captioning')
+    self.white_visual_embs = white_visual_embs
+
+
   def generate_with_content_free(self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
-    max_num_rets: int = 1, max_img_per_ret: int = 1, id:int=1):
+    max_num_rets: int = 1, max_img_per_ret: int = 1, id:int=1,constrained_ids:Tensor=None, baseline:bool=False):
     """
     Encode prompts into embeddings.
     Check also this paper https://arxiv.org/pdf/2102.09690.pdf
@@ -666,21 +679,33 @@ class Fromage(nn.Module):
         input_ids.append(text_ids)
       else:
         raise ValueError(f'Input prompts should be either PIL.Image.Image or str types, got {type(p)} instead.')
-      
-    black_visual_emb = self.black_visual_embs
-    # same prompt and we replace the question image with a black image
-    content_free_embs = input_embs[:-2]+[black_visual_emb, input_embs[-1]]
-    content_free_embs = torch.cat(content_free_embs, dim=1)
-    # do inference for the content-free input
-    content_free_generated_ids, _, content_free_logits = self.model.generate(content_free_embs, 5,
-        temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor)
-    
-    # save
-    with open('const_content_free_logits_id_'+str(id)+'.pt', 'wb') as f:
-        pickle.dump(content_free_logits[:4], f)
     
     input_embs = torch.cat(input_embs, dim=1)
     input_ids = torch.cat(input_ids, dim=1)
+
+    content_free_logits = []
+    if not baseline:
+      black_visual_emb = self.black_visual_embs
+      # same prompt and we replace the question image with a black image
+      content_free_embs = input_embs[:-2]+[black_visual_emb, input_embs[-1]]
+      content_free_embs = torch.cat(content_free_embs, dim=1)
+      # do inference for the content-free input
+      content_free_generated_ids, _, black_content_free_logits = self.model.generate(content_free_embs, 5,
+          temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor)
+      
+
+      #now let's do the same for white color
+      white_visual_emb = self.white_visual_embs
+      # same prompt and we replace the question image with a black image
+      white_content_free_embs = input_embs[:-2]+[white_visual_emb, input_embs[-1]]
+      white_content_free_embs = torch.cat(white_content_free_embs, dim=1)
+      # do inference for the content-free input
+      white_content_free_generated_ids, _, white_content_free_logits = self.model.generate(white_content_free_embs, 5,
+          temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor)
+    
+      content_free_logits = [(black_content_free_logits[i]+
+                              white_content_free_logits[i] ) /2 for i in range(len(black_content_free_logits))]
+    
     
     if num_words == 0:
       generated_ids = input_ids
@@ -694,11 +719,12 @@ class Fromage(nn.Module):
     elif num_words > 0:
 
       generated_ids, generated_embeddings, generated_logits = self.model.generate_content_free(input_embs, num_words,
-        temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor, content_free_logits =content_free_logits)
+        temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor, content_free_logits =content_free_logits,
+        constrained_ids=constrained_ids)
       embeddings = generated_embeddings[-1][:, input_embs.shape[1]:]
       # save
-      with open('const_generated_logits_id_'+str(id)+'.pt', 'wb') as f:
-          pickle.dump(generated_logits[:4], f)
+      # with open('const_generated_logits_id_'+str(id)+'.pt', 'wb') as f:
+      #     pickle.dump(generated_logits[:2], f)
       # save
       # with open('generated_ids_'+str(id)+'.pt', 'wb') as f:
       #     pickle.dump(generated_ids.cpu(), f)
@@ -758,7 +784,7 @@ class Fromage(nn.Module):
 
   def generate_for_images_and_texts(
     self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
-    max_num_rets: int = 1, max_img_per_ret: int = 1):
+    max_num_rets: int = 1, max_img_per_ret: int = 1, id: int=1):
     """
     Encode prompts into embeddings.
 
@@ -838,7 +864,11 @@ class Fromage(nn.Module):
 
     last_ret_idx = 0
     if len(all_ret_idx) == 0:
-      # No [RET] tokens.
+
+      # save
+      with open('generated_ids_'+str(id)+'.pt', 'wb') as f:
+          pickle.dump(generated_ids.cpu(), f)
+
       caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
       return_outputs.append(utils.truncate_caption(caption))
     else:
