@@ -11,3 +11,4 @@ visual_dialog/VisualDialog_val2018/
 model_output_txt_files/
 dialog_incontext_outfiles/
 .env
+guided_vqa/
