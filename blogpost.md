@@ -18,11 +18,12 @@ The goal of this blog post is :
 In recent years, the domains of computer vision and natural language processing(NLP) have witnessed the emergence of large-scale models. These models have a vast number of parameters and are pre-trained on huge datasets to acquire extensive knowledge across domains. This development has opened up new possibilities to explore the abilities of these models when few training data are available and without the need to update any of the model's parameters.
 <!--- I need to add a smooth transition here -->
 
-![](images_report/lion_malamute.png)
-
 <!--- Maybe we can put this image later when we describe the image classification task and put here an image from the image captioning task.For  image captioning it is more clear that it needs both image and text models. 
 -->
-In-context learning or priming leverage additional context added to the input, which guide the model towards the required result without requiring any gradient updates. A common approach is to add input-label pairs, also known as demonstrations, together with a task instruction as a natural language prompt to an evaluation example. One example of in-context learning is illustrated in the figure above. <br>
+This is where In-context learning comes up. In-context learning or priming leverage additional context added to the input, which guide the model towards the required result without requiring any gradient updates. A common approach is to add input-label pairs, also known as demonstrations, together with a task instruction as a natural language prompt to an evaluation example. One example of in-context learning is illustrated in the figure above. <br>
+
+![](images_report/ICL.png)
+
 In-context learning seems very appealing because it reduces the need for task-specific data. Hence, zero-shot and few-shot learning can be used. Additionally, no parameters are updated so catastrophic forgetting cannot occur and we can use the same model for multiple tasks. Furthermore, by employing in-context learning in an interface even inexperienced users could easily use AI systems. <br>
 Despite its intriguing properties, the models may be sensitive to the prompt that is added to the input. Therefore, exploration of prompting strategies is useful to improve the performance of large models. We will explore the in-context learning abilities of Fromage. <br>
 
@@ -55,7 +56,16 @@ In-context learning became known with the remarkable success of the GPT-3 model 
 # Results
 
 The approach followed was to first replicate the results of the paper and then explore the possibilities of in-context learning of the model, by working with different prompting strategies. Although the replication of the results was virtually impossible due to the need of manual annotators, we came up with a workaround to verify whether the results for the datasets used are accurate. Next, we tried to explore the in-context learning potential of FROMAGe, by evaluating it on several tasks (e.g. Video Captioning, Visual Question Answering, etc.). Last but not least, several prompt augmentation methods were used to explore different prompting strategies in order to determine the importance of the input for the model's output.
-<!--- Not sure where we should put these paragraphs -->
+
+For simplicity, the table below provides an overview of the experiments conducted.
+
+|             Task            	|      Dataset      	| Samples 	|                           Goal                          	|
+|:---------------------------:	|:-----------------:	|:------------------:	|:-------------------------------------------------------:	|
+|     Visual Storytelling     	|       VIST        	|                    	|             Verify the claims of the authors            	|
+|       Image Captioning      	| Cropped Flickr-8k 	|         214        	| Explore the effect of visual augmentation of the prompt 	|
+| Image Retrieval (from text) 	| Cropped Flickr-8k 	|         214        	|  Explore the effect of text augmentation of the prompt  	|
+|     Image Classification    	|   mini-Imagenet   	|                    	|    Remove the recency bias with visual augmentations    	|
+|       Video Captioning      	|       TGIF        	|                    	|       Explore the in-context abilities of FROMAGe       	|
 
 -----------------
 
@@ -175,6 +185,8 @@ We also evaluated our model on the mini-Imagenet dataset. Specifically, we worke
 
 Conclusion
 ==========
+
+In a nutsell, since FROMAGe does not employ extremely large models, other methods and strategies had to be explored to enhance its performance on several tasks. Regarding the goals of this project, the possibilities for in-context learning of the model were explored in depth for various tasks. Furthermore, different prompting templates and strategies, such as visual and text augmentation of the prompt have proven to be beneficial for the model, since its performance in all  cases was increased. Lastly, it is important to understand the advantages of in-context learning, where we do not update the parameters of the model, but it's also crucial to understand through the experiments conducted how the prompt itself and different prompting strategies play a significant role for the performance of the model.
 
 
 References
