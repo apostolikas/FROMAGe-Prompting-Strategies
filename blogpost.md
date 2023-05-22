@@ -109,7 +109,7 @@ Our results are shown the table bellow. (The missing accuracy is going to determ
 
 ## Extension 
 -----------------
-Our extension can be divided into two parts. The first part is to explore in depth the in-context abilities of FROMAGe. This will be done by using new tasks and datasets. Specifically, in-context learning aims to make the model able to perform a task just by conditioning on input-output examples, without updating the actual parameters. In simple words, we will first give some input-output examples to the model, so it understands the task and then we will evaluate it on the query example. The second part of the extension is to prove whether prompt augmentations (visual and text) can lead to enhanced performance for the new tasks.
+Our extensions can be divided into two parts. The first part is to explore in depth the in-context abilities of FROMAGe. This will be done by using new tasks and datasets. Specifically, in-context learning aims to make the model able to perform a task just by conditioning on input-output examples, without updating the actual parameters. In simple words, we will first give some input-output examples to the model, so it understands the task and then we will evaluate it on the query example. The second part of the extension is to prove whether prompt augmentations (visual and text) can lead to enhanced performance for the new tasks.
 
 -----------------
 &nbsp;
@@ -154,13 +154,17 @@ Looking at the results table above, the conclusion is that in most cases, a text
 
 ### Image classification
 
-|Model |Accuracy|
+|Model |Accuracy|                         
 |-----|--------|
 |Frozen|33.7      |
 |Fromage  |35.56      |
 
 
-We also evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add to the input two demonstrations -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predict the label of the demonstration that is closest in proximity to the test input. (We plan to apply visual augmentation here as well)
+We also evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add to the input two demonstrations -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predict the label of the demonstration that is closest in proximity to the test input. \
+To mitigate the recency bias problem we can estimate the model's bias towards specific answers by replacing the test image with a content-free test image such as a black image. Specifically, we first calculate the logits for a *content-free* test image such as a black or white image. Then we scale the logits for the real test image based on the logits of the content-free image. The following figure explains the aforementioned procedure. 
+
+![](/images_report/calibrate_small.png)
+In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. Similarly to (cite) approach on text classification, we constrain Fromage to only generate subwords from the input labels. 
 
 -----------------
 &nbsp;
