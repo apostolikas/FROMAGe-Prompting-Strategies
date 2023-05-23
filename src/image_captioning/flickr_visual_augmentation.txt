@@ -1,0 +1,1037 @@
+Using HuggingFace AutoFeatureExtractor for openai/clip-vit-large-patch14.
+Using facebook/opt-6.7b for the language model.
+Using openai/clip-vit-large-patch14 for the visual model with 1 visual tokens.
+Freezing the LM.
+Initializing embedding for the retrieval token [RET] (id = 50266).
+Restoring pretrained weights for the visual model.
+Some weights of the model checkpoint at openai/clip-vit-large-patch14 were not used when initializing CLIPVisionModel: ['text_model.encoder.layers.4.self_attn.q_proj.weight', 'text_model.encoder.layers.2.layer_norm1.bias', 'text_model.encoder.layers.0.self_attn.v_proj.weight', 'text_model.encoder.layers.4.layer_norm2.weight', 'text_model.encoder.layers.7.self_attn.v_proj.weight', 'text_model.encoder.layers.7.mlp.fc1.bias', 'text_model.encoder.layers.9.self_attn.out_proj.bias', 'text_model.encoder.layers.9.layer_norm2.bias', 'text_model.encoder.layers.10.mlp.fc2.weight', 'text_model.encoder.layers.10.self_attn.q_proj.bias', 'text_model.encoder.layers.2.mlp.fc1.weight', 'text_model.encoder.layers.4.mlp.fc2.weight', 'text_model.encoder.layers.11.self_attn.k_proj.weight', 'text_model.encoder.layers.1.layer_norm1.weight', 'text_model.encoder.layers.7.self_attn.q_proj.bias', 'text_model.encoder.layers.7.self_attn.k_proj.weight', 'text_model.encoder.layers.7.self_attn.out_proj.bias', 'text_model.encoder.layers.8.layer_norm2.bias', 'text_model.encoder.layers.10.self_attn.k_proj.weight', 'text_model.embeddings.position_ids', 'text_model.encoder.layers.3.mlp.fc2.weight', 'text_model.encoder.layers.4.self_attn.q_proj.bias', 'text_model.encoder.layers.0.self_attn.q_proj.bias', 'text_model.encoder.layers.4.self_attn.k_proj.weight', 'text_model.encoder.layers.5.mlp.fc1.weight', 'text_model.encoder.layers.7.layer_norm2.weight', 'text_model.encoder.layers.7.self_attn.k_proj.bias', 'text_model.encoder.layers.8.mlp.fc2.weight', 'text_model.encoder.layers.5.self_attn.v_proj.bias', 'text_model.encoder.layers.6.self_attn.v_proj.bias', 'text_model.encoder.layers.11.self_attn.k_proj.bias', 'text_model.encoder.layers.10.self_attn.q_proj.weight', 'text_model.encoder.layers.6.layer_norm1.weight', 'text_model.encoder.layers.1.self_attn.q_proj.weight', 'text_model.encoder.layers.7.mlp.fc2.bias', 'text_model.encoder.layers.10.self_attn.out_proj.weight', 'text_model.encoder.layers.3.self_attn.out_proj.bias', 'text_model.encoder.layers.4.self_attn.v_proj.bias', 'text_model.encoder.layers.1.mlp.fc2.bias', 'text_model.encoder.layers.2.self_attn.k_proj.weight', 'text_model.encoder.layers.1.layer_norm2.bias', 'text_model.encoder.layers.8.mlp.fc2.bias', 'text_model.encoder.layers.8.self_attn.v_proj.weight', 'text_model.encoder.layers.4.layer_norm1.weight', 'text_model.encoder.layers.7.mlp.fc1.weight', 'text_model.encoder.layers.9.layer_norm1.bias', 'text_model.encoder.layers.9.layer_norm2.weight', 'text_model.final_layer_norm.weight', 'text_model.encoder.layers.2.mlp.fc2.weight', 'text_model.encoder.layers.11.self_attn.out_proj.bias', 'text_model.encoder.layers.3.self_attn.out_proj.weight', 'text_model.encoder.layers.5.layer_norm2.weight', 'text_model.encoder.layers.10.mlp.fc1.bias', 'text_model.encoder.layers.0.self_attn.k_proj.weight', 'text_model.encoder.layers.4.self_attn.k_proj.bias', 'text_model.encoder.layers.0.self_attn.v_proj.bias', 'text_model.encoder.layers.9.mlp.fc1.weight', 'text_model.encoder.layers.8.self_attn.out_proj.weight', 'text_model.encoder.layers.1.mlp.fc2.weight', 'text_model.encoder.layers.0.layer_norm2.bias', 'text_model.encoder.layers.6.self_attn.k_proj.bias', 'text_model.encoder.layers.1.self_attn.out_proj.bias', 'text_model.encoder.layers.6.self_attn.out_proj.bias', 'text_model.encoder.layers.4.self_attn.v_proj.weight', 'text_model.embeddings.position_embedding.weight', 'text_model.encoder.layers.3.self_attn.q_proj.weight', 'text_model.encoder.layers.11.mlp.fc2.bias', 'text_model.encoder.layers.6.layer_norm1.bias', 'text_model.encoder.layers.5.layer_norm1.bias', 'text_model.encoder.layers.10.self_attn.out_proj.bias', 'text_model.encoder.layers.8.self_attn.k_proj.weight', 'text_model.encoder.layers.1.self_attn.v_proj.bias', 'text_model.encoder.layers.1.self_attn.v_proj.weight', 'text_model.encoder.layers.8.self_attn.out_proj.bias', 'text_model.encoder.layers.8.self_attn.q_proj.bias', 'text_model.encoder.layers.8.self_attn.q_proj.weight', 'text_model.encoder.layers.2.mlp.fc1.bias', 'text_model.encoder.layers.10.mlp.fc1.weight', 'text_model.encoder.layers.6.mlp.fc2.weight', 'text_model.encoder.layers.6.self_attn.out_proj.weight', 'text_model.encoder.layers.9.mlp.fc2.bias', 'text_model.encoder.layers.10.layer_norm1.bias', 'text_model.encoder.layers.7.mlp.fc2.weight', 'text_model.encoder.layers.6.layer_norm2.bias', 'text_model.encoder.layers.11.layer_norm1.weight', 'text_model.encoder.layers.11.self_attn.v_proj.bias', 'text_model.encoder.layers.5.self_attn.out_proj.bias', 'text_model.encoder.layers.6.mlp.fc1.weight', 'text_model.encoder.layers.0.mlp.fc1.weight', 'text_model.encoder.layers.4.self_attn.out_proj.weight', 'text_model.encoder.layers.11.self_attn.out_proj.weight', 'text_model.encoder.layers.2.mlp.fc2.bias', 'text_model.encoder.layers.3.mlp.fc1.bias', 'text_model.encoder.layers.9.self_attn.k_proj.bias', 'text_model.encoder.layers.3.self_attn.v_proj.weight', 'text_model.encoder.layers.11.self_attn.q_proj.weight', 'text_model.encoder.layers.2.self_attn.k_proj.bias', 'text_model.encoder.layers.4.mlp.fc2.bias', 'text_model.encoder.layers.9.self_attn.k_proj.weight', 'text_model.encoder.layers.1.self_attn.q_proj.bias', 'text_model.encoder.layers.1.self_attn.k_proj.weight', 'text_model.encoder.layers.7.layer_norm1.bias', 'text_model.encoder.layers.11.mlp.fc1.bias', 'text_model.embeddings.token_embedding.weight', 'text_model.encoder.layers.7.self_attn.out_proj.weight', 'text_model.encoder.layers.0.self_attn.out_proj.weight', 'text_model.encoder.layers.11.self_attn.v_proj.weight', 'text_model.encoder.layers.0.layer_norm1.weight', 'text_model.encoder.layers.10.self_attn.v_proj.bias', 'text_model.encoder.layers.9.self_attn.q_proj.weight', 'text_model.encoder.layers.3.layer_norm1.weight', 'text_model.encoder.layers.0.mlp.fc2.weight', 'text_model.encoder.layers.4.layer_norm2.bias', 'text_model.encoder.layers.5.mlp.fc2.weight', 'text_model.encoder.layers.11.mlp.fc1.weight', 'text_model.encoder.layers.0.mlp.fc1.bias', 'text_model.encoder.layers.11.layer_norm1.bias', 'text_model.encoder.layers.9.layer_norm1.weight', 'text_model.encoder.layers.11.layer_norm2.bias', 'text_model.encoder.layers.2.self_attn.q_proj.bias', 'text_model.encoder.layers.2.layer_norm2.bias', 'text_model.encoder.layers.10.self_attn.v_proj.weight', 'text_model.encoder.layers.1.self_attn.out_proj.weight', 'text_model.encoder.layers.6.layer_norm2.weight', 'text_model.encoder.layers.2.self_attn.v_proj.bias', 'text_model.encoder.layers.7.self_attn.q_proj.weight', 'text_model.encoder.layers.1.mlp.fc1.weight', 'text_model.encoder.layers.2.layer_norm2.weight', 'text_model.encoder.layers.6.mlp.fc1.bias', 'text_projection.weight', 'text_model.encoder.layers.3.layer_norm2.weight', 'text_model.encoder.layers.8.mlp.fc1.weight', 'text_model.encoder.layers.10.layer_norm2.bias', 'text_model.encoder.layers.8.self_attn.k_proj.bias', 'text_model.encoder.layers.4.mlp.fc1.weight', 'text_model.encoder.layers.5.self_attn.q_proj.bias', 'text_model.encoder.layers.4.layer_norm1.bias', 'text_model.encoder.layers.2.self_attn.q_proj.weight', 'text_model.encoder.layers.2.self_attn.out_proj.weight', 'text_model.encoder.layers.5.mlp.fc2.bias', 'text_model.encoder.layers.2.self_attn.out_proj.bias', 'text_model.encoder.layers.7.self_attn.v_proj.bias', 'text_model.encoder.layers.9.mlp.fc1.bias', 'text_model.encoder.layers.3.self_attn.v_proj.bias', 'text_model.encoder.layers.3.layer_norm2.bias', 'text_model.final_layer_norm.bias', 'text_model.encoder.layers.5.mlp.fc1.bias', 'text_model.encoder.layers.0.self_attn.out_proj.bias', 'text_model.encoder.layers.7.layer_norm2.bias', 'text_model.encoder.layers.8.layer_norm1.bias', 'text_model.encoder.layers.8.layer_norm1.weight', 'text_model.encoder.layers.5.self_attn.v_proj.weight', 'text_model.encoder.layers.10.layer_norm1.weight', 'text_model.encoder.layers.4.self_attn.out_proj.bias', 'text_model.encoder.layers.5.self_attn.q_proj.weight', 'text_model.encoder.layers.5.layer_norm2.bias', 'text_model.encoder.layers.10.mlp.fc2.bias', 'text_model.encoder.layers.9.self_attn.v_proj.weight', 'text_model.encoder.layers.9.mlp.fc2.weight', 'text_model.encoder.layers.0.mlp.fc2.bias', 'text_model.encoder.layers.5.self_attn.k_proj.weight', 'text_model.encoder.layers.3.self_attn.k_proj.weight', 'text_model.encoder.layers.11.mlp.fc2.weight', 'text_model.encoder.layers.4.mlp.fc1.bias', 'text_model.encoder.layers.8.mlp.fc1.bias', 'text_model.encoder.layers.10.layer_norm2.weight', 'text_model.encoder.layers.5.layer_norm1.weight', 'text_model.encoder.layers.7.layer_norm1.weight', 'text_model.encoder.layers.11.layer_norm2.weight', 'text_model.encoder.layers.2.layer_norm1.weight', 'text_model.encoder.layers.3.self_attn.k_proj.bias', 'text_model.encoder.layers.8.self_attn.v_proj.bias', 'text_model.encoder.layers.9.self_attn.out_proj.weight', 'text_model.encoder.layers.11.self_attn.q_proj.bias', 'text_model.encoder.layers.6.self_attn.q_proj.bias', 'text_model.encoder.layers.0.self_attn.k_proj.bias', 'text_model.encoder.layers.5.self_attn.k_proj.bias', 'text_model.encoder.layers.6.self_attn.v_proj.weight', 'text_model.encoder.layers.3.mlp.fc2.bias', 'text_model.encoder.layers.3.layer_norm1.bias', 'text_model.encoder.layers.6.self_attn.k_proj.weight', 'text_model.encoder.layers.1.mlp.fc1.bias', 'text_model.encoder.layers.0.layer_norm2.weight', 'text_model.encoder.layers.6.self_attn.q_proj.weight', 'visual_projection.weight', 'text_model.encoder.layers.1.layer_norm1.bias', 'text_model.encoder.layers.10.self_attn.k_proj.bias', 'text_model.encoder.layers.0.layer_norm1.bias', 'text_model.encoder.layers.1.layer_norm2.weight', 'text_model.encoder.layers.6.mlp.fc2.bias', 'text_model.encoder.layers.5.self_attn.out_proj.weight', 'logit_scale', 'text_model.encoder.layers.2.self_attn.v_proj.weight', 'text_model.encoder.layers.9.self_attn.q_proj.bias', 'text_model.encoder.layers.1.self_attn.k_proj.bias', 'text_model.encoder.layers.3.mlp.fc1.weight', 'text_model.encoder.layers.3.self_attn.q_proj.bias', 'text_model.encoder.layers.0.self_attn.q_proj.weight', 'text_model.encoder.layers.8.layer_norm2.weight', 'text_model.encoder.layers.9.self_attn.v_proj.bias']
+- This IS expected if you are initializing CLIPVisionModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing CLIPVisionModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Freezing the VM.
+Example  1
+Caption without using any augmentation [' The image is a photo of a family in front of a building.'] | Cos sim with target : 0.47005659341812134
+Caption using augmentation [' a tourist couple taking a photo of the view from the top of the tower'] | Cos sim with target : 0.5456944704055786
+Ground truth : An older couple posing in front of a fountain for a picture
+---------------------------------
+Example  2
+Caption without using any augmentation [' The image is a part of the collection of images on the website of the'] | Cos sim with target : -0.004860848654061556
+Caption using augmentation [' mother and daughter on the beach.'] | Cos sim with target : 0.45634570717811584
+Ground truth : Two people in water .
+---------------------------------
+Example  3
+Caption without using any augmentation ['photo : [RET]  a group of dolphins perform.'] | Cos sim with target : 0.40199291706085205
+Caption using augmentation [' The dolphins are seen in the water.'] | Cos sim with target : 0.5174903869628906
+Ground truth : Three Orca whales jump in a pool at seaworld .
+---------------------------------
+Example  4
+Caption without using any augmentation [' the dog is on the left.'] | Cos sim with target : 0.4563966989517212
+Caption using augmentation [' the dog and I on the trail.'] | Cos sim with target : 0.4134036898612976
+Ground truth : A black dog walking along a rocky terrain .
+---------------------------------
+Example  5
+Caption without using any augmentation ["The parade is a celebration of the city's history.\n"] | Cos sim with target : 0.13850043714046478
+Caption using augmentation [' The parade is a highlight of the festival.'] | Cos sim with target : 0.17598986625671387
+Ground truth : two woman are showing different facial expressions and wearing gold and purple costumes .
+---------------------------------
+Example  6
+Caption without using any augmentation ['the sun sets over the city.\n'] | Cos sim with target : 0.5037479400634766
+Caption using augmentation [' the sun sets over the city.'] | Cos sim with target : 0.5037479400634766
+Ground truth : A sunset sky over rippling water .
+---------------------------------
+Example  7
+Caption without using any augmentation [' the game.'] | Cos sim with target : 0.17895042896270752
+Caption using augmentation ['basketball player shoots the ball against basketball team.'] | Cos sim with target : 0.47380539774894714
+Ground truth : Four men playing basketball , two from each team .
+---------------------------------
+Example  9
+Caption without using any augmentation [' the beach is a great place to play.'] | Cos sim with target : 0.4491075873374939
+Caption using augmentation [' a boy playing on the beach.'] | Cos sim with target : 0.8561892509460449
+Ground truth : A boy plays in the sand .
+---------------------------------
+Example  10
+Caption without using any augmentation ['[RET]  a girl playing on a playground.'] | Cos sim with target : 0.634573221206665
+Caption using augmentation [' the girl is seen in a hospital bed with a tube in her mouth.'] | Cos sim with target : 0.17030069231987
+Ground truth : A young girl is sliding down a slide at a playground .
+---------------------------------
+Example  11
+Caption without using any augmentation ['.'] | Cos sim with target : 0.019980525597929955
+Caption using augmentation [' dog playing in the pool.'] | Cos sim with target : 0.7184198498725891
+Ground truth : a dog is making a splash in a blue paddling pool .
+---------------------------------
+Example  12
+Caption without using any augmentation [' dog walking through the woods.'] | Cos sim with target : 0.5472807288169861
+Caption using augmentation [' a dog walking through the forest.'] | Cos sim with target : 0.5862233638763428
+Ground truth : A shaggy dog runs down a dirt trail in a lush forest .
+---------------------------------
+Example  13
+Caption without using any augmentation [' The stairs are a popular spot for people to go for a walk.'] | Cos sim with target : 0.3024297058582306
+Caption using augmentation [' the stairs leading up to the bridge.'] | Cos sim with target : 0.3023203909397125
+Ground truth : A young man attempts to ride a unicycle down an outdoor stairway stained with moss .
+---------------------------------
+Example  14
+Caption without using any augmentation [' river in the distance.'] | Cos sim with target : 0.29742756485939026
+Caption using augmentation [' the river is a beautiful sight to see.'] | Cos sim with target : 0.2610705494880676
+Ground truth : A person is riding in a canoe on a lake next to green trees .
+---------------------------------
+Example  15
+Caption without using any augmentation [' the dog and the owner.'] | Cos sim with target : 0.22181665897369385
+Caption using augmentation [' a dog and a person playing with a ball in the park.'] | Cos sim with target : 0.35469746589660645
+Ground truth : Two dogs run through a field .
+---------------------------------
+Example  16
+Caption without using any augmentation ['image.'] | Cos sim with target : 0.037667907774448395
+Caption using augmentation [' dog running in the park.'] | Cos sim with target : 0.5442626476287842
+Ground truth : A white dog runs in the grass ,
+---------------------------------
+Example  17
+Caption without using any augmentation [' The street artist is a man who has been performing for over 20 years.'] | Cos sim with target : 0.24260923266410828
+Caption using augmentation [' a man dancing on the street.'] | Cos sim with target : 0.30503275990486145
+Ground truth : A man is standing on his hands on a sidewalk while others watch .
+---------------------------------
+Example  18
+Caption without using any augmentation [' the route was a challenge for the riders.'] | Cos sim with target : 0.2824099361896515
+Caption using augmentation [' the route to the summit of the mountain.'] | Cos sim with target : 0.18110349774360657
+Ground truth : A motocross bike is being ridden over rocks .
+---------------------------------
+Example  19
+Caption without using any augmentation [' the dog is playing with a ball.'] | Cos sim with target : 0.4574020802974701
+Caption using augmentation [' dog, a golden retriever, playing in the water.'] | Cos sim with target : 0.3824356198310852
+Ground truth : A dog rolling in the grass .
+---------------------------------
+Example  20
+Caption without using any augmentation ['person, a dog, is running on a track.\n'] | Cos sim with target : 0.4384317100048065
+Caption using augmentation [' a dog in a show.'] | Cos sim with target : 0.3951197862625122
+Ground truth : A dog jumps over an obstacle .
+---------------------------------
+Example  21
+Caption without using any augmentation [' The image shows a group of people standing on the sidewalk.'] | Cos sim with target : 0.2197665572166443
+Caption using augmentation [' the image of a person walking down the street.'] | Cos sim with target : 0.05982848256826401
+Ground truth : Kids are waiting at the bottom of a staircase attached to a brick building .
+---------------------------------
+Example  22
+Caption without using any augmentation ['image :\n'] | Cos sim with target : 0.07238471508026123
+Caption using augmentation [' the best surfers in the world are surfing in the water.'] | Cos sim with target : 0.5672961473464966
+Ground truth : A surfer rides a wave in a clear blue ocean .
+---------------------------------
+Example  24
+Caption without using any augmentation ['The city of Portland, Oregon, is a city of artists.'] | Cos sim with target : -0.07736092060804367
+Caption using augmentation [' a photo of a person on a skateboard.'] | Cos sim with target : 0.5074563026428223
+Ground truth : A skateboarder is performing a jump from a wooden bench .
+---------------------------------
+Example  25
+Caption without using any augmentation [' Photo : iStockphoto.'] | Cos sim with target : 0.0826607346534729
+Caption using augmentation [' the first ascent of the route.'] | Cos sim with target : 0.22115492820739746
+Ground truth : A man climbs up a sheer wall of ice .
+---------------------------------
+Example  26
+Caption without using any augmentation [' Climbing a rock face.'] | Cos sim with target : 0.6556594967842102
+Caption using augmentation [' a man climbing a rock face.'] | Cos sim with target : 0.6068931221961975
+Ground truth : A person in a red shirt climbing up a rock face covered in assist handles .
+---------------------------------
+Example  27
+Caption without using any augmentation ['The image is a child playing with a ball.\n'] | Cos sim with target : 0.2421809285879135
+Caption using augmentation [' a young girl in a red dress and white sneakers jumps on a tramp'] | Cos sim with target : 0.465806782245636
+Ground truth : A little girl jumps rope through a parking lot
+---------------------------------
+Example  28
+Caption without using any augmentation [' Photo taken by the author.'] | Cos sim with target : 0.11726433038711548
+Caption using augmentation [' the dog is a rescue dog.'] | Cos sim with target : 0.27617743611335754
+Ground truth : A dog with a ball in his mouth running down a road covered in leaves .
+---------------------------------
+Example  29
+Caption without using any augmentation [' The man in the image is a man who is sitting on a train.'] | Cos sim with target : 0.6791778206825256
+Caption using augmentation [' a man in a suit and tie, a man in a suit and tie'] | Cos sim with target : 0.11268334835767746
+Ground truth : A man sitting on a subway .
+---------------------------------
+Example  31
+Caption without using any augmentation [' the path is a steep climb.'] | Cos sim with target : 0.5735189318656921
+Caption using augmentation [' the view from the top of the mountain.'] | Cos sim with target : 0.4067341387271881
+Ground truth : A person is hiking to the top of a hill .
+---------------------------------
+Example  32
+Caption without using any augmentation ['[RET]  a dog swimming in a pool.'] | Cos sim with target : 0.6379755139350891
+Caption using augmentation [' a dog playing in the pool.'] | Cos sim with target : 0.722563624382019
+Ground truth : A dog swims in a pool near a person .
+---------------------------------
+Example  33
+Caption without using any augmentation ['tennis player\n'] | Cos sim with target : 0.7528114318847656
+Caption using augmentation [' tennis player in action during his match against tennis player.'] | Cos sim with target : 0.6465610265731812
+Ground truth : A tennis player is carrying a tennis racket .
+---------------------------------
+Example  34
+Caption without using any augmentation ['image :\n'] | Cos sim with target : 0.07238471508026123
+Caption using augmentation [' a surfer rides a wave on a wave.'] | Cos sim with target : 0.822951078414917
+Ground truth : A surfer rides a wave in a clear blue ocean .
+---------------------------------
+Example  35
+Caption without using any augmentation ['biological species.\n'] | Cos sim with target : 0.26055261492729187
+Caption using augmentation [' a bald eagle in flight.'] | Cos sim with target : 0.5375966429710388
+Ground truth : A bird with its wings spread
+---------------------------------
+Example  36
+Caption without using any augmentation [' Photo : Getty Images'] | Cos sim with target : -0.018168702721595764
+Caption using augmentation [' the dog is a black and white poodle.'] | Cos sim with target : 0.3445667326450348
+Ground truth : A white dog runs in the grass ,
+---------------------------------
+Example  37
+Caption without using any augmentation [' Image : www.'] | Cos sim with target : 0.02834831178188324
+Caption using augmentation [' Photo : Getty'] | Cos sim with target : 0.08508649468421936
+Ground truth : A person descends a rope from a cliff into the ocean .
+---------------------------------
+Example  39
+Caption without using any augmentation ['The audience listens to the presentation.\n'] | Cos sim with target : 0.49431028962135315
+Caption using augmentation [' the audience at the event.'] | Cos sim with target : 0.47625935077667236
+Ground truth : A conference is being held that involves laptops and big screen presentations .
+---------------------------------
+Example  40
+Caption without using any augmentation [' dog in the snow.'] | Cos sim with target : 0.7296807765960693
+Caption using augmentation [' a dog in the snow.'] | Cos sim with target : 0.7398521900177002
+Ground truth : A dog runs through the deep snow .
+---------------------------------
+Example  41
+Caption without using any augmentation [' Photo : Shutterstock'] | Cos sim with target : 0.06130542978644371
+Caption using augmentation [' a surfer rides a wave at the beach.'] | Cos sim with target : 0.5861331224441528
+Ground truth : A man in a wetsuit surfs .
+---------------------------------
+Example  42
+Caption without using any augmentation ['the team.'] | Cos sim with target : 0.4171363115310669
+Caption using augmentation ['the team for the match against football team.'] | Cos sim with target : 0.5046263933181763
+Ground truth : A soccer team wearing red posing together .
+---------------------------------
+Example  43
+Caption without using any augmentation [' a dog running on the beach.'] | Cos sim with target : 0.8527424931526184
+Caption using augmentation [' a dog and a person on the beach.'] | Cos sim with target : 0.8121733069419861
+Ground truth : a dog on the beach .
+---------------------------------
+Example  44
+Caption without using any augmentation ['.'] | Cos sim with target : 0.0026312842965126038
+Caption using augmentation [' dog in the water.'] | Cos sim with target : 0.6396377682685852
+Ground truth : A black and white dog is splashing in a stream .
+---------------------------------
+Example  45
+Caption without using any augmentation [' The image is a map of the city with the names of the people who'] | Cos sim with target : 0.32710641622543335
+Caption using augmentation [" a woman walking on the street with a sign that reads : 'walk on"] | Cos sim with target : 0.28302597999572754
+Ground truth : Two men walk through a city with words on the street .
+---------------------------------
+Example  46
+Caption without using any augmentation [' the crowd is gathered in front of the building.'] | Cos sim with target : 0.5227236747741699
+Caption using augmentation [' the city from the top of the tower.'] | Cos sim with target : 0.17598019540309906
+Ground truth : Many bundled up people are standing in a public square .
+---------------------------------
+Example  47
+Caption without using any augmentation [' a man hiking in the mountains.'] | Cos sim with target : 0.7275301814079285
+Caption using augmentation ['s a man standing on a mountain top with a mountain range in the background'] | Cos sim with target : 0.47452497482299805
+Ground truth : A man is hiking on a mountaintop on a cloudy day .
+---------------------------------
+Example  48
+Caption without using any augmentation [' dog playing in the water.'] | Cos sim with target : 0.7281918525695801
+Caption using augmentation [' a dog running in the water.'] | Cos sim with target : 0.6758890151977539
+Ground truth : A dog splashes through the water .
+---------------------------------
+Example  49
+Caption without using any augmentation ['the game was tied at the half.'] | Cos sim with target : 0.13445062935352325
+Caption using augmentation [' american football team celebrates a touchdown against american football team.'] | Cos sim with target : 0.3848279118537903
+Ground truth : Football players gathering to contest something to collaborating officials .
+---------------------------------
+Example  50
+Caption without using any augmentation [' Photo : person.'] | Cos sim with target : 0.26627200841903687
+Caption using augmentation [' a surfer rides a wave on a wave.'] | Cos sim with target : 0.6920138001441956
+Ground truth : A surfer catches a nice wave in the ocean and tries to pull himself up .
+---------------------------------
+Example  51
+Caption without using any augmentation [' the beach is a great place to spend time with your family.'] | Cos sim with target : 0.34647810459136963
+Caption using augmentation [' a father and son playing on the beach.'] | Cos sim with target : 0.47782471776008606
+Ground truth : Two children , one of which is holding a stick , are standing on the beach as the sun begins to set .
+---------------------------------
+Example  52
+Caption without using any augmentation [' the dogs are all black.'] | Cos sim with target : 0.6058587431907654
+Caption using augmentation [' dogs in the snow.'] | Cos sim with target : 0.7586264610290527
+Ground truth : three black dogs and a white dog are standing in the snow .
+---------------------------------
+Example  54
+Caption without using any augmentation ['american football team is the defending national champion.\n'] | Cos sim with target : 0.30983784794807434
+Caption using augmentation ['person is tackled by american football player.'] | Cos sim with target : 0.7452101707458496
+Ground truth : The young football player is trying to avoid being tackled .
+---------------------------------
+Example  55
+Caption without using any augmentation [' the image.'] | Cos sim with target : -0.030910633504390717
+Caption using augmentation [' a little girl dancing in the living room with her mother.'] | Cos sim with target : 0.6068345904350281
+Ground truth : Two little girls dance on a hardwood floor in the house .
+---------------------------------
+Example  56
+Caption without using any augmentation ['image.'] | Cos sim with target : 0.06827451288700104
+Caption using augmentation [' a herd of horses running in the wild.'] | Cos sim with target : 0.4225425720214844
+Ground truth : Two dogs run through a field .
+---------------------------------
+Example  57
+Caption without using any augmentation ['.'] | Cos sim with target : 0.07418657839298248
+Caption using augmentation [' a woman with a smile on her face.'] | Cos sim with target : 0.5587571859359741
+Ground truth : A girl wearing a yellow shirt and sunglasses smiles .
+---------------------------------
+Example  58
+Caption without using any augmentation [' the water is so clear and the rocks are so white.'] | Cos sim with target : 0.15148943662643433
+Caption using augmentation [' dog in the water.'] | Cos sim with target : 0.8060027360916138
+Ground truth : A dog wading into the water
+---------------------------------
+Example  59
+Caption without using any augmentation ['image.'] | Cos sim with target : -0.030851762741804123
+Caption using augmentation [' the fire is lit and the camp is ready for the night.'] | Cos sim with target : 0.6021164059638977
+Ground truth : Two people are sitting next to a wood-stacked campfire at night .
+---------------------------------
+Example  60
+Caption without using any augmentation [' the dog is playing in the water.'] | Cos sim with target : 0.726711630821228
+Caption using augmentation [' dog playing in the water at the dog park.'] | Cos sim with target : 0.6141173839569092
+Ground truth : A dog splashes through the water .
+---------------------------------
+Example  61
+Caption without using any augmentation ['image.'] | Cos sim with target : 0.10954438149929047
+Caption using augmentation [' the horse and rider in the parade.'] | Cos sim with target : 0.4241088032722473
+Ground truth : Man in brown jacket leading black horse
+---------------------------------
+Example  62
+Caption without using any augmentation [' The image is a photo of a person climbing a tree.'] | Cos sim with target : 0.4225575923919678
+Caption using augmentation [' climbing on the rock wall.'] | Cos sim with target : 0.2618052065372467
+Ground truth : A man scales a rock in the forest .
+---------------------------------
+Example  63
+Caption without using any augmentation [' person, a man, rides a dog sled.'] | Cos sim with target : 0.6031818389892578
+Caption using augmentation [' a man rides a snowmobile through the snow.'] | Cos sim with target : 0.12286414951086044
+Ground truth : Dogs pulling a sled in a sled race .
+---------------------------------
+Example  64
+Caption without using any augmentation [' Photo : iStockphoto'] | Cos sim with target : 0.03151845932006836
+Caption using augmentation [' dog running in the field.'] | Cos sim with target : 0.5250859260559082
+Ground truth : A small brown and white dog running through tall grass .
+---------------------------------
+Example  65
+Caption without using any augmentation [' the dogs are running on the beach.'] | Cos sim with target : 0.5438365936279297
+Caption using augmentation [' dogs playing in the water.'] | Cos sim with target : 0.6877936124801636
+Ground truth : Three dogs running through water .
+---------------------------------
+Example  66
+Caption without using any augmentation ['Photo :\n'] | Cos sim with target : 0.24373550713062286
+Caption using augmentation [' the view from the top of the mountain.'] | Cos sim with target : 0.5582082867622375
+Ground truth : A person stands at the top of a mountain and raises his arms .
+---------------------------------
+Example  67
+Caption without using any augmentation [' person is tagged out by person in the first inning of game.'] | Cos sim with target : 0.519109845161438
+Caption using augmentation ['baseball game between the city and the school.'] | Cos sim with target : 0.5364977121353149
+Ground truth : A baseman tries to catch a ball while a runner tries to make the base in a community game .
+---------------------------------
+Example  68
+Caption without using any augmentation ['a woman riding a bicycle.'] | Cos sim with target : 0.7156562209129333
+Caption using augmentation ['a woman riding a bicycle in the city.'] | Cos sim with target : 0.6681706309318542
+Ground truth : A woman riding a bike in a park
+---------------------------------
+Example  69
+Caption without using any augmentation [' the image.'] | Cos sim with target : 0.033973924815654755
+Caption using augmentation [' the view from the top of the mountain.'] | Cos sim with target : 0.06714295595884323
+Ground truth : A man in red pushes his motocross bike up a rock .
+---------------------------------
+Example  70
+Caption without using any augmentation [' Image : festival.'] | Cos sim with target : 0.08288183063268661
+Caption using augmentation [' the festival of the festival.'] | Cos sim with target : 0.0531165637075901
+Ground truth : A topless woman is covered in mud .
+---------------------------------
+Example  71
+Caption without using any augmentation [' riding a bike on the road.'] | Cos sim with target : 0.47678205370903015
+Caption using augmentation [' riding a bike on the road with my son.'] | Cos sim with target : 0.40878960490226746
+Ground truth : A young child is riding a purple bike .
+---------------------------------
+Example  72
+Caption without using any augmentation [' the image is a great way to get your child to learn to ride a'] | Cos sim with target : 0.41864505410194397
+Caption using augmentation [' a little boy riding a bike in the street.'] | Cos sim with target : 0.6426693201065063
+Ground truth : A little boy with a blue helmet rides his bike with his feet on the handlebars .
+---------------------------------
+Example  73
+Caption without using any augmentation [' dog playing in the water.'] | Cos sim with target : 0.7483874559402466
+Caption using augmentation [' dog playing in the water with a ball.'] | Cos sim with target : 0.8327223658561707
+Ground truth : A dog wading in the water with a ball in his mouth
+---------------------------------
+Example  74
+Caption without using any augmentation [' The image shows a young man and a girl sitting on a bench in the'] | Cos sim with target : 0.4062235653400421
+Caption using augmentation [' a man and his son sitting on the steps of a cafe.'] | Cos sim with target : 0.27463197708129883
+Ground truth : A man and young girl eat a meal on a city street .
+---------------------------------
+Example  75
+Caption without using any augmentation ['Photo :\n'] | Cos sim with target : 0.19627025723457336
+Caption using augmentation [' a skateboarder in action.'] | Cos sim with target : 0.8875219821929932
+Ground truth : A person on a skateboard .
+---------------------------------
+Example  76
+Caption without using any augmentation [' # # # # # # # # # # # # # # #'] | Cos sim with target : 0.15460063517093658
+Caption using augmentation ['basketball player shoots over basketball player.'] | Cos sim with target : 0.6558365821838379
+Ground truth : Basketball players in action .
+---------------------------------
+Example  77
+Caption without using any augmentation [' Photo : person'] | Cos sim with target : 0.043199632316827774
+Caption using augmentation [' dog running in the water.'] | Cos sim with target : 0.6554604172706604
+Ground truth : A dog splashes through the water .
+---------------------------------
+Example  78
+Caption without using any augmentation ['[RET]  a dog playing in the water.'] | Cos sim with target : 0.5869182348251343
+Caption using augmentation [' a dog running in the water.'] | Cos sim with target : 0.6638631820678711
+Ground truth : A tan dog jumps into water .
+---------------------------------
+Example  79
+Caption without using any augmentation [' the dog is running in the park.'] | Cos sim with target : 0.2214987725019455
+Caption using augmentation [' a dog playing with a ball in the park.'] | Cos sim with target : 0.40731990337371826
+Ground truth : Two dogs are playing together outside .
+---------------------------------
+Example  80
+Caption without using any augmentation ['.'] | Cos sim with target : 0.03621413931250572
+Caption using augmentation [' the guitar player of the band, playing the guitar.'] | Cos sim with target : 0.4610380530357361
+Ground truth : A woman sings into a microphone while playing guitar .
+---------------------------------
+Example  81
+Caption without using any augmentation ['image.'] | Cos sim with target : 0.0803912878036499
+Caption using augmentation [' the trail is a bit of a challenge.'] | Cos sim with target : 0.08088207989931107
+Ground truth : Man on a dirt bike
+---------------------------------
+Example  82
+Caption without using any augmentation [' Photo: photo.'] | Cos sim with target : -0.0048414780758321285
+Caption using augmentation [' the horse racing event at the end of the day.'] | Cos sim with target : 0.3399052321910858
+Ground truth : Several dogs wearing muzzles are racing on a track .
+---------------------------------
+Example  83
+Caption without using any augmentation [' the dog is running in the forest.'] | Cos sim with target : 0.4019019901752472
+Caption using augmentation [' a dog running in the forest.'] | Cos sim with target : 0.4590253531932831
+Ground truth : A brown dog hops over a fallen tree branch .
+---------------------------------
+Example  84
+Caption without using any augmentation ["The parade is a celebration of the city's history and culture."] | Cos sim with target : 0.4875849783420563
+Caption using augmentation [' parade is a popular event in the city.'] | Cos sim with target : 0.47729429602622986
+Ground truth : A man in a green and silver Mardi Gras costume in a parade .
+---------------------------------
+Example  85
+Caption without using any augmentation [' dog jumping over a fence.'] | Cos sim with target : 0.7618629932403564
+Caption using augmentation [' a dog jumps over a hurdle at the dog show.'] | Cos sim with target : 0.6761314868927002
+Ground truth : A dog jumps over an obstacle .
+---------------------------------
+Example  86
+Caption without using any augmentation [' Photo : person.'] | Cos sim with target : 0.34912797808647156
+Caption using augmentation [' the best of the best in the world in the snowboard halfpipe.'] | Cos sim with target : 0.4113060534000397
+Ground truth : Snowboarder in the air performing a stunt .
+---------------------------------
+Example  87
+Caption without using any augmentation [' the dog is a black and white dog.'] | Cos sim with target : 0.5301879644393921
+Caption using augmentation [' a dog in the snow.'] | Cos sim with target : 0.6334406733512878
+Ground truth : A brown & white greyhound dog sniffs the snow .
+---------------------------------
+Example  88
+Caption without using any augmentation [' - - - - - - - - - - - - - - -'] | Cos sim with target : 0.05307637155056
+Caption using augmentation [' dog, a pug, is a happy dog.'] | Cos sim with target : 0.29633471369743347
+Ground truth : A small dogs ears stick up as it runs in the grass .
+---------------------------------
+Example  90
+Caption without using any augmentation ['basketball team\n'] | Cos sim with target : 0.48455145955085754
+Caption using augmentation ['basketball player # dribbles the ball against person.'] | Cos sim with target : 0.7383089661598206
+Ground truth : A Miami basketball player dribbles by an Arizona State player .
+---------------------------------
+Example  91
+Caption without using any augmentation [' dog walking on a path.'] | Cos sim with target : 0.5690130591392517
+Caption using augmentation [' dog, a black and white dog, is seen running through the grass.'] | Cos sim with target : 0.5278075933456421
+Ground truth : A brown and tan dog walks through the green grass .
+---------------------------------
+Example  92
+Caption without using any augmentation [' The rock face is the main attraction of the climb.'] | Cos sim with target : 0.6015322208404541
+Caption using augmentation [' the rock face of the mountain.'] | Cos sim with target : 0.40722647309303284
+Ground truth : A rock climber climbs in between two very large rocks .
+---------------------------------
+Example  93
+Caption without using any augmentation [' The dog jumps into the air and catches the ball.'] | Cos sim with target : 0.5366752743721008
+Caption using augmentation [' a dog jumps into the air to catch a frisbee during the competition'] | Cos sim with target : 0.7408217787742615
+Ground truth : A black and white dog prepares to catch a Frisbee .
+---------------------------------
+Example  94
+Caption without using any augmentation [' dog in a blue coat.'] | Cos sim with target : 0.3320653438568115
+Caption using augmentation [' dog in a winter coat.'] | Cos sim with target : 0.3336026668548584
+Ground truth : A dog in a grassy field , looking up .
+---------------------------------
+Example  95
+Caption without using any augmentation [' the dog is jumping up to catch a ball.'] | Cos sim with target : 0.5616399645805359
+Caption using augmentation [' the dog is a black labrador retriever.'] | Cos sim with target : 0.3987129330635071
+Ground truth : A black dog jumps for a Frisbee in a backyard with a white fence .
+---------------------------------
+Example  96
+Caption without using any augmentation ['[RET]  a dog playing in the water.'] | Cos sim with target : 0.35149624943733215
+Caption using augmentation [' a dog running through a sprinkler in the rain.'] | Cos sim with target : 0.20108994841575623
+Ground truth : The dog is jumping up beside a red wall .
+---------------------------------
+Example  97
+Caption without using any augmentation [' a skier descends a steep slope in the mountains.'] | Cos sim with target : 0.6386019587516785
+Caption using augmentation [' a skier in the backcountry on a powder day.'] | Cos sim with target : 0.5744397640228271
+Ground truth : a skier is throwing up snow as he skis off piste .
+---------------------------------
+Example  98
+Caption without using any augmentation [' the image is a photo of a child jumping up and down on a tr'] | Cos sim with target : 0.5956606268882751
+Caption using augmentation ['happy boy jumping on the floor with a white background.'] | Cos sim with target : 0.4183955490589142
+Ground truth : A child in Hawaiian clothing jumps and poses in a low cut yard nearby a fence and building .
+---------------------------------
+Example  99
+Caption without using any augmentation [' The team is setting up for a night ascent.'] | Cos sim with target : 0.2685202956199646
+Caption using augmentation [' the summit of the mountain.'] | Cos sim with target : 0.1475825011730194
+Ground truth : Three people and a sled .
+---------------------------------
+Example  100
+Caption without using any augmentation [' the image.'] | Cos sim with target : 0.046251703053712845
+Caption using augmentation [' a dog running on a beach.'] | Cos sim with target : 0.34433701634407043
+Ground truth : Two dogs run through a field .
+---------------------------------
+Example  101
+Caption without using any augmentation ['ice hockey team.'] | Cos sim with target : 0.5897954106330872
+Caption using augmentation [' #, #, #, #, #, #, #, #'] | Cos sim with target : 0.09660197794437408
+Ground truth : Hockey players with one taking a shot .
+---------------------------------
+Example  102
+Caption without using any augmentation [' The image is a part of the photo gallery - swing set swing set swing'] | Cos sim with target : 0.4009912610054016
+Caption using augmentation [' a little girl swinging on a swing in the park.'] | Cos sim with target : 0.49360111355781555
+Ground truth : a young child in a purple shirt hanging upside down on a swing
+---------------------------------
+Example  103
+Caption without using any augmentation ['person is down on the field.\n'] | Cos sim with target : 0.47295093536376953
+Caption using augmentation [' american football player is helped off the field after being injured during the game'] | Cos sim with target : 0.6931667327880859
+Ground truth : An injured football player is being nursed on the field in the middle of a game .
+---------------------------------
+Example  104
+Caption without using any augmentation [' the playground is a great place to play with your kids.'] | Cos sim with target : 0.2685306966304779
+Caption using augmentation [' a little girl and her father on the playground.'] | Cos sim with target : 0.34151291847229004
+Ground truth : Two little girls , both dressed in pink , play on the jungle gym .
+---------------------------------
+Example  105
+Caption without using any augmentation ['biological species.\n'] | Cos sim with target : 0.22831933200359344
+Caption using augmentation [' a bald eagle in the water.'] | Cos sim with target : 0.5811576247215271
+Ground truth : A large white bird flying over water .
+---------------------------------
+Example  106
+Caption without using any augmentation ['[RET]  a dog playing in the water.'] | Cos sim with target : 0.5019687414169312
+Caption using augmentation [' dog playing in the water at the beach.'] | Cos sim with target : 0.5767673254013062
+Ground truth : A dog plays with a ball in a kiddie pool .
+---------------------------------
+Example  107
+Caption without using any augmentation [' dog jumping over a fence.'] | Cos sim with target : 0.7618629932403564
+Caption using augmentation [' the dog is running in the air.'] | Cos sim with target : 0.5592567920684814
+Ground truth : A dog jumps over an obstacle .
+---------------------------------
+Example  108
+Caption without using any augmentation [' I was on the summit of a mountain.'] | Cos sim with target : 0.5046217441558838
+Caption using augmentation [' the view from the top of the mountain.'] | Cos sim with target : 0.5977906584739685
+Ground truth : A man on top of a high mountain
+---------------------------------
+Example  109
+Caption without using any augmentation [' The image is a woman in a hijab.'] | Cos sim with target : 0.3821273446083069
+Caption using augmentation ['a woman walking on the street with a headscarf.'] | Cos sim with target : 0.5333994030952454
+Ground truth : A woman is wearing a blue headscarf and a blue sweater .
+---------------------------------
+Example  110
+Caption without using any augmentation [' Climbing on the glacier.'] | Cos sim with target : 0.5110355615615845
+Caption using augmentation [' the summit of the mountain.'] | Cos sim with target : 0.40074416995048523
+Ground truth : person rock climbing
+---------------------------------
+Example  111
+Caption without using any augmentation [' Photo : james walsh.'] | Cos sim with target : 0.09710000455379486
+Caption using augmentation [' a surfer rides a wave on a wave.'] | Cos sim with target : 0.7383721470832825
+Ground truth : A surfer in water and foam .
+---------------------------------
+Example  112
+Caption without using any augmentation [' The image is a part of the street scene in the city.'] | Cos sim with target : 0.35246214270591736
+Caption using augmentation [' the city is a great place to shop and eat.'] | Cos sim with target : 0.18887077271938324
+Ground truth : A group of people walking a city street in warm weather .
+---------------------------------
+Example  113
+Caption without using any augmentation ['The image is a photo of the city of the same name.'] | Cos sim with target : 0.1816571056842804
+Caption using augmentation ['a group of tourists taking a picture of the city.'] | Cos sim with target : 0.3542267084121704
+Ground truth : Many bundled up people are standing in a public square .
+---------------------------------
+Example  114
+Caption without using any augmentation [' The students are in the middle of a group of people.'] | Cos sim with target : 0.43137991428375244
+Caption using augmentation [' tourists take photos of the statue of a woman in front of the temple.'] | Cos sim with target : 0.10936389863491058
+Ground truth : The girls were in the crowd .
+---------------------------------
+Example  116
+Caption without using any augmentation ['.'] | Cos sim with target : -0.004434045869857073
+Caption using augmentation [' my son and i on the beach.'] | Cos sim with target : 0.35122889280319214
+Ground truth : A boy is on the beach with a paddle in his hand as he walks through the ocean water .
+---------------------------------
+Example  117
+Caption without using any augmentation ['person surfing on a wave.'] | Cos sim with target : 0.6493591666221619
+Caption using augmentation [' a surfer on a wave.'] | Cos sim with target : 0.6280205845832825
+Ground truth : A man is sky surfing on the water .
+---------------------------------
+Example  118
+Caption without using any augmentation [' dog running in the park.'] | Cos sim with target : 0.4694308638572693
+Caption using augmentation [' a dog running in the park.'] | Cos sim with target : 0.4888606071472168
+Ground truth : A dog running with a blue toy in its mouth .
+---------------------------------
+Example  119
+Caption without using any augmentation [' - - - - - - - - - - - - - - -'] | Cos sim with target : 0.06528707593679428
+Caption using augmentation [' this is the dog that inspired the breed.'] | Cos sim with target : 0.3065716624259949
+Ground truth : A white dog runs in the grass ,
+---------------------------------
+Example  120
+Caption without using any augmentation [' Photo : iStockphoto'] | Cos sim with target : -0.016505450010299683
+Caption using augmentation [' a surfer rides a wave at the beach.'] | Cos sim with target : 0.9290047883987427
+Ground truth : A surfer is riding a wave .
+---------------------------------
+Example  121
+Caption without using any augmentation [' boys basketball game.'] | Cos sim with target : 0.33110806345939636
+Caption using augmentation [' boys basketball team plays against person in a boys basketball game.'] | Cos sim with target : 0.3608568608760834
+Ground truth : A man in a white uniform jumps while holding a basketball as another in blue blocks him .
+---------------------------------
+Example  122
+Caption without using any augmentation ['image.'] | Cos sim with target : 0.08199118822813034
+Caption using augmentation [' a surfer rides a wave at the beach.'] | Cos sim with target : 0.8163256645202637
+Ground truth : A surfer rides a wave in a clear blue ocean .
+---------------------------------
+Example  123
+Caption without using any augmentation [' the dog is lying on the ground.'] | Cos sim with target : 0.6623373627662659
+Caption using augmentation [' the dog is a rescue dog that was rescued from a shelter.'] | Cos sim with target : 0.3495649993419647
+Ground truth : A dog rolls on the ground .
+---------------------------------
+Example  124
+Caption without using any augmentation ['[RET]  a baseball player running the bases.'] | Cos sim with target : 0.5591989159584045
+Caption using augmentation [' player is the first player to hit a home run in the game.'] | Cos sim with target : 0.3676106929779053
+Ground truth : A boy runs to a baseball base .
+---------------------------------
+Example  125
+Caption without using any augmentation [' the boys are jumping on a trampoline.'] | Cos sim with target : 0.7576851844787598
+Caption using augmentation [' a boy and a girl jumping on a trampoline in the backyard.'] | Cos sim with target : 0.6698349118232727
+Ground truth : One boy jumps over another boy on a trampoline .
+---------------------------------
+Example  126
+Caption without using any augmentation [' The event was held at the park.'] | Cos sim with target : 0.1301841288805008
+Caption using augmentation [' a man on a bike in the air.'] | Cos sim with target : 0.685623288154602
+Ground truth : A man is attempting a stunt with a bicycle .
+---------------------------------
+Example  127
+Caption without using any augmentation [' the image.'] | Cos sim with target : -0.0019541948568075895
+Caption using augmentation [' the art of the sport of karate is a martial art that is practiced'] | Cos sim with target : 0.4614260196685791
+Ground truth : Two little girls practice martial arts .
+---------------------------------
+Example  128
+Caption without using any augmentation ['[RET]  a boy jumps into the pool.'] | Cos sim with target : 0.736594557762146
+Caption using augmentation [' a boy jumps into the water from a diving board at a swimming pool.'] | Cos sim with target : 0.7796484231948853
+Ground truth : a boy jumps into the blue pool water .
+---------------------------------
+Example  129
+Caption without using any augmentation ['image.'] | Cos sim with target : 0.06309359520673752
+Caption using augmentation [' a surfer rides a wave on a wave.'] | Cos sim with target : 0.9571692943572998
+Ground truth : A surfer is riding a wave .
+---------------------------------
+Example  130
+Caption without using any augmentation [' You can use the image as a background for your blog or website.'] | Cos sim with target : 0.05740026384592056
+Caption using augmentation [' the image of a little girl with a big smile on her face.'] | Cos sim with target : 0.5627106428146362
+Ground truth : A little girl is sliding down a tunnel smiling .
+---------------------------------
+Example  131
+Caption without using any augmentation [' The woman is walking down the street.'] | Cos sim with target : 0.4921579360961914
+Caption using augmentation [' a woman riding a bicycle on the street.'] | Cos sim with target : 0.7596514821052551
+Ground truth : An older woman with blond hair rides a bicycle down the street .
+---------------------------------
+Example  132
+Caption without using any augmentation ['basketball player shoots the ball during the game.\n'] | Cos sim with target : 0.5577036142349243
+Caption using augmentation ['basketball player shoots the ball against basketball team.'] | Cos sim with target : 0.5190261006355286
+Ground truth : A group of basketball players jump in the air for the ball .
+---------------------------------
+Example  133
+Caption without using any augmentation [' Photo : person.'] | Cos sim with target : 0.20306232571601868
+Caption using augmentation [' a skateboarder in the street.'] | Cos sim with target : 0.5351414084434509
+Ground truth : a skateboarder jumps a staircase .
+---------------------------------
+Example  134
+Caption without using any augmentation ['Photo : courtesy of the city of san francisco.\n'] | Cos sim with target : 0.1493239849805832
+Caption using augmentation [' a photo of the snowboarder in the air.'] | Cos sim with target : 0.5158522725105286
+Ground truth : A snowboarder in green grinds along the edge of a rail at night .
+---------------------------------
+Example  135
+Caption without using any augmentation ['person, a bull rider, is thrown from his bull.\n'] | Cos sim with target : 0.7452693581581116
+Caption using augmentation [' a bull rider takes a tumble during the rodeo.'] | Cos sim with target : 0.7306997179985046
+Ground truth : A rodeo rider gets tossed up into the air by a black bull as fellow cowboys look on .
+---------------------------------
+Example  136
+Caption without using any augmentation [' The image shows a group of people on a rock.'] | Cos sim with target : 0.4536166489124298
+Caption using augmentation [' the view from the top of the mountain.'] | Cos sim with target : 0.2446415275335312
+Ground truth : Two people climb a rock overhanging water .
+---------------------------------
+Example  137
+Caption without using any augmentation [' the dog is jumping up on the couch.'] | Cos sim with target : 0.4570223391056061
+Caption using augmentation [' a dog jumping up and down on a bed.'] | Cos sim with target : 0.4809568524360657
+Ground truth : A white dog jumps to catch a blue ball in a living room .
+---------------------------------
+Example  138
+Caption without using any augmentation [' the dogs are running in a pack.'] | Cos sim with target : 0.5400516390800476
+Caption using augmentation [' the dog is a black and white dog with a white muzzle and a black'] | Cos sim with target : 0.3127349615097046
+Ground truth : Five black dogs running across the grass .
+---------------------------------
+Example  139
+Caption without using any augmentation [' Photo by photo by photo by photo by photo by photo by photo by photo'] | Cos sim with target : 0.0661085918545723
+Caption using augmentation [' person, ridden by jockey joseph person, wins the race.'] | Cos sim with target : 0.33447062969207764
+Ground truth : Two greyhounds race .
+---------------------------------
+Example  140
+Caption without using any augmentation [' a boy playing tennis.'] | Cos sim with target : 0.6950204968452454
+Caption using augmentation [' tennis player in action.'] | Cos sim with target : 0.6199621558189392
+Ground truth : A child jumping on a tennis court .
+---------------------------------
+Example  141
+Caption without using any augmentation ['[RET]  a dog playing in the park.'] | Cos sim with target : 0.15416817367076874
+Caption using augmentation [' the dog is a black labrador retriever.'] | Cos sim with target : 0.28334540128707886
+Ground truth : A white dog is running on gravel away from two people and a black and brown dog .
+---------------------------------
+Example  142
+Caption without using any augmentation [' The first day of the event was a success.'] | Cos sim with target : -0.0013406205689534545
+Caption using augmentation [' a skateboarder performs a trick on a ramp.'] | Cos sim with target : 0.763951301574707
+Ground truth : A skateboarder is performing a trick in the air .
+---------------------------------
+Example  143
+Caption without using any augmentation [' Photo : james watson.'] | Cos sim with target : 0.10751859843730927
+Caption using augmentation [' a surfer rides a wave at the beach.'] | Cos sim with target : 0.9290047883987427
+Ground truth : A surfer is riding a wave .
+---------------------------------
+Example  144
+Caption without using any augmentation ['[RET]  the image.'] | Cos sim with target : 0.06214660778641701
+Caption using augmentation [' the image of a girl with a smile on her face.'] | Cos sim with target : 0.3968912959098816
+Ground truth : A young girl is wearing a purple shirt and pink headband .
+---------------------------------
+Example  145
+Caption without using any augmentation [' person and person.'] | Cos sim with target : 0.10547871142625809
+Caption using augmentation [' boxer, left, throws a punch at boxer.'] | Cos sim with target : 0.5566027164459229
+Ground truth : Two boxers with white gloves are fighting .
+---------------------------------
+Example  146
+Caption without using any augmentation [' person and person.'] | Cos sim with target : 0.2914828956127167
+Caption using augmentation [' person and character from the film.'] | Cos sim with target : 0.24778664112091064
+Ground truth : A man in a werewolf mask is with a woman wearing elf ears .
+---------------------------------
+Example  147
+Caption without using any augmentation ['.'] | Cos sim with target : -0.017601994797587395
+Caption using augmentation [' the dog on the beach.'] | Cos sim with target : 0.9906945824623108
+Ground truth : a dog on the beach .
+---------------------------------
+Example  148
+Caption without using any augmentation ['The group of people are in a boat on a river.\n'] | Cos sim with target : 0.6648766994476318
+Caption using augmentation [' the river is a popular destination for kayaking and rafting.'] | Cos sim with target : 0.7755169868469238
+Ground truth : Rafting boat on river .
+---------------------------------
+Example  149
+Caption without using any augmentation [' football player scores a goal.'] | Cos sim with target : 0.29042211174964905
+Caption using augmentation [' football team are in action against football team.'] | Cos sim with target : 0.40953847765922546
+Ground truth : Men playing soccer in a field
+---------------------------------
+Example  150
+Caption without using any augmentation [' Photo : person.'] | Cos sim with target : -0.09174663573503494
+Caption using augmentation [' the team of the day : rugby player in action against person.'] | Cos sim with target : 0.5957642197608948
+Ground truth : A group of men are playing rugby .
+---------------------------------
+Example  151
+Caption without using any augmentation [' the dog is lying on the grass and is smiling.'] | Cos sim with target : 0.5464361310005188
+Caption using augmentation [' a dog with a big smile and a big tongue.'] | Cos sim with target : 0.2637132704257965
+Ground truth : A dog rolling in the grass .
+---------------------------------
+Example  152
+Caption without using any augmentation ['[RET]  child in a swimming pool.'] | Cos sim with target : 0.6143362522125244
+Caption using augmentation [' a little boy in a swimming pool with a pair of sunglasses on his head'] | Cos sim with target : 0.6590842604637146
+Ground truth : A young child is wearing blue goggles and sitting in a float in a pool .
+---------------------------------
+Example  153
+Caption without using any augmentation [' Photo : courtesy of the author'] | Cos sim with target : 0.1648845374584198
+Caption using augmentation [' a group of people on horseback on the way to the top of the'] | Cos sim with target : 0.45425084233283997
+Ground truth : A person riding a horse with a mountain range in the far background .
+---------------------------------
+Example  154
+Caption without using any augmentation [' a child jumping on a trampoline.'] | Cos sim with target : 0.43616488575935364
+Caption using augmentation [' a boy jumping on the bed with a ball.'] | Cos sim with target : 0.7402719855308533
+Ground truth : A boy jumps from one bed to another .
+---------------------------------
+Example  155
+Caption without using any augmentation ['the team is playing against team.\n'] | Cos sim with target : 0.36645254492759705
+Caption using augmentation [" the best of the best : the best of the best of the women '"] | Cos sim with target : 0.14831048250198364
+Ground truth : Two women with blue and white uniforms playing floor hockey
+---------------------------------
+Example  156
+Caption without using any augmentation ['The festival is held in honour of the indigenous people.\n'] | Cos sim with target : 0.4105397164821625
+Caption using augmentation [' Photo by : photo by : photo by : photo by : photo by :'] | Cos sim with target : 0.04325833171606064
+Ground truth : An Indian chief in full dress .
+---------------------------------
+Example  157
+Caption without using any augmentation [' Image : person'] | Cos sim with target : 0.16030652821063995
+Caption using augmentation [' Photo : person.'] | Cos sim with target : 0.2162569910287857
+Ground truth : A surfer rides a wave in a clear blue ocean .
+---------------------------------
+Example  158
+Caption without using any augmentation ['.'] | Cos sim with target : 0.031328991055488586
+Caption using augmentation [' the dog is a great dog for kids and adults.'] | Cos sim with target : 0.37408939003944397
+Ground truth : A dog jumps to catch a red Frisbee in the yard .
+---------------------------------
+Example  159
+Caption without using any augmentation [' dog running on the beach.'] | Cos sim with target : 0.6146618127822876
+Caption using augmentation [' a dog running on the beach.'] | Cos sim with target : 0.6240810751914978
+Ground truth : Black and white dog on wet sand .
+---------------------------------
+Example  160
+Caption without using any augmentation [' the beach is a great place to play with your dog.'] | Cos sim with target : 0.5189381837844849
+Caption using augmentation [' dogs playing in the sea.'] | Cos sim with target : 0.7636549472808838
+Ground truth : Two furry beige dogs playing in ocean surf .
+---------------------------------
+Example  161
+Caption without using any augmentation ['The fountain is located in the courtyard of the building.\n'] | Cos sim with target : 0.6078416705131531
+Caption using augmentation [' the fountain in the center of the park.'] | Cos sim with target : 0.39089545607566833
+Ground truth : Three boys play around a fountain in an office building courtyard .
+---------------------------------
+Example  162
+Caption without using any augmentation [' the dogs playing in the snow.'] | Cos sim with target : 0.7898333668708801
+Caption using augmentation ['dog playing in the snow.'] | Cos sim with target : 0.5593531727790833
+Ground truth : Three dogs in the snow .
+---------------------------------
+Example  163
+Caption without using any augmentation [' Photo : person'] | Cos sim with target : 0.32322603464126587
+Caption using augmentation [' a skier in the backcountry.'] | Cos sim with target : 0.6907320022583008
+Ground truth : A skier about to go down the mountain .
+---------------------------------
+Example  164
+Caption without using any augmentation [' Photo by photo by photo by photo by photo by photo by photo by photo'] | Cos sim with target : 0.023521430790424347
+Caption using augmentation [' person wins the race in the first leg of the derby.'] | Cos sim with target : 0.21796001493930817
+Ground truth : A greyhound wearing a muzzle and the number six on a yellow jacket is running on a dog track .
+---------------------------------
+Example  166
+Caption without using any augmentation ['The image of a woman in a pink dress and a man in a'] | Cos sim with target : 0.18042922019958496
+Caption using augmentation [' the crowd at the parade.'] | Cos sim with target : 0.5787362456321716
+Ground truth : A crowd of people at an outdoor event
+---------------------------------
+Example  167
+Caption without using any augmentation ['person shooting a basketball.\n'] | Cos sim with target : 0.5379301905632019
+Caption using augmentation [' # of the team is a point guard.'] | Cos sim with target : 0.15604306757450104
+Ground truth : The boy is playing basketball .
+---------------------------------
+Example  168
+Caption without using any augmentation [' person is a member of the band.'] | Cos sim with target : 0.11359328776597977
+Caption using augmentation [' person, the artist behind the comic book.'] | Cos sim with target : 0.07718264311552048
+Ground truth : A man wearing all black and a black hat is smiling .
+---------------------------------
+Example  169
+Caption without using any augmentation [' Photo : photo by.'] | Cos sim with target : 0.028724344447255135
+Caption using augmentation [' person, a horse owned by person, wins the race.'] | Cos sim with target : 0.3436102271080017
+Ground truth : A greyhound runs in a race , bee striped jacket , number eight .
+---------------------------------
+Example  170
+Caption without using any augmentation ['person skiing down a slope.\n'] | Cos sim with target : 0.7920199036598206
+Caption using augmentation [' a skier in the air on a powder day.'] | Cos sim with target : 0.483216255903244
+Ground truth : Person snowboarding at a ski slope .
+---------------------------------
+Example  171
+Caption without using any augmentation ['.'] | Cos sim with target : -0.017601994797587395
+Caption using augmentation [' a dog on the beach.'] | Cos sim with target : 1.0000001192092896
+Ground truth : a dog on the beach .
+---------------------------------
+Example  172
+Caption without using any augmentation [' Photo by.'] | Cos sim with target : 0.12085536122322083
+Caption using augmentation [' a dog and her owner on a snowy day.'] | Cos sim with target : 0.600130558013916
+Ground truth : A person is standing on skis in the snow with a dog .
+---------------------------------
+Example  173
+Caption without using any augmentation [' The image is a photo of a woman wearing a dress with a large flower'] | Cos sim with target : 0.27868935465812683
+Caption using augmentation [' the parade of the parade.'] | Cos sim with target : 0.013149323873221874
+Ground truth : A naked woman wearing body paint riding a bicycle .
+---------------------------------
+Example  174
+Caption without using any augmentation ['photo : photo : photo : photo : photo : photo\n'] | Cos sim with target : 0.079132579267025
+Caption using augmentation [' the trail is a bit of a challenge.'] | Cos sim with target : 0.35884615778923035
+Ground truth : A motocross bike is being ridden along a woodland path .
+---------------------------------
+Example  175
+Caption without using any augmentation ['The image is a photograph of a man jumping over a crowd of people'] | Cos sim with target : 0.4514153003692627
+Caption using augmentation [' a skateboarder performs a trick on the board.'] | Cos sim with target : 0.09513566642999649
+Ground truth : A crowd of people at an outdoor event
+---------------------------------
+Example  176
+Caption without using any augmentation [' Photo : person'] | Cos sim with target : 0.0786270946264267
+Caption using augmentation [' dog on the beach.'] | Cos sim with target : 0.4918680489063263
+Ground truth : A wrinkled dog wading in shallow water .
+---------------------------------
+Example  177
+Caption without using any augmentation [' The crowd is waiting for the parade to start.'] | Cos sim with target : 0.47653165459632874
+Caption using augmentation [' the street performers are a big draw for tourists.'] | Cos sim with target : 0.45997920632362366
+Ground truth : A crowd of people at an outdoor event
+---------------------------------
+Example  178
+Caption without using any augmentation ['tennis player is the first woman to win a major title in the'] | Cos sim with target : 0.5463699102401733
+Caption using augmentation [' : tennis player is the first woman to win a grand slam singles title in'] | Cos sim with target : 0.4734260141849518
+Ground truth : A tennis player in orange is striking the ball with her racquet .
+---------------------------------
+Example  179
+Caption without using any augmentation [' the dog is running in the field.'] | Cos sim with target : 0.5986384153366089
+Caption using augmentation [' dog running in the park.'] | Cos sim with target : 0.5442626476287842
+Ground truth : A white dog runs in the grass ,
+---------------------------------
+Example  180
+Caption without using any augmentation [' Photo : photo by.'] | Cos sim with target : 0.09482521563768387
+Caption using augmentation [' The dog is a rescue dog.'] | Cos sim with target : 0.4432138502597809
+Ground truth : A dog jumps over an obstacle .
+---------------------------------
+Example  181
+Caption without using any augmentation [' The sun sets over the beach.'] | Cos sim with target : 0.65549236536026
+Caption using augmentation [' a man walks on the beach at sunset.'] | Cos sim with target : 0.7280885577201843
+Ground truth : A person on the beach beside the ocean at sunset .
+---------------------------------
+Example  182
+Caption without using any augmentation ['Person.\n'] | Cos sim with target : 0.20031404495239258
+Caption using augmentation [' the race for the lead in the race for the first time in the season'] | Cos sim with target : 0.3980436623096466
+Ground truth : A motorcyclist races around a track .
+---------------------------------
+Example  183
+Caption without using any augmentation ['The image is a photograph of a rock climbing scene.\n'] | Cos sim with target : 0.6906740069389343
+Caption using augmentation [' Climbing on the rock face.'] | Cos sim with target : 0.7485262155532837
+Ground truth : person rock climbing
+---------------------------------
+Example  184
+Caption without using any augmentation ['.'] | Cos sim with target : 0.02821962907910347
+Caption using augmentation [' dog is a black and white dog with a white spot on his head.'] | Cos sim with target : 0.3244512379169464
+Ground truth : A dog rolling in the grass .
+---------------------------------
+Example  185
+Caption without using any augmentation [' the image.'] | Cos sim with target : 0.06302054226398468
+Caption using augmentation [' the image of a child playing soccer in the park.'] | Cos sim with target : 0.4790959060192108
+Ground truth : Three children in neon colors play soccer while young man watches
+---------------------------------
+Example  186
+Caption without using any augmentation [' The dogs are playing on the beach.'] | Cos sim with target : 0.5455684661865234
+Caption using augmentation [' the dogs are playing in the water.'] | Cos sim with target : 0.4446823298931122
+Ground truth : Two black dogs run through sand .
+---------------------------------
+Example  187
+Caption without using any augmentation ['basketball player # # # # # # # # # # # #'] | Cos sim with target : 0.7215471267700195
+Caption using augmentation ['basketball player # shoots the ball against american football team.'] | Cos sim with target : 0.568543553352356
+Ground truth : Basketball players in action .
+---------------------------------
+Example  188
+Caption without using any augmentation ['person, the person, the person.\n'] | Cos sim with target : 0.10595577210187912
+Caption using augmentation [' the race was won by a rider who was in the top ten in the'] | Cos sim with target : 0.260130375623703
+Ground truth : A man rides a bike through a course .
+---------------------------------
+Example  189
+Caption without using any augmentation ['[RET]  a toddler splashing in a pool.'] | Cos sim with target : 0.6827830672264099
+Caption using augmentation [' a toddler splashing in the water at the splash pad.'] | Cos sim with target : 0.6142308115959167
+Ground truth : Child in blue trunks splashing in blue kiddie pool
+---------------------------------
+Example  190
+Caption without using any augmentation [' the group poses in front of the building.'] | Cos sim with target : 0.44830381870269775
+Caption using augmentation [' the group of people in front of the house.'] | Cos sim with target : 0.4503333866596222
+Ground truth : A group of people are sitting on the porch of a brick building .
+---------------------------------
+Example  191
+Caption without using any augmentation [' the image.'] | Cos sim with target : 0.027761701494455338
+Caption using augmentation [' the image of a motorcycle rider on a motorcycle.'] | Cos sim with target : 0.45251697301864624
+Ground truth : A man riding a motorbike kicks up dirt .
+---------------------------------
+Example  192
+Caption without using any augmentation [' Photo : Getty Images'] | Cos sim with target : 0.31876617670059204
+Caption using augmentation [' a woman taking a photo of the view from the top of the castle.'] | Cos sim with target : 0.5525007247924805
+Ground truth : A woman holding a camera .
+---------------------------------
+Example  193
+Caption without using any augmentation ['The first time I saw the image, I was in the audience.'] | Cos sim with target : -0.062208760529756546
+Caption using augmentation [' boxer, left, punches boxer in a boxing match.'] | Cos sim with target : 0.5900602340698242
+Ground truth : A man wearing black boxing shorts and white boxing gloves and a man in white boxing shorts and white boxing gloves are fighting in the ring .
+---------------------------------
+Example  194
+Caption without using any augmentation [' the dog is jumping over the fence.'] | Cos sim with target : 0.5929854512214661
+Caption using augmentation [' the dog is seen running through the fence and jumping over the gate.'] | Cos sim with target : 0.4984701871871948
+Ground truth : A dog jumping off a fence and another dog on the grass in the background .
+---------------------------------
+Example  195
+Caption without using any augmentation [' dog playing in the water.'] | Cos sim with target : 0.6375341415405273
+Caption using augmentation [' dog playing in the water.'] | Cos sim with target : 0.6375341415405273
+Ground truth : A black dog standing in shallow water with a pink ball in its mouth .
+---------------------------------
+Example  196
+Caption without using any augmentation [' the dogs are running in the woods.'] | Cos sim with target : 0.6458232998847961
+Caption using augmentation [' a dog and a cat in the forest.'] | Cos sim with target : 0.5461491942405701
+Ground truth : Two dogs run down a dirt path in the forest .
+---------------------------------
+Example  197
+Caption without using any augmentation [' the image.'] | Cos sim with target : 0.0009971691761165857
+Caption using augmentation [' dogs playing on the beach.'] | Cos sim with target : 0.7048662900924683
+Ground truth : Two dogs are running towards each other on a beach .
+---------------------------------
+Example  198
+Caption without using any augmentation [' Climbing a rock face.'] | Cos sim with target : 0.345056414604187
+Caption using augmentation ['climber climbing a rock.'] | Cos sim with target : 0.4003705680370331
+Ground truth : A man scales a rock in the forest .
+---------------------------------
+Example  199
+Caption without using any augmentation [' A man walks across the street.'] | Cos sim with target : 0.31037813425064087
+Caption using augmentation [' a car is stopped at a red light on a busy street.'] | Cos sim with target : 0.1436038464307785
+Ground truth : A man standing in front of a brick building .
+---------------------------------
+Example  200
+Caption without using any augmentation [' the boy is playing on a playground.'] | Cos sim with target : 0.5709397792816162
+Caption using augmentation [' a boy is playing in the park with his father.'] | Cos sim with target : 0.38110965490341187
+Ground truth : A smiling boy in an orange shirt with a safari hat sits at the playground , while a boy in a blue shirt looks on .
+---------------------------------
+Example  201
+Caption without using any augmentation [' The image shows a mother and her daughter playing in the park.'] | Cos sim with target : 0.37180617451667786
+Caption using augmentation ['a mother and her daughter walking on a path in the park.'] | Cos sim with target : 0.14950905740261078
+Ground truth : A child swinging on a playground play set .
+---------------------------------
+Example  202
+Caption without using any augmentation ['image :\n'] | Cos sim with target : 0.09263880550861359
+Caption using augmentation [' a surfer rides a wave on a longboard.'] | Cos sim with target : 0.41521626710891724
+Ground truth : A man wakeboards on choppy water .
+---------------------------------
+Example  203
+Caption without using any augmentation [' A man wearing a t - shirt with the word written on it stands in'] | Cos sim with target : 0.17131608724594116
+Caption using augmentation [" A man dressed as a priest holds a sign that reads, 'God is"] | Cos sim with target : 0.43335413932800293
+Ground truth : Two men are talking on the street ; one is pointing at a sign that says " Jesus or Hell " beneath a red box , and the other is standing there listening .
+---------------------------------
+Example  204
+Caption without using any augmentation ['basketball team\n'] | Cos sim with target : 0.3955698609352112
+Caption using augmentation [' # shoots the ball against basketball team.'] | Cos sim with target : 0.3887052834033966
+Ground truth : A Miami basketball player looks off in the distance .
+---------------------------------
+Example  205
+Caption without using any augmentation [' Photo taken at the show.'] | Cos sim with target : 0.16574211418628693
+Caption using augmentation [' a man in a suit and sunglasses with a motorcycle helmet and a gun.'] | Cos sim with target : 0.3175612688064575
+Ground truth : A man wearing all black and a black hat is smiling .
+---------------------------------
+Example  206
+Caption without using any augmentation ['The image is a basketball player.\n'] | Cos sim with target : 0.513580322265625
+Caption using augmentation [' the basketball team.'] | Cos sim with target : 0.3717403709888458
+Ground truth : The boy is playing basketball .
+---------------------------------
+Example  208
+Caption without using any augmentation [' the image of the girl and the boy in the image.'] | Cos sim with target : 0.3480193018913269
+Caption using augmentation ['a group of girls in school uniform.'] | Cos sim with target : 0.47781047224998474
+Ground truth : Two girls with dark hair and white shirts .
+---------------------------------
+Example  209
+Caption without using any augmentation [' Climbing on a rock face.'] | Cos sim with target : 0.8178373575210571
+Caption using augmentation [' climber on the summit of a rock face.'] | Cos sim with target : 0.7372550964355469
+Ground truth : person rock climbing
+---------------------------------
+Example  210
+Caption without using any augmentation [' The summit of the mountain.'] | Cos sim with target : 0.6141607761383057
+Caption using augmentation [' the view from the summit of the mountain.'] | Cos sim with target : 0.5728798508644104
+Ground truth : A man on top of a high mountain
+---------------------------------
+Example  211
+Caption without using any augmentation [' a man with a beard and a hat.'] | Cos sim with target : 0.27786651253700256
+Caption using augmentation [' a man in a suit and sunglasses.'] | Cos sim with target : 0.25860723853111267
+Ground truth : A man standing in front of a brick building .
+---------------------------------
+Example  212
+Caption without using any augmentation [' the dog is playing with the cat.'] | Cos sim with target : 0.3538569211959839
+Caption using augmentation [' the dog is a rescue dog and is now a part of the family.'] | Cos sim with target : 0.31803813576698303
+Ground truth : A white dog and brown dog fighting .
+---------------------------------
+Example  213
+Caption without using any augmentation [' the boy is playing on the swing.'] | Cos sim with target : 0.6454072594642639
+Caption using augmentation [' a little boy playing on the beach with a ball.'] | Cos sim with target : 0.3179941177368164
+Ground truth : A child is smiling while being on a swing .
+---------------------------------
+Example  214
+Caption without using any augmentation [' Photo by : photo by.'] | Cos sim with target : -0.03128465265035629
+Caption using augmentation [' a cowboy rides a horse during the rodeo.'] | Cos sim with target : 0.6235446929931641
+Ground truth : A man at a rodeo is thrown off a horse .
+---------------------------------
+Average Cosine Similarity with target using visual augmentations : 0.47861969445082475
+Average Cosine Similarity with target without augmentations : 0.343832546375442
