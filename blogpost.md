@@ -15,12 +15,12 @@ Q: is this near a beach, A: yes"
 
 ChatGPT transform this input based on the prompt above in the following manner: "A chair on the beach with boats in view offshore, people sitting on the boats."
 
-To evaluate the differences in performance, the accuracy of the retrieved images was measured. The images were annotated with a '0' if the retrieved images were incorrect, '0.5' if they captured the most important information, and '1' if they captured all the information. The following settings were evaluated:
+To evaluate the difference in performance, the accuracy of the retrieved images was measured. The images were annotated with a '0' if the retrieved images were incorrect, '0.5' if they captured the most important information, and '1' if they captured all the information. The following settings were evaluated:
 1. Caption only
 2. Unaugmented dialog
 3. Augmented dialog by ChatGPT
 
-The results for each setting are shown in the table below:
+For each of these settings, 50 textual inputs were given to the model and 3 images were retrieved for each input. Those 3 images were taken into account to establish the performance for each run. The results are shown in the table below:
 
 | Input                                      | Accuracy                  |
 | ------------------------------------------ | ------------------------- |
