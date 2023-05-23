@@ -4,7 +4,7 @@ __pycache__
 .pytest_cache
 venv
 runs/
-data/
+/data/
 cc3m_embeddings.pkl
 Flicker8k_Dataset/
 Flickr8k_text/
