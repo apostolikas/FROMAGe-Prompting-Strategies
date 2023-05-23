@@ -1,5 +1,5 @@
 from visual_dialog import dialog_utils
-from fromage import models
+from src.image_retrieval_vdialog.scripts import models # changed original code
 import numpy as np
 import matplotlib.pyplot as plt
 
