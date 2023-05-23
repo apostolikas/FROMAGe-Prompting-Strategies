@@ -167,7 +167,6 @@ def get_prompt_list(dialogs_df, num_rows, prompt_length, ret_img=True, adapt_gpt
 # Display the prompt and retrieve images from their ids
 def display_prompt(output_list):
     for output in output_list:
-        # Show an image if possible, otherwise display the text
         try:
             get_image(output, show_image=True)
         except:
@@ -186,7 +185,6 @@ def display_prompt(output_list):
 def display_output(story_list):
     for element in story_list:
         if type(element) == str:
-            # Show an image if possible, otherwise display the text
             try:
                 image = get_image_from_url(element)
                 plt.figure(figsize=(3, 3))
@@ -206,14 +204,17 @@ def display_output(story_list):
 
 # Save prompts and output into file with name corresponding to experiment
 def save_dialogs(prompts, outputs, num_examples, num_qa, ret_img, provide_context, include_Q_A, adapt_prompt_gpt):
-    # Obtain the path to store the dialogs
+    # if provide_context == True:
+        # path = f"visual_dialog/{num_examples}_examples_{num_qa}_qa_{'ret_img' if ret_img==True else 'ret_text'}.json"
     path = f"visual_dialog/{num_examples}_examples_{num_qa}_qa_{'inc_QA' if include_Q_A==True else 'only_caption'}{'_GPT' if adapt_prompt_gpt==True else ''}.json"
-    # Convert the data into a json format
+    # else:
+    #     path = f"visual_dialog/{num_examples}_examples_{num_qa}_qa_{'ret_img' if ret_img==True else 'ret_text'}_nocontext.json"
+
     data = {
         "prompts": prompts,
         "outputs": outputs
     }
 
-    # Save the data into a json file
+    # Save the JSON strings to a file
     with open(path, 'w') as file:
         json.dump(data, file)
