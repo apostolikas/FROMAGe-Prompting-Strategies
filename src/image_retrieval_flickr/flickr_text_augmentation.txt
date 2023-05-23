@@ -1,0 +1,862 @@
+Using HuggingFace AutoFeatureExtractor for openai/clip-vit-large-patch14.
+Using facebook/opt-6.7b for the language model.
+Using openai/clip-vit-large-patch14 for the visual model with 1 visual tokens.
+Freezing the LM.
+Initializing embedding for the retrieval token [RET] (id = 50266).
+Restoring pretrained weights for the visual model.
+Some weights of the model checkpoint at openai/clip-vit-large-patch14 were not used when initializing CLIPVisionModel: ['text_model.encoder.layers.2.self_attn.q_proj.bias', 'text_model.encoder.layers.4.mlp.fc1.bias', 'text_model.encoder.layers.10.layer_norm2.bias', 'text_model.encoder.layers.6.self_attn.v_proj.weight', 'text_model.encoder.layers.2.mlp.fc2.bias', 'text_model.encoder.layers.10.layer_norm2.weight', 'text_model.encoder.layers.11.self_attn.out_proj.weight', 'text_model.encoder.layers.0.mlp.fc1.bias', 'text_model.encoder.layers.11.self_attn.q_proj.weight', 'text_model.encoder.layers.9.self_attn.k_proj.bias', 'text_model.encoder.layers.11.self_attn.k_proj.weight', 'text_model.encoder.layers.10.self_attn.out_proj.weight', 'text_model.encoder.layers.7.self_attn.v_proj.weight', 'text_model.encoder.layers.5.mlp.fc1.bias', 'text_model.encoder.layers.1.self_attn.out_proj.bias', 'text_model.encoder.layers.10.self_attn.v_proj.bias', 'text_model.embeddings.position_embedding.weight', 'text_model.encoder.layers.7.self_attn.q_proj.bias', 'text_model.encoder.layers.1.self_attn.v_proj.bias', 'text_model.encoder.layers.5.layer_norm1.weight', 'text_model.encoder.layers.0.self_attn.k_proj.bias', 'text_model.encoder.layers.8.self_attn.q_proj.bias', 'text_model.encoder.layers.6.self_attn.out_proj.bias', 'text_model.encoder.layers.10.self_attn.q_proj.weight', 'text_model.encoder.layers.8.mlp.fc1.bias', 'text_model.encoder.layers.1.self_attn.q_proj.bias', 'text_model.encoder.layers.8.layer_norm2.bias', 'text_model.encoder.layers.3.layer_norm1.bias', 'text_projection.weight', 'text_model.encoder.layers.5.self_attn.k_proj.weight', 'text_model.encoder.layers.0.mlp.fc1.weight', 'text_model.encoder.layers.10.self_attn.k_proj.weight', 'text_model.encoder.layers.3.self_attn.q_proj.weight', 'text_model.encoder.layers.7.layer_norm2.weight', 'text_model.encoder.layers.4.layer_norm1.weight', 'text_model.encoder.layers.8.layer_norm1.weight', 'text_model.encoder.layers.8.mlp.fc2.weight', 'text_model.encoder.layers.9.self_attn.q_proj.weight', 'text_model.encoder.layers.10.layer_norm1.bias', 'text_model.encoder.layers.5.self_attn.v_proj.weight', 'text_model.encoder.layers.9.layer_norm2.weight', 'text_model.encoder.layers.0.self_attn.k_proj.weight', 'text_model.encoder.layers.2.self_attn.v_proj.weight', 'text_model.encoder.layers.8.self_attn.out_proj.bias', 'text_model.encoder.layers.3.mlp.fc1.weight', 'text_model.encoder.layers.9.mlp.fc1.weight', 'text_model.encoder.layers.4.self_attn.v_proj.weight', 'text_model.encoder.layers.4.self_attn.out_proj.weight', 'text_model.encoder.layers.5.self_attn.q_proj.weight', 'text_model.encoder.layers.5.mlp.fc2.weight', 'text_model.encoder.layers.6.self_attn.k_proj.bias', 'text_model.encoder.layers.7.layer_norm2.bias', 'text_model.encoder.layers.6.self_attn.q_proj.weight', 'text_model.encoder.layers.8.layer_norm1.bias', 'text_model.encoder.layers.1.self_attn.q_proj.weight', 'text_model.encoder.layers.1.layer_norm2.bias', 'text_model.encoder.layers.11.self_attn.q_proj.bias', 'text_model.encoder.layers.7.self_attn.out_proj.bias', 'text_model.encoder.layers.6.layer_norm2.weight', 'text_model.encoder.layers.9.mlp.fc2.weight', 'text_model.encoder.layers.4.self_attn.k_proj.weight', 'text_model.encoder.layers.11.layer_norm2.bias', 'text_model.encoder.layers.9.self_attn.k_proj.weight', 'text_model.encoder.layers.7.self_attn.q_proj.weight', 'text_model.encoder.layers.11.mlp.fc2.weight', 'text_model.encoder.layers.1.self_attn.k_proj.weight', 'text_model.encoder.layers.11.self_attn.k_proj.bias', 'text_model.encoder.layers.1.self_attn.v_proj.weight', 'text_model.encoder.layers.3.self_attn.out_proj.weight', 'text_model.encoder.layers.7.mlp.fc1.weight', 'text_model.encoder.layers.9.mlp.fc2.bias', 'text_model.final_layer_norm.bias', 'text_model.encoder.layers.9.self_attn.out_proj.bias', 'text_model.encoder.layers.1.mlp.fc1.bias', 'text_model.encoder.layers.5.layer_norm2.bias', 'text_model.encoder.layers.11.layer_norm1.bias', 'text_model.encoder.layers.11.mlp.fc1.bias', 'text_model.encoder.layers.10.self_attn.out_proj.bias', 'text_model.encoder.layers.7.self_attn.k_proj.bias', 'text_model.encoder.layers.11.layer_norm2.weight', 'text_model.encoder.layers.9.layer_norm1.bias', 'text_model.encoder.layers.5.self_attn.q_proj.bias', 'text_model.encoder.layers.0.layer_norm1.bias', 'text_model.encoder.layers.10.mlp.fc1.bias', 'text_model.encoder.layers.0.layer_norm2.weight', 'text_model.encoder.layers.9.layer_norm1.weight', 'text_model.encoder.layers.0.self_attn.v_proj.weight', 'text_model.encoder.layers.0.self_attn.q_proj.bias', 'text_model.encoder.layers.11.self_attn.v_proj.bias', 'text_model.encoder.layers.6.mlp.fc1.bias', 'text_model.encoder.layers.0.mlp.fc2.bias', 'text_model.encoder.layers.3.self_attn.out_proj.bias', 'text_model.encoder.layers.1.mlp.fc2.bias', 'text_model.encoder.layers.10.self_attn.k_proj.bias', 'text_model.encoder.layers.8.self_attn.k_proj.bias', 'text_model.encoder.layers.2.self_attn.k_proj.weight', 'text_model.encoder.layers.4.layer_norm1.bias', 'text_model.encoder.layers.11.self_attn.out_proj.bias', 'text_model.encoder.layers.5.self_attn.k_proj.bias', 'text_model.encoder.layers.7.layer_norm1.bias', 'text_model.encoder.layers.10.mlp.fc2.bias', 'text_model.encoder.layers.2.layer_norm2.weight', 'text_model.encoder.layers.4.self_attn.q_proj.weight', 'text_model.encoder.layers.7.self_attn.out_proj.weight', 'text_model.encoder.layers.8.self_attn.k_proj.weight', 'text_model.encoder.layers.0.self_attn.v_proj.bias', 'text_model.encoder.layers.2.mlp.fc2.weight', 'text_model.encoder.layers.4.self_attn.out_proj.bias', 'text_model.encoder.layers.6.mlp.fc2.bias', 'text_model.encoder.layers.6.self_attn.q_proj.bias', 'text_model.encoder.layers.0.self_attn.out_proj.bias', 'text_model.encoder.layers.8.mlp.fc2.bias', 'text_model.encoder.layers.9.self_attn.v_proj.weight', 'logit_scale', 'text_model.encoder.layers.3.self_attn.q_proj.bias', 'text_model.encoder.layers.2.mlp.fc1.weight', 'text_model.encoder.layers.3.layer_norm1.weight', 'text_model.encoder.layers.10.self_attn.q_proj.bias', 'text_model.encoder.layers.3.self_attn.v_proj.bias', 'text_model.encoder.layers.3.self_attn.v_proj.weight', 'text_model.encoder.layers.6.self_attn.out_proj.weight', 'text_model.encoder.layers.1.self_attn.out_proj.weight', 'text_model.encoder.layers.11.mlp.fc2.bias', 'text_model.encoder.layers.2.layer_norm2.bias', 'text_model.encoder.layers.10.mlp.fc2.weight', 'text_model.encoder.layers.0.self_attn.q_proj.weight', 'text_model.encoder.layers.9.self_attn.v_proj.bias', 'text_model.encoder.layers.11.self_attn.v_proj.weight', 'text_model.encoder.layers.6.self_attn.k_proj.weight', 'text_model.encoder.layers.6.layer_norm1.weight', 'text_model.encoder.layers.2.self_attn.out_proj.bias', 'text_model.encoder.layers.4.layer_norm2.bias', 'text_model.encoder.layers.4.mlp.fc2.weight', 'text_model.encoder.layers.5.self_attn.out_proj.bias', 'text_model.encoder.layers.5.mlp.fc2.bias', 'text_model.encoder.layers.2.layer_norm1.bias', 'text_model.encoder.layers.9.self_attn.out_proj.weight', 'text_model.encoder.layers.7.layer_norm1.weight', 'text_model.encoder.layers.2.mlp.fc1.bias', 'text_model.encoder.layers.3.layer_norm2.bias', 'text_model.encoder.layers.6.self_attn.v_proj.bias', 'visual_projection.weight', 'text_model.encoder.layers.0.layer_norm2.bias', 'text_model.encoder.layers.4.self_attn.k_proj.bias', 'text_model.encoder.layers.10.mlp.fc1.weight', 'text_model.encoder.layers.3.mlp.fc1.bias', 'text_model.encoder.layers.3.layer_norm2.weight', 'text_model.encoder.layers.7.self_attn.k_proj.weight', 'text_model.encoder.layers.5.layer_norm2.weight', 'text_model.embeddings.position_ids', 'text_model.encoder.layers.8.mlp.fc1.weight', 'text_model.encoder.layers.10.self_attn.v_proj.weight', 'text_model.encoder.layers.7.mlp.fc2.weight', 'text_model.encoder.layers.11.mlp.fc1.weight', 'text_model.encoder.layers.6.mlp.fc2.weight', 'text_model.encoder.layers.1.layer_norm1.bias', 'text_model.encoder.layers.7.mlp.fc2.bias', 'text_model.encoder.layers.5.self_attn.out_proj.weight', 'text_model.encoder.layers.4.self_attn.q_proj.bias', 'text_model.encoder.layers.6.layer_norm1.bias', 'text_model.encoder.layers.8.self_attn.v_proj.weight', 'text_model.final_layer_norm.weight', 'text_model.encoder.layers.4.self_attn.v_proj.bias', 'text_model.encoder.layers.0.layer_norm1.weight', 'text_model.encoder.layers.2.self_attn.out_proj.weight', 'text_model.encoder.layers.1.layer_norm2.weight', 'text_model.encoder.layers.8.self_attn.q_proj.weight', 'text_model.encoder.layers.5.layer_norm1.bias', 'text_model.encoder.layers.5.mlp.fc1.weight', 'text_model.encoder.layers.2.self_attn.v_proj.bias', 'text_model.encoder.layers.3.mlp.fc2.bias', 'text_model.encoder.layers.4.layer_norm2.weight', 'text_model.encoder.layers.9.self_attn.q_proj.bias', 'text_model.encoder.layers.3.mlp.fc2.weight', 'text_model.encoder.layers.6.mlp.fc1.weight', 'text_model.encoder.layers.1.mlp.fc2.weight', 'text_model.encoder.layers.1.mlp.fc1.weight', 'text_model.encoder.layers.2.self_attn.k_proj.bias', 'text_model.encoder.layers.8.self_attn.v_proj.bias', 'text_model.encoder.layers.0.self_attn.out_proj.weight', 'text_model.encoder.layers.6.layer_norm2.bias', 'text_model.encoder.layers.10.layer_norm1.weight', 'text_model.encoder.layers.0.mlp.fc2.weight', 'text_model.encoder.layers.7.mlp.fc1.bias', 'text_model.encoder.layers.4.mlp.fc1.weight', 'text_model.encoder.layers.5.self_attn.v_proj.bias', 'text_model.encoder.layers.11.layer_norm1.weight', 'text_model.encoder.layers.8.self_attn.out_proj.weight', 'text_model.encoder.layers.1.layer_norm1.weight', 'text_model.encoder.layers.7.self_attn.v_proj.bias', 'text_model.encoder.layers.8.layer_norm2.weight', 'text_model.embeddings.token_embedding.weight', 'text_model.encoder.layers.2.self_attn.q_proj.weight', 'text_model.encoder.layers.3.self_attn.k_proj.weight', 'text_model.encoder.layers.1.self_attn.k_proj.bias', 'text_model.encoder.layers.3.self_attn.k_proj.bias', 'text_model.encoder.layers.9.layer_norm2.bias', 'text_model.encoder.layers.2.layer_norm1.weight', 'text_model.encoder.layers.4.mlp.fc2.bias', 'text_model.encoder.layers.9.mlp.fc1.bias']
+- This IS expected if you are initializing CLIPVisionModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing CLIPVisionModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Freezing the VM.
+Example  1
+Similarity of Unaugmented - Original  0.705078125
+Similarity of Augmented - Original  0.724609375
+------------------------------------------------
+Example  2
+Similarity of Unaugmented - Original  0.638671875
+Similarity of Augmented - Original  0.67431640625
+------------------------------------------------
+Example  3
+Similarity of Unaugmented - Original  0.6435546875
+Similarity of Augmented - Original  0.6875
+------------------------------------------------
+Example  4
+Similarity of Unaugmented - Original  0.72607421875
+Similarity of Augmented - Original  0.6533203125
+------------------------------------------------
+Example  5
+Similarity of Unaugmented - Original  0.80322265625
+Similarity of Augmented - Original  0.7685546875
+------------------------------------------------
+Example  6
+Similarity of Unaugmented - Original  0.7001953125
+Similarity of Augmented - Original  0.71044921875
+------------------------------------------------
+Example  7
+Similarity of Unaugmented - Original  0.6904296875
+Similarity of Augmented - Original  0.73486328125
+------------------------------------------------
+Example  8
+Similarity of Unaugmented - Original  0.76123046875
+Similarity of Augmented - Original  0.7578125
+------------------------------------------------
+Example  9
+Similarity of Unaugmented - Original  0.64990234375
+Similarity of Augmented - Original  0.78173828125
+------------------------------------------------
+Example  10
+Similarity of Unaugmented - Original  0.72802734375
+Similarity of Augmented - Original  0.60595703125
+------------------------------------------------
+Example  11
+Similarity of Unaugmented - Original  0.78076171875
+Similarity of Augmented - Original  0.76171875
+------------------------------------------------
+Example  12
+Similarity of Unaugmented - Original  0.64306640625
+Similarity of Augmented - Original  0.744140625
+------------------------------------------------
+Example  13
+Similarity of Unaugmented - Original  0.69287109375
+Similarity of Augmented - Original  0.6796875
+------------------------------------------------
+Example  14
+Similarity of Unaugmented - Original  0.751953125
+Similarity of Augmented - Original  0.8203125
+------------------------------------------------
+Example  15
+Similarity of Unaugmented - Original  0.63330078125
+Similarity of Augmented - Original  0.75927734375
+------------------------------------------------
+Example  16
+Similarity of Unaugmented - Original  0.65185546875
+Similarity of Augmented - Original  0.7099609375
+------------------------------------------------
+Example  17
+Similarity of Unaugmented - Original  0.64208984375
+Similarity of Augmented - Original  0.7314453125
+------------------------------------------------
+Example  18
+Similarity of Unaugmented - Original  0.64306640625
+Similarity of Augmented - Original  0.767578125
+------------------------------------------------
+Example  19
+Similarity of Unaugmented - Original  0.84716796875
+Similarity of Augmented - Original  0.70947265625
+------------------------------------------------
+Example  20
+Similarity of Unaugmented - Original  0.60595703125
+Similarity of Augmented - Original  0.67333984375
+------------------------------------------------
+Example  21
+Similarity of Unaugmented - Original  0.607421875
+Similarity of Augmented - Original  0.7666015625
+------------------------------------------------
+Example  22
+Similarity of Unaugmented - Original  0.60546875
+Similarity of Augmented - Original  0.69091796875
+------------------------------------------------
+Example  23
+Similarity of Unaugmented - Original  0.7568359375
+Similarity of Augmented - Original  0.7236328125
+------------------------------------------------
+Example  24
+Similarity of Unaugmented - Original  0.5947265625
+Similarity of Augmented - Original  0.646484375
+------------------------------------------------
+Example  25
+Similarity of Unaugmented - Original  0.625
+Similarity of Augmented - Original  0.7060546875
+------------------------------------------------
+Example  26
+Similarity of Unaugmented - Original  0.69091796875
+Similarity of Augmented - Original  0.7216796875
+------------------------------------------------
+Example  27
+Similarity of Unaugmented - Original  0.69384765625
+Similarity of Augmented - Original  0.7763671875
+------------------------------------------------
+Example  28
+Similarity of Unaugmented - Original  0.7060546875
+Similarity of Augmented - Original  0.75830078125
+------------------------------------------------
+Example  29
+Similarity of Unaugmented - Original  0.611328125
+Similarity of Augmented - Original  0.68701171875
+------------------------------------------------
+Example  30
+Similarity of Unaugmented - Original  0.66552734375
+Similarity of Augmented - Original  0.78173828125
+------------------------------------------------
+Example  31
+Similarity of Unaugmented - Original  0.63671875
+Similarity of Augmented - Original  0.7119140625
+------------------------------------------------
+Example  32
+Similarity of Unaugmented - Original  0.6513671875
+Similarity of Augmented - Original  0.68359375
+------------------------------------------------
+Example  33
+Similarity of Unaugmented - Original  0.5986328125
+Similarity of Augmented - Original  0.7802734375
+------------------------------------------------
+Example  34
+Similarity of Unaugmented - Original  0.65771484375
+Similarity of Augmented - Original  0.77783203125
+------------------------------------------------
+Example  35
+Similarity of Unaugmented - Original  0.63427734375
+Similarity of Augmented - Original  0.59814453125
+------------------------------------------------
+Example  36
+Similarity of Unaugmented - Original  0.76171875
+Similarity of Augmented - Original  0.76708984375
+------------------------------------------------
+Example  37
+Similarity of Unaugmented - Original  0.59814453125
+Similarity of Augmented - Original  0.63818359375
+------------------------------------------------
+Example  38
+Similarity of Unaugmented - Original  0.5537109375
+Similarity of Augmented - Original  0.7333984375
+------------------------------------------------
+Example  39
+Similarity of Unaugmented - Original  0.7607421875
+Similarity of Augmented - Original  0.7822265625
+------------------------------------------------
+Example  40
+Similarity of Unaugmented - Original  0.6455078125
+Similarity of Augmented - Original  0.7314453125
+------------------------------------------------
+Example  41
+Similarity of Unaugmented - Original  0.70068359375
+Similarity of Augmented - Original  0.64990234375
+------------------------------------------------
+Example  42
+Similarity of Unaugmented - Original  0.69140625
+Similarity of Augmented - Original  0.69140625
+------------------------------------------------
+Example  43
+Similarity of Unaugmented - Original  0.6328125
+Similarity of Augmented - Original  0.783203125
+------------------------------------------------
+Example  44
+Similarity of Unaugmented - Original  0.7607421875
+Similarity of Augmented - Original  0.7880859375
+------------------------------------------------
+Example  45
+Similarity of Unaugmented - Original  0.65673828125
+Similarity of Augmented - Original  0.7119140625
+------------------------------------------------
+Example  46
+Similarity of Unaugmented - Original  0.607421875
+Similarity of Augmented - Original  0.72607421875
+------------------------------------------------
+Example  47
+Similarity of Unaugmented - Original  0.58642578125
+Similarity of Augmented - Original  0.7978515625
+------------------------------------------------
+Example  48
+Similarity of Unaugmented - Original  0.8359375
+Similarity of Augmented - Original  0.70654296875
+------------------------------------------------
+Example  49
+Similarity of Unaugmented - Original  0.69921875
+Similarity of Augmented - Original  0.6484375
+------------------------------------------------
+Example  50
+Similarity of Unaugmented - Original  0.62646484375
+Similarity of Augmented - Original  0.73193359375
+------------------------------------------------
+Example  51
+Similarity of Unaugmented - Original  0.68017578125
+Similarity of Augmented - Original  0.71435546875
+------------------------------------------------
+Example  52
+Similarity of Unaugmented - Original  0.765625
+Similarity of Augmented - Original  0.72802734375
+------------------------------------------------
+Example  53
+Similarity of Unaugmented - Original  0.60693359375
+Similarity of Augmented - Original  0.69384765625
+------------------------------------------------
+Example  54
+Similarity of Unaugmented - Original  0.64453125
+Similarity of Augmented - Original  0.56982421875
+------------------------------------------------
+Example  55
+Similarity of Unaugmented - Original  0.74560546875
+Similarity of Augmented - Original  0.8076171875
+------------------------------------------------
+Example  56
+Similarity of Unaugmented - Original  0.67724609375
+Similarity of Augmented - Original  0.6982421875
+------------------------------------------------
+Example  57
+Similarity of Unaugmented - Original  0.64794921875
+Similarity of Augmented - Original  0.7119140625
+------------------------------------------------
+Example  58
+Similarity of Unaugmented - Original  0.6455078125
+Similarity of Augmented - Original  0.6455078125
+------------------------------------------------
+Example  59
+Similarity of Unaugmented - Original  0.666015625
+Similarity of Augmented - Original  0.7587890625
+------------------------------------------------
+Example  60
+Similarity of Unaugmented - Original  0.6142578125
+Similarity of Augmented - Original  0.71337890625
+------------------------------------------------
+Example  61
+Similarity of Unaugmented - Original  0.599609375
+Similarity of Augmented - Original  0.73779296875
+------------------------------------------------
+Example  62
+Similarity of Unaugmented - Original  0.662109375
+Similarity of Augmented - Original  0.625
+------------------------------------------------
+Example  63
+Similarity of Unaugmented - Original  0.63134765625
+Similarity of Augmented - Original  0.70556640625
+------------------------------------------------
+Example  64
+Similarity of Unaugmented - Original  0.79248046875
+Similarity of Augmented - Original  0.73779296875
+------------------------------------------------
+Example  65
+Similarity of Unaugmented - Original  0.64599609375
+Similarity of Augmented - Original  0.7626953125
+------------------------------------------------
+Example  66
+Similarity of Unaugmented - Original  0.76513671875
+Similarity of Augmented - Original  0.74072265625
+------------------------------------------------
+Example  67
+Similarity of Unaugmented - Original  0.720703125
+Similarity of Augmented - Original  0.58203125
+------------------------------------------------
+Example  68
+Similarity of Unaugmented - Original  0.6171875
+Similarity of Augmented - Original  0.71337890625
+------------------------------------------------
+Example  69
+Similarity of Unaugmented - Original  0.75634765625
+Similarity of Augmented - Original  0.7890625
+------------------------------------------------
+Example  70
+Similarity of Unaugmented - Original  0.67822265625
+Similarity of Augmented - Original  0.75537109375
+------------------------------------------------
+Example  71
+Similarity of Unaugmented - Original  0.63818359375
+Similarity of Augmented - Original  0.66943359375
+------------------------------------------------
+Example  73
+Similarity of Unaugmented - Original  0.6396484375
+Similarity of Augmented - Original  0.65966796875
+------------------------------------------------
+Example  74
+Similarity of Unaugmented - Original  0.65625
+Similarity of Augmented - Original  0.681640625
+------------------------------------------------
+Example  75
+Similarity of Unaugmented - Original  0.6162109375
+Similarity of Augmented - Original  0.76220703125
+------------------------------------------------
+Example  76
+Similarity of Unaugmented - Original  0.80712890625
+Similarity of Augmented - Original  0.75634765625
+------------------------------------------------
+Example  77
+Similarity of Unaugmented - Original  0.64794921875
+Similarity of Augmented - Original  0.6328125
+------------------------------------------------
+Example  78
+Similarity of Unaugmented - Original  0.7294921875
+Similarity of Augmented - Original  0.6611328125
+------------------------------------------------
+Example  79
+Similarity of Unaugmented - Original  0.6904296875
+Similarity of Augmented - Original  0.689453125
+------------------------------------------------
+Example  80
+Similarity of Unaugmented - Original  0.6416015625
+Similarity of Augmented - Original  0.71484375
+------------------------------------------------
+Example  81
+Similarity of Unaugmented - Original  0.744140625
+Similarity of Augmented - Original  0.68994140625
+------------------------------------------------
+Example  82
+Similarity of Unaugmented - Original  0.6142578125
+Similarity of Augmented - Original  0.693359375
+------------------------------------------------
+Example  83
+Similarity of Unaugmented - Original  0.79296875
+Similarity of Augmented - Original  0.79736328125
+------------------------------------------------
+Example  84
+Similarity of Unaugmented - Original  0.611328125
+Similarity of Augmented - Original  0.736328125
+------------------------------------------------
+Example  85
+Similarity of Unaugmented - Original  0.75390625
+Similarity of Augmented - Original  0.7255859375
+------------------------------------------------
+Example  86
+Similarity of Unaugmented - Original  0.7109375
+Similarity of Augmented - Original  0.74609375
+------------------------------------------------
+Example  87
+Similarity of Unaugmented - Original  0.61572265625
+Similarity of Augmented - Original  0.61572265625
+------------------------------------------------
+Example  88
+Similarity of Unaugmented - Original  0.6396484375
+Similarity of Augmented - Original  0.63134765625
+------------------------------------------------
+Example  89
+Similarity of Unaugmented - Original  0.6181640625
+Similarity of Augmented - Original  0.76611328125
+------------------------------------------------
+Example  90
+Similarity of Unaugmented - Original  0.70556640625
+Similarity of Augmented - Original  0.81396484375
+------------------------------------------------
+Example  91
+Similarity of Unaugmented - Original  0.60498046875
+Similarity of Augmented - Original  0.7080078125
+------------------------------------------------
+Example  92
+Similarity of Unaugmented - Original  0.65185546875
+Similarity of Augmented - Original  0.56982421875
+------------------------------------------------
+Example  93
+Similarity of Unaugmented - Original  0.70751953125
+Similarity of Augmented - Original  0.6630859375
+------------------------------------------------
+Example  94
+Similarity of Unaugmented - Original  0.66259765625
+Similarity of Augmented - Original  0.6533203125
+------------------------------------------------
+Example  95
+Similarity of Unaugmented - Original  0.716796875
+Similarity of Augmented - Original  0.68994140625
+------------------------------------------------
+Example  96
+Similarity of Unaugmented - Original  0.71630859375
+Similarity of Augmented - Original  0.66552734375
+------------------------------------------------
+Example  97
+Similarity of Unaugmented - Original  0.6611328125
+Similarity of Augmented - Original  0.6884765625
+------------------------------------------------
+Example  98
+Similarity of Unaugmented - Original  0.71728515625
+Similarity of Augmented - Original  0.8173828125
+------------------------------------------------
+Example  99
+Similarity of Unaugmented - Original  0.708984375
+Similarity of Augmented - Original  0.80078125
+------------------------------------------------
+Example  100
+Similarity of Unaugmented - Original  0.7783203125
+Similarity of Augmented - Original  0.7744140625
+------------------------------------------------
+Example  101
+Similarity of Unaugmented - Original  0.650390625
+Similarity of Augmented - Original  0.65966796875
+------------------------------------------------
+Example  102
+Similarity of Unaugmented - Original  0.61279296875
+Similarity of Augmented - Original  0.66552734375
+------------------------------------------------
+Example  103
+Similarity of Unaugmented - Original  0.73291015625
+Similarity of Augmented - Original  0.72607421875
+------------------------------------------------
+Example  104
+Similarity of Unaugmented - Original  0.63720703125
+Similarity of Augmented - Original  0.7548828125
+------------------------------------------------
+Example  105
+Similarity of Unaugmented - Original  0.68359375
+Similarity of Augmented - Original  0.7275390625
+------------------------------------------------
+Example  106
+Similarity of Unaugmented - Original  0.64404296875
+Similarity of Augmented - Original  0.62451171875
+------------------------------------------------
+Example  107
+Similarity of Unaugmented - Original  0.740234375
+Similarity of Augmented - Original  0.5185546875
+------------------------------------------------
+Example  108
+Similarity of Unaugmented - Original  0.70947265625
+Similarity of Augmented - Original  0.73486328125
+------------------------------------------------
+Example  109
+Similarity of Unaugmented - Original  0.7470703125
+Similarity of Augmented - Original  0.67333984375
+------------------------------------------------
+Example  110
+Similarity of Unaugmented - Original  0.7333984375
+Similarity of Augmented - Original  0.625
+------------------------------------------------
+Example  112
+Similarity of Unaugmented - Original  0.79736328125
+Similarity of Augmented - Original  0.78369140625
+------------------------------------------------
+Example  113
+Similarity of Unaugmented - Original  0.72509765625
+Similarity of Augmented - Original  0.70458984375
+------------------------------------------------
+Example  114
+Similarity of Unaugmented - Original  0.65966796875
+Similarity of Augmented - Original  0.67138671875
+------------------------------------------------
+Example  115
+Similarity of Unaugmented - Original  0.630859375
+Similarity of Augmented - Original  0.724609375
+------------------------------------------------
+Example  116
+Similarity of Unaugmented - Original  0.677734375
+Similarity of Augmented - Original  0.734375
+------------------------------------------------
+Example  117
+Similarity of Unaugmented - Original  0.70361328125
+Similarity of Augmented - Original  0.79248046875
+------------------------------------------------
+Example  118
+Similarity of Unaugmented - Original  0.65234375
+Similarity of Augmented - Original  0.72412109375
+------------------------------------------------
+Example  119
+Similarity of Unaugmented - Original  0.65869140625
+Similarity of Augmented - Original  0.8291015625
+------------------------------------------------
+Example  120
+Similarity of Unaugmented - Original  0.64599609375
+Similarity of Augmented - Original  0.71435546875
+------------------------------------------------
+Example  121
+Similarity of Unaugmented - Original  0.60205078125
+Similarity of Augmented - Original  0.7626953125
+------------------------------------------------
+Example  122
+Similarity of Unaugmented - Original  0.62841796875
+Similarity of Augmented - Original  0.61669921875
+------------------------------------------------
+Example  123
+Similarity of Unaugmented - Original  0.6826171875
+Similarity of Augmented - Original  0.59521484375
+------------------------------------------------
+Example  124
+Similarity of Unaugmented - Original  0.78515625
+Similarity of Augmented - Original  0.73291015625
+------------------------------------------------
+Example  125
+Similarity of Unaugmented - Original  0.60107421875
+Similarity of Augmented - Original  0.73681640625
+------------------------------------------------
+Example  126
+Similarity of Unaugmented - Original  0.63623046875
+Similarity of Augmented - Original  0.81396484375
+------------------------------------------------
+Example  127
+Similarity of Unaugmented - Original  0.654296875
+Similarity of Augmented - Original  0.6943359375
+------------------------------------------------
+Example  128
+Similarity of Unaugmented - Original  0.7080078125
+Similarity of Augmented - Original  0.6015625
+------------------------------------------------
+Example  129
+Similarity of Unaugmented - Original  0.693359375
+Similarity of Augmented - Original  0.67822265625
+------------------------------------------------
+Example  130
+Similarity of Unaugmented - Original  0.69287109375
+Similarity of Augmented - Original  0.71142578125
+------------------------------------------------
+Example  131
+Similarity of Unaugmented - Original  0.67041015625
+Similarity of Augmented - Original  0.42822265625
+------------------------------------------------
+Example  132
+Similarity of Unaugmented - Original  0.64404296875
+Similarity of Augmented - Original  0.5654296875
+------------------------------------------------
+Example  133
+Similarity of Unaugmented - Original  0.6484375
+Similarity of Augmented - Original  0.6376953125
+------------------------------------------------
+Example  134
+Similarity of Unaugmented - Original  0.759765625
+Similarity of Augmented - Original  0.6884765625
+------------------------------------------------
+Example  135
+Similarity of Unaugmented - Original  0.63037109375
+Similarity of Augmented - Original  0.70703125
+------------------------------------------------
+Example  136
+Similarity of Unaugmented - Original  0.59033203125
+Similarity of Augmented - Original  0.619140625
+------------------------------------------------
+Example  137
+Similarity of Unaugmented - Original  0.5712890625
+Similarity of Augmented - Original  0.83251953125
+------------------------------------------------
+Example  138
+Similarity of Unaugmented - Original  0.6982421875
+Similarity of Augmented - Original  0.69580078125
+------------------------------------------------
+Example  139
+Similarity of Unaugmented - Original  0.64013671875
+Similarity of Augmented - Original  0.724609375
+------------------------------------------------
+Example  140
+Similarity of Unaugmented - Original  0.578125
+Similarity of Augmented - Original  0.76953125
+------------------------------------------------
+Example  141
+Similarity of Unaugmented - Original  0.66357421875
+Similarity of Augmented - Original  0.6796875
+------------------------------------------------
+Example  142
+Similarity of Unaugmented - Original  0.7001953125
+Similarity of Augmented - Original  0.62744140625
+------------------------------------------------
+Example  143
+Similarity of Unaugmented - Original  0.55078125
+Similarity of Augmented - Original  0.69873046875
+------------------------------------------------
+Example  144
+Similarity of Unaugmented - Original  0.59375
+Similarity of Augmented - Original  0.77392578125
+------------------------------------------------
+Example  145
+Similarity of Unaugmented - Original  0.7197265625
+Similarity of Augmented - Original  0.70947265625
+------------------------------------------------
+Example  146
+Similarity of Unaugmented - Original  0.69873046875
+Similarity of Augmented - Original  0.77978515625
+------------------------------------------------
+Example  147
+Similarity of Unaugmented - Original  0.6484375
+Similarity of Augmented - Original  0.73681640625
+------------------------------------------------
+Example  148
+Similarity of Unaugmented - Original  0.67578125
+Similarity of Augmented - Original  0.7802734375
+------------------------------------------------
+Example  149
+Similarity of Unaugmented - Original  0.61669921875
+Similarity of Augmented - Original  0.6416015625
+------------------------------------------------
+Example  150
+Similarity of Unaugmented - Original  0.6943359375
+Similarity of Augmented - Original  0.75341796875
+------------------------------------------------
+Example  151
+Similarity of Unaugmented - Original  0.70166015625
+Similarity of Augmented - Original  0.64990234375
+------------------------------------------------
+Example  152
+Similarity of Unaugmented - Original  0.60595703125
+Similarity of Augmented - Original  0.6826171875
+------------------------------------------------
+Example  153
+Similarity of Unaugmented - Original  0.72802734375
+Similarity of Augmented - Original  0.80908203125
+------------------------------------------------
+Example  154
+Similarity of Unaugmented - Original  0.755859375
+Similarity of Augmented - Original  0.7109375
+------------------------------------------------
+Example  155
+Similarity of Unaugmented - Original  0.70361328125
+Similarity of Augmented - Original  0.76953125
+------------------------------------------------
+Example  156
+Similarity of Unaugmented - Original  0.697265625
+Similarity of Augmented - Original  0.7236328125
+------------------------------------------------
+Example  157
+Similarity of Unaugmented - Original  0.74951171875
+Similarity of Augmented - Original  0.6591796875
+------------------------------------------------
+Example  158
+Similarity of Unaugmented - Original  0.51220703125
+Similarity of Augmented - Original  0.68310546875
+------------------------------------------------
+Example  159
+Similarity of Unaugmented - Original  0.7314453125
+Similarity of Augmented - Original  0.7939453125
+------------------------------------------------
+Example  160
+Similarity of Unaugmented - Original  0.72900390625
+Similarity of Augmented - Original  0.7099609375
+------------------------------------------------
+Example  161
+Similarity of Unaugmented - Original  0.646484375
+Similarity of Augmented - Original  0.611328125
+------------------------------------------------
+Example  162
+Similarity of Unaugmented - Original  0.6669921875
+Similarity of Augmented - Original  0.626953125
+------------------------------------------------
+Example  163
+Similarity of Unaugmented - Original  0.6875
+Similarity of Augmented - Original  0.75244140625
+------------------------------------------------
+Example  164
+Similarity of Unaugmented - Original  0.7783203125
+Similarity of Augmented - Original  0.72314453125
+------------------------------------------------
+Example  165
+Similarity of Unaugmented - Original  0.5224609375
+Similarity of Augmented - Original  0.658203125
+------------------------------------------------
+Example  166
+Similarity of Unaugmented - Original  0.73095703125
+Similarity of Augmented - Original  0.59521484375
+------------------------------------------------
+Example  167
+Similarity of Unaugmented - Original  0.751953125
+Similarity of Augmented - Original  0.70458984375
+------------------------------------------------
+Example  168
+Similarity of Unaugmented - Original  0.65087890625
+Similarity of Augmented - Original  0.65771484375
+------------------------------------------------
+Example  169
+Similarity of Unaugmented - Original  0.63671875
+Similarity of Augmented - Original  0.69140625
+------------------------------------------------
+Example  170
+Similarity of Unaugmented - Original  0.63232421875
+Similarity of Augmented - Original  0.73681640625
+------------------------------------------------
+Example  171
+Similarity of Unaugmented - Original  0.7080078125
+Similarity of Augmented - Original  0.7431640625
+------------------------------------------------
+Example  172
+Similarity of Unaugmented - Original  0.6552734375
+Similarity of Augmented - Original  0.7578125
+------------------------------------------------
+Example  173
+Similarity of Unaugmented - Original  0.81787109375
+Similarity of Augmented - Original  0.79638671875
+------------------------------------------------
+Example  174
+Similarity of Unaugmented - Original  0.75634765625
+Similarity of Augmented - Original  0.70263671875
+------------------------------------------------
+Example  175
+Similarity of Unaugmented - Original  0.69873046875
+Similarity of Augmented - Original  0.68994140625
+------------------------------------------------
+Example  176
+Similarity of Unaugmented - Original  0.6796875
+Similarity of Augmented - Original  0.66015625
+------------------------------------------------
+Example  177
+Similarity of Unaugmented - Original  0.58935546875
+Similarity of Augmented - Original  0.6142578125
+------------------------------------------------
+Example  178
+Similarity of Unaugmented - Original  0.6044921875
+Similarity of Augmented - Original  0.701171875
+------------------------------------------------
+Example  179
+Similarity of Unaugmented - Original  0.615234375
+Similarity of Augmented - Original  0.75048828125
+------------------------------------------------
+Example  180
+Similarity of Unaugmented - Original  0.755859375
+Similarity of Augmented - Original  0.76318359375
+------------------------------------------------
+Example  181
+Similarity of Unaugmented - Original  0.6474609375
+Similarity of Augmented - Original  0.66650390625
+------------------------------------------------
+Example  182
+Similarity of Unaugmented - Original  0.66259765625
+Similarity of Augmented - Original  0.7705078125
+------------------------------------------------
+Example  183
+Similarity of Unaugmented - Original  0.7314453125
+Similarity of Augmented - Original  0.82763671875
+------------------------------------------------
+Example  184
+Similarity of Unaugmented - Original  0.59033203125
+Similarity of Augmented - Original  0.71337890625
+------------------------------------------------
+Example  185
+Similarity of Unaugmented - Original  0.75537109375
+Similarity of Augmented - Original  0.70703125
+------------------------------------------------
+Example  186
+Similarity of Unaugmented - Original  0.6533203125
+Similarity of Augmented - Original  0.6533203125
+------------------------------------------------
+Example  187
+Similarity of Unaugmented - Original  0.7265625
+Similarity of Augmented - Original  0.73291015625
+------------------------------------------------
+Example  188
+Similarity of Unaugmented - Original  0.650390625
+Similarity of Augmented - Original  0.72705078125
+------------------------------------------------
+Example  189
+Similarity of Unaugmented - Original  0.671875
+Similarity of Augmented - Original  0.6962890625
+------------------------------------------------
+Example  190
+Similarity of Unaugmented - Original  0.578125
+Similarity of Augmented - Original  0.587890625
+------------------------------------------------
+Example  191
+Similarity of Unaugmented - Original  0.70947265625
+Similarity of Augmented - Original  0.7431640625
+------------------------------------------------
+Example  192
+Similarity of Unaugmented - Original  0.62890625
+Similarity of Augmented - Original  0.7353515625
+------------------------------------------------
+Example  193
+Similarity of Unaugmented - Original  0.580078125
+Similarity of Augmented - Original  0.5078125
+------------------------------------------------
+Example  194
+Similarity of Unaugmented - Original  0.580078125
+Similarity of Augmented - Original  0.61279296875
+------------------------------------------------
+Example  195
+Similarity of Unaugmented - Original  0.74365234375
+Similarity of Augmented - Original  0.71923828125
+------------------------------------------------
+Example  196
+Similarity of Unaugmented - Original  0.7763671875
+Similarity of Augmented - Original  0.5703125
+------------------------------------------------
+Example  197
+Similarity of Unaugmented - Original  0.5849609375
+Similarity of Augmented - Original  0.58642578125
+------------------------------------------------
+Example  198
+Similarity of Unaugmented - Original  0.625
+Similarity of Augmented - Original  0.69287109375
+------------------------------------------------
+Example  199
+Similarity of Unaugmented - Original  0.6328125
+Similarity of Augmented - Original  0.78125
+------------------------------------------------
+Example  200
+Similarity of Unaugmented - Original  0.6923828125
+Similarity of Augmented - Original  0.748046875
+------------------------------------------------
+Example  201
+Similarity of Unaugmented - Original  0.73291015625
+Similarity of Augmented - Original  0.74609375
+------------------------------------------------
+Example  202
+Similarity of Unaugmented - Original  0.71484375
+Similarity of Augmented - Original  0.771484375
+------------------------------------------------
+Example  203
+Similarity of Unaugmented - Original  0.73779296875
+Similarity of Augmented - Original  0.78466796875
+------------------------------------------------
+Example  204
+Similarity of Unaugmented - Original  0.7080078125
+Similarity of Augmented - Original  0.74462890625
+------------------------------------------------
+Example  205
+Similarity of Unaugmented - Original  0.64306640625
+Similarity of Augmented - Original  0.66455078125
+------------------------------------------------
+Example  206
+Similarity of Unaugmented - Original  0.74560546875
+Similarity of Augmented - Original  0.75439453125
+------------------------------------------------
+Example  207
+Similarity of Unaugmented - Original  0.78564453125
+Similarity of Augmented - Original  0.64794921875
+------------------------------------------------
+Example  208
+Similarity of Unaugmented - Original  0.6298828125
+Similarity of Augmented - Original  0.67431640625
+------------------------------------------------
+Example  209
+Similarity of Unaugmented - Original  0.69873046875
+Similarity of Augmented - Original  0.69873046875
+------------------------------------------------
+Example  210
+Similarity of Unaugmented - Original  0.6689453125
+Similarity of Augmented - Original  0.7587890625
+------------------------------------------------
+Example  211
+Similarity of Unaugmented - Original  0.669921875
+Similarity of Augmented - Original  0.7529296875
+------------------------------------------------
+Example  212
+Similarity of Unaugmented - Original  0.70361328125
+Similarity of Augmented - Original  0.671875
+------------------------------------------------
+Example  213
+Similarity of Unaugmented - Original  0.642578125
+Similarity of Augmented - Original  0.72021484375
+------------------------------------------------
+Example  214
+Similarity of Unaugmented - Original  0.70654296875
+Similarity of Augmented - Original  0.79345703125
+------------------------------------------------
+
+In total:
+Using the original caption, the average cosine similarity with the target image is  0.6763363244398585
+Using the augmented caption, the average cosine similarity with the target image is  0.7079916900058962
