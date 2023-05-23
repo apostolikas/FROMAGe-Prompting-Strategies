@@ -1,4 +1,4 @@
-# Exploring in-context learning abilities of Fromage 🧀
+# Exploring in-context learning abilities of FROMAGe 🧀
 28 Mar 2023 | Nikolaos Apostolikas, Panagiotis Tsakas, Vasileios Vythoulkas, Bram Slangen, Denny Smit
 
 ---------------
@@ -25,17 +25,17 @@ This is where In-context learning comes up. In-context learning or priming lever
 ![](images_report/ICL.png)
 
 In-context learning seems very appealing because it reduces the need for task-specific data. Hence, zero-shot and few-shot learning can be used. Additionally, no parameters are updated so catastrophic forgetting cannot occur and we can use the same model for multiple tasks. Furthermore, by employing in-context learning in an interface even inexperienced users could easily use AI systems. <br>
-Despite its intriguing properties, the models may be sensitive to the prompt that is added to the input. Therefore, exploration of prompting strategies is useful to improve the performance of large models. We will explore the in-context learning abilities of Fromage. <br>
+Despite its intriguing properties, the models may be sensitive to the prompt that is added to the input. Therefore, exploration of prompting strategies is useful to improve the performance of large models. We will explore the in-context learning abilities of FROMAGe. <br>
 
 ---------
-Fromage model
+FROMAGe model
 ==================================
 
 Model Architecture
 ---------
 ![](images_report/fromage_architecture.png)
 
-First, let’s review the model architecture. Fromage combines a vision encoder and a decoder language model while keeping their parameters fixed. Specifically, it employs the CLIP model as a vision encoder and OPT as a language model to be able to handle multimodal data. To map the visual space into the text space and vice versa, learnable linear layers are utilized. Fromage has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
+First, let’s review the model architecture. FROMAGe combines a vision encoder and a decoder language model while keeping their parameters fixed. Specifically, it employs the CLIP model as a vision encoder and OPT as a language model to be able to handle multimodal data. To map the visual space into the text space and vice versa, learnable linear layers are utilized. FROMAGe has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
 
 <!--- I am not sure whether talking about Conceptual Caption is a 
 good idea because of the image-captioning dataset. Besides, 
@@ -46,7 +46,7 @@ we need to add a picture here
 
 Historical Review
 -----------------
-There are several vision-language models desrcibed in the literature. Models such as Clip and ALIGN use vision and text encoders and calculate the similarity between the different modalities representations. <!--- Nonetheless, these models are restricted to cases where pre-defined labels are available.--> Other models like our model, Fromage, differ by combining a vision encoder with a text decoder. This allows them to generate text and be used for more open-ended tasks like image-captioning. Fromage in contrast to other models like Flamingo is also able to generate images from the Conceptual Caption Dataset on which it was trained. <br>
+There are several vision-language models desrcibed in the literature. Models such as Clip and ALIGN use vision and text encoders and calculate the similarity between the different modalities representations. <!--- Nonetheless, these models are restricted to cases where pre-defined labels are available.--> Other models like our model, FROMAGe, differ by combining a vision encoder with a text decoder. This allows them to generate text and be used for more open-ended tasks like image-captioning. FROMAGe in contrast to other models like Flamingo is also able to generate images from the Conceptual Caption Dataset on which it was trained. <br>
 <!---Another important distinction between different vision-language models is the way they bridge different modalities. Existing approaches include finetuning cross-attention layers (Flamingo), only vision encoders (Frozen), only text  lightweight transformer blocks (Blip2), directly feeding the   -->
 In-context learning became known with the remarkable success of the GPT-3 model in text tasks. Lately, in-context learning has been applied to both the vision-only models and vision-language models. A popular technique to boost the performance of in-context learning is demonstration selection by image or text retrieval. Other techniques include instruction tuning first on other datasets, making the LM generate the prompt, changing the order of the demonstrations or changing the instructions given to the model.
 
@@ -157,14 +157,14 @@ Looking at the results table above, the conclusion is that in most cases, a text
 |Model |Accuracy|                         
 |-----|--------|
 |Frozen|33.7      |
-|Fromage  |35.56      |
+|FROMAGe  |35.56      |
 
 
 We also evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add to the input two demonstrations -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predict the label of the demonstration that is closest in proximity to the test input. \
 To mitigate the recency bias problem we can estimate the model's bias towards specific answers by replacing the test image with a content-free test image such as a black image. Specifically, we first calculate the logits for a *content-free* test image such as a black or white image. Then we scale the logits for the real test image based on the logits of the content-free image. The following figure explains the aforementioned procedure. 
 
-![](/images_report/calibrate_small.png)
-In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. Similarly to (cite) approach on text classification, we constrain Fromage to only generate subwords from the input labels. 
+![](/images_report/calibrate_small.png) \
+In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. Similarly to (cite) approach on text classification, we constrain FROMAGe to only generate subwords from the input labels. 
 
 -----------------
 &nbsp;
