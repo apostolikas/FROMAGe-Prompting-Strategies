@@ -468,7 +468,7 @@ class FromageModel(nn.Module):
 
     return out, output_embeddings, output_logits
 
-  def generate_content_free(self, embeddings = torch.FloatTensor, max_len: int = 32,
+  def generate_constr_content_free(self, embeddings = torch.FloatTensor, max_len: int = 32,
                temperature: float = 0.0, top_p: float = 1.0, min_word_tokens: int = 0,
                ret_scale_factor: float = 1.0, filter_value: float = -float('Inf'), content_free_logits: list = [],
                constrained_ids:Tensor=None):
@@ -523,24 +523,19 @@ class FromageModel(nn.Module):
         if top_p == 1.0:
           logits = logits.cpu()
         #! new code subtract the content_free logits
-        if content_free_logits!= [] and i <= 4:
+        if content_free_logits!= [] and i <= 4: #not baseline
           logits -= content_free_logits[i]
-        logits = torch.index_select(logits, 1, constrained_ids) # take subset of logits
+        if constrained_ids is not None:
+          logits = torch.index_select(logits, 1, constrained_ids) # take subset of logits
 
-        subset_id = torch.argmax(logits, keepdim=True, dim=-1).item()  # find max in subset
-        next_token = constrained_ids[subset_id] #find original id of the max in subset
+          subset_id = torch.argmax(logits, keepdim=True, dim=-1).item()  # find max in subset
+          next_token = constrained_ids[subset_id] #find original id of the max in subset
 
-        next_token = next_token.unsqueeze(dim=0).unsqueeze(dim=0)
+          next_token = next_token.unsqueeze(dim=0).unsqueeze(dim=0)
+        else:
+          next_token = torch.argmax(logits, keepdim=True, dim=-1)  # (N, 1)
 
         output_logits.append(logits)
-
-        # if self.retrieval_token_idx != -1 and self.retrieval_token_idx is not None:
-        #   if i < min_word_tokens:
-        #     # Eliminate probability of generating [RET] if this is earlier than min_word_tokens.
-        #     logits[:, self.retrieval_token_idx] = filter_value
-        #   else:
-        #     # Multiply by scaling factor.
-        #     logits[:, self.retrieval_token_idx] = logits[:, self.retrieval_token_idx] * ret_scale_factor
 
         past_key_values = output.past_key_values
 
@@ -636,7 +631,7 @@ class Fromage(nn.Module):
     self.white_visual_embs = white_visual_embs
 
 
-  def generate_with_content_free(self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
+  def generate_constr_content_free(self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
     max_num_rets: int = 1, max_img_per_ret: int = 1, id:int=1,constrained_ids:Tensor=None, baseline:bool=False):
     """
     Encode prompts into embeddings.
@@ -683,7 +678,7 @@ class Fromage(nn.Module):
     input_embs = torch.cat(input_embs, dim=1)
     input_ids = torch.cat(input_ids, dim=1)
 
-    content_free_logits = []
+    content_free_logits = [] #baseline
     if not baseline:
       black_visual_emb = self.black_visual_embs
       # same prompt and we replace the question image with a black image
@@ -718,7 +713,7 @@ class Fromage(nn.Module):
       embeddings = embeddings / embeddings.norm(dim=-1, keepdim=True)  # (N, T, 256)
     elif num_words > 0:
 
-      generated_ids, generated_embeddings, generated_logits = self.model.generate_content_free(input_embs, num_words,
+      generated_ids, generated_embeddings, generated_logits = self.model.generate_constr_content_free(input_embs, num_words,
         temperature=temperature, top_p=top_p, ret_scale_factor=ret_scale_factor, content_free_logits =content_free_logits,
         constrained_ids=constrained_ids)
       embeddings = generated_embeddings[-1][:, input_embs.shape[1]:]
