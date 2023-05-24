@@ -264,13 +264,18 @@ As the results suggest, in the case of the CLIPSeg, the augmented prompt enhance
 &nbsp;
 
 
-## Insights
+## Key findings - Insights of our novelty
 
 
-1.  
+1.  FROMAGe as a multimodal model has in-context learning abilities (as shown for example in the Video Captioning task).
     
-    
-2.  
+2.  Visual augmentations (add similar images, segment query images, etc.) can actually help the model perform better.
+
+3. Text augmentations (add descriptive words - Image retrieval flickr, summarization - Image retrieval visdial) are also very helpful.
+
+4. Mitigate the recency bias in Image Classification using a specific strategy.
+
+5. Augmentations might not always yield significantly better results for tricky tasks (guided vqa).
     
 
 &nbsp;
