@@ -48,7 +48,23 @@ Historical Review
 -----------------
 There are several vision-language models desrcibed in the literature. Models such as Clip and ALIGN use vision and text encoders and calculate the similarity between the different modalities representations. <!--- Nonetheless, these models are restricted to cases where pre-defined labels are available.--> Other models like our model, FROMAGe, differ by combining a vision encoder with a text decoder. This allows them to generate text and be used for more open-ended tasks like image-captioning. FROMAGe in contrast to other models like Flamingo is also able to generate images from the Conceptual Caption Dataset on which it was trained. <br>
 <!---Another important distinction between different vision-language models is the way they bridge different modalities. Existing approaches include finetuning cross-attention layers (Flamingo), only vision encoders (Frozen), only text  lightweight transformer blocks (Blip2), directly feeding the   -->
-In-context learning became known with the remarkable success of the GPT-3 model in text tasks. Lately, in-context learning has been applied to both the vision-only models and vision-language models. A popular technique to boost the performance of in-context learning is demonstration selection by image or text retrieval. Other techniques include instruction tuning first on other datasets, making the LM generate the prompt, changing the order of the demonstrations or changing the instructions given to the model.
+<!---In-context learning became known with the remarkable success of the GPT-3 model in text tasks. Lately, in-context learning has been applied to both the vision-only models and vision-language models. A popular technique to boost the performance of in-context learning is demonstration selection by image or text retrieval. Other techniques include instruction tuning first on other datasets, making the LM generate the prompt, changing the order of the demonstrations or changing the instructions given to the model.-->
+
+Image augmentation: Retrieving similar examples and adding them to the input has been a popular prompting strategy in both
+the image and text domain. In our visual augmentation approach we only add input examples without their corresponding labels.
+Additionally, to retrieve images, Fromage first generates a unique token and then compares the embedding similarities of this 
+token with the embeddings of the images from the Conceptual Caption dataset. This characteristic of our approach has also similarities with prompt generation techniques.
+
+Textual augmentation: Previous work has already explored the concept of augmenting textual input. As with other approaches, we use a language model to generate text to be added to 
+the prompt. In our study, we focus on employing text augmentation techniques for image captioning. Instead of computing
+the conditional probability P(y|x), where x represents the input image and y represents the text caption, our objective is to compute P(x|y). By adopting this perspective,
+our work can also be viewed as a channel-based approach for multi-modal data.
+
+Recency bias: Language models have been shown to suffer from recency bias, often predicting the label of the demonstration that is closest in proximity
+to the test input. Several methods have been proposed to mitigate the order sensitivity of the demonstrations. These methods include entropy-based techniques,
+ordering the demonstrations based on their embedding similarity with the test example, and scaling the prediction scores based on the prediction of a content-free input. 
+We extend the last approach to the vision domain for image classification.
+
 
 ---------------
 
