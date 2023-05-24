@@ -108,9 +108,5 @@ if __name__=='__main__':
   parser.add_argument('--num_ways', type=int, default=2,
                       help='The number of object classes in the task. Either 2 or 5')
   args = parser.parse_args()
-  args.baseline=True
-  args.constraint=True
-  args.num_ways=5
-  args.load_pickle=True
   main(args)
 
