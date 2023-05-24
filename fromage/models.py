@@ -675,9 +675,6 @@ class Fromage(nn.Module):
       else:
         raise ValueError(f'Input prompts should be either PIL.Image.Image or str types, got {type(p)} instead.')
     
-    input_embs = torch.cat(input_embs, dim=1)
-    input_ids = torch.cat(input_ids, dim=1)
-
     content_free_logits = [] #baseline
     if not baseline:
       black_visual_emb = self.black_visual_embs
@@ -701,7 +698,10 @@ class Fromage(nn.Module):
       content_free_logits = [(black_content_free_logits[i]+
                               white_content_free_logits[i] ) /2 for i in range(len(black_content_free_logits))]
     
-    
+    input_embs = torch.cat(input_embs, dim=1)
+    input_ids = torch.cat(input_ids, dim=1)
+
+
     if num_words == 0:
       generated_ids = input_ids
       outputs = self.model.lm(inputs_embeds=input_embs, use_cache=False, output_hidden_states=True)
@@ -859,10 +859,6 @@ class Fromage(nn.Module):
 
     last_ret_idx = 0
     if len(all_ret_idx) == 0:
-
-      # save
-      with open('generated_ids_'+str(id)+'.pt', 'wb') as f:
-          pickle.dump(generated_ids.cpu(), f)
 
       caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
       return_outputs.append(utils.truncate_caption(caption))

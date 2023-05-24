@@ -37,7 +37,6 @@ def load_real_mi():
   dict_question_captions = {} # question_id: caption
   dict_prompt_images = {} # question_id:[img1,img2]
   dict_prompt_captions = {} # question_id:[caption1, caption2]
-  timesteps = [[] for i in range(6)]
   for i,image_info in enumerate(mi_data):
       # img_q = Image.open(os.path.join(mi_images_folder,image_info['question_image']))
       # img_prompt1 = Image.open(os.path.join(mi_images_folder,image_info['image_1']))
@@ -75,11 +74,61 @@ def load_real_mi():
 
       model_input_list = [img_ex1, text_ex1, img_ex2, text_ex2, img_q, text_q_prompt]
       dict_model_input[question_id] = model_input_list
-      for t, input in enumerate(model_input_list):
-          timesteps[t].append(input)
 
   return dict_model_input, dict_question_captions
 
+def preprocess_image(mi_images_folder, img):
+  img_q = cv2.imread(os.path.join(mi_images_folder,img))
+  img_q = cv2.cvtColor(img_q, cv2.COLOR_BGR2RGB)
+  img_q = Image.fromarray(img_q)
+  img_q = img_q.resize((224,224))
+  return img_q
+
+def load_real_mi(k=2):
+
+  with open(f'./real_name_mi/real_name_mi_shots_1_ways_{k}_all_questions.json', 'r') as f:
+        mi_data = json.load(f)
+
+  mi_images_folder = './real_name_mi'
+  #onlyfiles = [f for f in listdir(mi_images_folder) if isfile(join(mi_images_folder, f))]
+
+  mi_images_folder = './real_name_mi'
+  dict_model_input = {} #question_id: [img1, caption1, img2, caption2, img3]
+  dict_question_captions = {} # question_id: caption
+  dict_prompt_images = {} # question_id:[img1,img2]
+  dict_prompt_captions = {} # question_id:[caption1, caption2]
+  for i,image_info in enumerate(mi_data):
+      question_id = int(image_info['question_id'])
+      assert(i+1 == question_id)
+      # read the images the same way like the segment_anything paper does
+      img_q = preprocess_image(mi_images_folder, image_info['question_image'])
+      images_examples=  []
+      caption_examples = []
+      model_input_list  = []
+      for jj in range(k):
+        num = jj+1
+        image_jj = preprocess_image(mi_images_folder, image_info[f'image_{num}'])
+        caption_jj = image_info[f'caption_{num}']
+        images_examples.append(image_jj)
+        caption_examples.append(caption_jj)
+
+        model_input_list.append(image_jj)
+        model_input_list.append(caption_jj)
+
+
+      dict_prompt_images[question_id] = images_examples
+      dict_prompt_captions[question_id] = caption_examples
+
+      caption_q_answer = image_info['answer']
+      text_q_prompt = image_info['question']
+
+      dict_question_captions[question_id] = caption_q_answer
+      
+
+      model_input_list.extend([img_q, text_q_prompt])
+      dict_model_input[question_id] = model_input_list
+
+  return dict_model_input, dict_question_captions
 
 def get_dataset(args, split: str, tokenizer, precision: str = 'fp32') -> Dataset:
   assert split in ['train', 'val'
