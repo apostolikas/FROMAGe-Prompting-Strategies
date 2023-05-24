@@ -58,7 +58,7 @@ In-context learning became known with the remarkable success of the GPT-3 model 
 
 &nbsp;
 
-## Results
+## Experiments & Results
 
 The approach followed was to first replicate the results of the paper and then explore the possibilities of in-context learning of the model, by working with different prompting strategies. Although the replication of the results was virtually impossible due to the need of manual annotators, we came up with a workaround to verify whether the results for the datasets used are accurate. Next, we tried to explore the in-context learning potential of FROMAGe, by evaluating it on several tasks (e.g. Video Captioning, Visual Question Answering, etc.). Last but not least, several prompt augmentation methods were used to explore different prompting strategies in order to determine the importance of the input for the model's output.
 
