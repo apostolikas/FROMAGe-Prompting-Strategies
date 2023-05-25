@@ -287,16 +287,16 @@ As the results suggest, in the case of the CLIPSeg, the augmented prompt enhance
 
 FROMAGe is able to handle information from a conversation with multiple turns when generating a new response. The input that is given is in the form of a dialog, which can consist out of different textual inputs.
 
-While experimenting with FROMAGe we observed that using more complex input usually leads to less accurate output. This observation suggests that the model's output could possibly be enhanced by converting the form of the dialog into a more compact and clear structure. In this experiment, the approach for obtaining this more compact and clear structure is to prompt ChatGPT, such that it minimizes the text length while preserving all relevant information that the dialog contains.
+While experimenting with FROMAGe we observed that using more complex input usually leads to less accurate output. This observation suggests that the model's output could possibly be enhanced by converting the form of the dialog into a more compact and clear structure. In this experiment, the approach for obtaining this more compact and clear structure is to prompt GPT-3, such that it minimizes the text length while preserving all relevant information that the dialog contains.
 
-The Visual Dialog dataset is chosen to perform this experiment. This dataset consists of images with 10 corresponding questions and answers pairs, and a caption. The dialogs from this dataset are suitable for this experiment, since these dialog structures simulate a Q&A about an image, and can be converted by ChatGPT into the compressed structure. This strategy is evaluated by comparing the model's capability of retrieving correct images with the original dialog as input, to the capability of retrieving correct images with the compressed dialog by ChatGPT as input. For this experiment, 5 questions and answer pairs are picked for each image, combined with the caption. The following instruction is given to ChatGPT: "Transform the following caption with a question and answer dialog about an image into a caption as short as possible while capturing all the information that is given: {dialog in original form}".
+The Visual Dialog dataset is chosen to perform this experiment. This dataset consists of images with 10 corresponding questions and answers pairs, and a caption. The dialogs from this dataset are suitable for this experiment, since these dialog structures simulate a Q&A about an image, and can be converted by GPT-3 into the compressed structure. This strategy is evaluated by comparing the model's capability of retrieving correct images with the original dialog as input, to the capability of retrieving correct images with the compressed dialog by GPT-3 as input. For this experiment, 5 questions and answer pairs are picked for each image, combined with the caption. The following instruction is given to GPT-3: "Transform the following caption with a question and answer dialog about an image into a caption as short as possible while capturing all the information that is given: {dialog in original form}".
 
 Three settings are being used for retrieving images: 
 1. Caption Only
 2. Unaugmented dialog
-3. Augmented dialog by ChatGPT
+3. Augmented dialog by GPT-3
 
-To evaluate the difference in performance, the average accuracy of 3 retrieved images was measured. The images were annotated with a '0' if the retrieved images were incorrect, '0.5' if they captured the most important information, and '1' if they captured all the information. An example of the dialog together with the augmented caption created by ChatGPT is shown in the table below. Also, the images that are being retrieved at the highest ranked are shown for the 3 different settings with their corresponding score.
+To evaluate the difference in performance, the average accuracy of 3 retrieved images was measured. The images were annotated with a '0' if the retrieved images were incorrect, '0.5' if they captured the most important information, and '1' if they captured all the information. An example of the dialog together with the augmented caption created by GPT-3 is shown in the table below. Also, the images that are being retrieved at the highest ranked are shown for the 3 different settings with their corresponding score.
 
 <img src="images_report/img_table.png" alt="Image" />
 
@@ -308,7 +308,7 @@ For each of the three settings displayed in the example, 50 textual inputs were 
 | ------------------------------------------ | ------------------------- |
 | Caption only                               | 0.54                      |
 | Unaugmented dialog                         | 0.40                      |
-| Augmented dialog by ChatGPT                | 0.60                      |
+| Augmented dialog by GPT-3                  | 0.60                      |
 
 </div>
 
