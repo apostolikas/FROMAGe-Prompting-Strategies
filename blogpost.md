@@ -149,7 +149,7 @@ Our extensions can be divided into two parts. The first part is to explore in de
 
 ## Image Captioning
 
-Although the model was trained on the CC3M dataset, it is useful to check how it performs on other datasets as well. For this purpose, we used the Flickr-8k dataset, from which we used a specific subset that according to experts, the captions are fully representative of the corresponding image. Furthermore, we augmented the input visually by adding more images. This means that given the original image that the model needed to caption, we instead asked the model to retrieve 2 similar images. After retrieving the similar images, we added them to the prompt and asked the model to perform Image Captioning for the original image. Simply put, instead of giving directly the input image, we retrieved 2 similar ones and gave all three as input, but only asked the model to caption the original one. To evaluate the model, we employed a language model to compute the text embeddings of the generated caption using visual augmentation, the generated caption without using any augmentation and the original caption.  
+Although the model was trained on the CC3M dataset, it is useful to check how it performs on other datasets as well. For this purpose, we used the Flickr-8k dataset, from which we used a specific subset that according to experts, the captions are fully representative of the corresponding image (214 samples). Furthermore, we augmented the input visually by adding more images. This means that given the original image that the model needed to caption, we instead asked the model to retrieve 2 similar images. After retrieving the similar images, we added them to the prompt and asked the model to perform Image Captioning for the original image. Simply put, instead of giving directly the input image, we retrieved 2 similar ones and gave all three as input, but only asked the model to caption the original one. To evaluate the model, we employed a language model to compute the text embeddings of the generated caption using visual augmentation, the generated caption without using any augmentation and the original caption.  
 
 <p align="center">
   <img src="images_report/Visual_augmentation_of_prompt.png" />
@@ -159,22 +159,34 @@ After obtaining the embeddings, the cosine similarity was computed using each to
 
 <div align="center">
 
-|  Prompt  	| Cosine Similarity 	|
+|  Prompt  	| Cosine Similarity 	| 
 |:---------:	|:-----------------:	|
 | With augmentation 	|         0.478         |
 | No augmentation 	    |         0.343         |
 
 </div>
 
-This table illustrates that giving some similar examples along with the query image leads to the model generating a representative caption of the original image. This indicates that the generated caption using visual augmentation is closer to the original caption, which serves as a target.
+This table illustrates that giving some similar examples along with the query image leads to the model generating a representative caption of the original image. This indicates that the generated caption using visual augmentation is closer to the original caption, which serves as a target. In order to have a more clear view of the results, some additional metrics are reported in the following table.
 
+<div align="center">
+
+|  CIDEr  	| ROUGE 	|  BLEU-1 |  BLEU-2 |  BLEU-3 |  BLEU-4 
+|:---------:	|:-------------:	|:------:	|:----------:	|:----------:	|:---------:	|
+| 0.282 	|     0.240    | 0.249 | 0.127 | 0.06 | 0.03|
+
+</div>
+
+In short, these metrics are commonly used in the field of image captioning. 
+- CIDEr takes into account both the quality of individual words and the overall consensus between the generated and reference captions. It considers that a good caption should use diverse and descriptive vocabulary, capture important visual information, and be understandable to humans. CIDEr involves many steps such as calculating tf, tf-idf, cosine similarity etc.
+- BLEU-n specifically refers to the n-gram precision measures the similarity between the machine-generated caption and the reference captions, taking into account the precision of matching n-grams (contiguous sequences of words) between the two.
+- Similarly to BLUE-n, ROUGE measures the overlap between the generated caption and the reference caption in terms of n-gram matching, word sequences, and other linguistic units. 
 
 &nbsp;
 
 
 ## Image Retrieval from Text 
 
-In this task, we used the Flickr-8k dataset, by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3.5 model and asking it to provide more information about each caption. Specifically, we asked it to add more descriptive words (query expansion). Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. The following figure explains the aforementioned procedure.
+In this task, we used the Flickr-8k dataset (214 samples annotated by experts, meaning that the captions suit the images well), by giving the model the caption as input and asking it to retrieve a similar image from the CC3M dataset. Moreover, for this experiment, we augmented the text input by expanding the caption. This was done by prompting the GPT-3.5 model and asking it to provide more information about each caption. Specifically, we asked it to add more descriptive words (query expansion). Our goal was to check whether the augmented text input will make the model retrieve a better image than the one retrieved by the original caption. The following figure explains the aforementioned procedure.
 
 <p align="center">
   <img src="images_report/Text_augmentation_of_prompt.png" width="700"/>
@@ -261,7 +273,7 @@ When more visual context is provided, the model seems to ignore the "Give captio
 
 ## Visual Question Answering
 
-In this task, we used the guided vqa dataset (cite). A sample consists of two pairs of images-captions, a question, a question image and the answer to the question. It is found that the model struggles to perform well in this task. This is due to the fact that some of the questions refer to secondary objects of the image or objects in the background, thus making the task a bit tricky. A simple solution seemed to be to segment the query image and then add it to the prompt. For this visual augmentation of the prompt, we employed the CLIPSeg model and the Oneformer model. A demonstration of the above can be seen in the following figure.
+In this task, we used the guided vqa dataset (300 samples) (cite). A sample consists of two pairs of images-captions, a question, a question image and the answer to the question. It is found that the model struggles to perform well in this task. This is due to the fact that some of the questions refer to secondary objects of the image or objects in the background, thus making the task a bit tricky. A simple solution seemed to be to segment the query image and then add it to the prompt. For this visual augmentation of the prompt, we employed the CLIPSeg model and the Oneformer model. A demonstration of the above can be seen in the following figure.
 
 <p align="center">
   <img src="images_report/gvqa.png" />
@@ -312,7 +324,7 @@ For each of the three settings displayed in the example, 50 textual inputs were 
 
 </div>
 
-These results show an improvement in the performance when the dialog is transformed into one compact sentence. It even performs slightly better than the caption only, while the caption contained fewer details because the questions and answers were not taken into account for this setting. Hereby we can conclude that the fROMAGE model performs better when the textual input is converted into a compact manner instead of using a sequence of unaugmented dialog messages.
+These results show an improvement in the performance when the dialog is transformed into one compact sentence. It even performs slightly better than the caption only, while the caption contained fewer details because the questions and answers were not taken into account for this setting. Hereby we can conclude that the FROMAGe model performs better when the textual input is converted into a compact manner instead of using a sequence of unaugmented dialog messages.
 
 &nbsp;
 
