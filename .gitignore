@@ -9,3 +9,4 @@ cc3m_embeddings.pkl
 Flicker8k_Dataset/
 Flickr8k_text/
 guided_vqa/
+*.out

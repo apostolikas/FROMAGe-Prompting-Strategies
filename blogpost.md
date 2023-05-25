@@ -237,14 +237,14 @@ FROMAGe was trained with the goals of image captioning and image retrieval based
 
 GIFs usually have a duration of a few seconds. This means that they contain far fewer frames to choose from than longer videos. Frame selection is a difficult task on its own since we want the frames to be different from each other and representative of the original sequence as well. For these reasons, we chose to work with GIFs instead of videos for captioning.
 
-To simplify the frame selection procedure we sampled frames uniformly. In addition, to experiment with different amounts of visual context, we run the evaluation for two settings: 5 frames per GIF and 10 frames per GIF. We used cosine similarity as an evaluation metric to compare the contextual similarity of the model's captions and the original ones. Exactly 5,000 GIFs of the dataset were evaluated for each setting. The prompt template used was to add "Give caption as video." after the list of selected frames. The results are shown in the table bellow.
+To simplify the frame selection procedure we sampled frames uniformly. In addition, to experiment with different amounts of visual context, we run the evaluation for two settings: 5 frames per GIF and 10 frames per GIF. We used cosine similarity as an evaluation metric to compare the contextual similarity of the model's captions and the original ones. Exactly 5,000 GIFs of the evaluation dataset were evaluated for each setting. The prompt template used was to add "Give caption as video." after the list of selected frames. The results are shown in the table bellow.
 
 <div align="center">
 
-| Frames per GIF | Average Cosine Similarity |
-| -------------- | ------------------------- |
-| 5              | 0.307 ± 0.186             |
-| 10             | 0.288 ± 0.174             |
+| Frames per GIF | Average Cosine Similarity | CIDEr | Rouge | BLEU                         |
+| -------------- | ------------------------- | ----- | ----- | ---------------------------- | 
+| 5              | 0.307 ± 0.186             | 0.180 | 0.165 | [ 0.182, 0.081, 0.035, 0.017 ] |
+| 10             | 0.288 ± 0.174             | 0.181 | 0.159 | [ 0.161, 0.073, 0.031, 0.014 ] |
 
 </div>
 
