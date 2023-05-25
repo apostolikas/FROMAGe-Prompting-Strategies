@@ -2,9 +2,29 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 import pandas as pd
-
 from transformers import AutoTokenizer, AutoModel
+from eval_metrics.cider import Cider
+from eval_metrics.rouge import Rouge
+from eval_metrics.bleu import Bleu
+import pandas as pd
 
+
+def bleu(refs,labels):
+    scorer = Bleu(n=4)
+    score, scores = scorer.compute_score(refs,labels)
+    print('bleu = %s' % score)
+
+
+def cider(refs,labels):
+    scorer = Cider()
+    (score, scores) = scorer.compute_score(refs,labels)
+    print('cider = %s' % score)
+
+
+def rouge(refs,labels):
+    scorer = Rouge()
+    score, scores = scorer.compute_score(refs,labels)
+    print('rouge = %s' % score)
 
 def cos_sim(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
     if len(a.shape) == 1:
@@ -54,3 +74,23 @@ print(results_path)
 print('==================')
 print(np.mean(cos_sim_scores))
 print(np.std(cos_sim_scores))
+
+        
+res5 = pd.read_csv('results5.csv',  delimiter=';')
+res10 = pd.read_csv('results10.csv', delimiter=';')
+
+captions5 = list(res5['model_caption'])
+captions10 = list(res10['model_caption'])
+ans = list(res10['gif_caption'])
+
+refs = {}
+targets_refs = {}
+
+for i in range(len(ans)):
+    refs[i] = [list(res5['model_caption'])[i],list(res10['model_caption'])[i]]
+    targets_refs[i] = [ans[i]]
+    
+print('\n')
+cider(refs,targets_refs)
+rouge(refs,targets_refs)
+bleu(refs,targets_refs)
