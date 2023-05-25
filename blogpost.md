@@ -82,15 +82,17 @@ For simplicity, the table below provides an overview of the experiments conducte
 
 <div align="center">
 
-|             Task            	|      Dataset      	| Samples 	            |                           Goal                          	|
-|:---------------------------:	|:-----------------:	|:------------------:	|:-------------------------------------------------------:	|
-|     Visual Storytelling     	|       VIST        	|         100         	|             Verify the claims of the authors            	|
-|       Image Captioning      	| Cropped Flickr-8k 	|         214        	| Explore the effect of visual augmentation of the prompt 	|
-| Image Retrieval (from text) 	| Cropped Flickr-8k 	|         214        	|  Explore the effect of text augmentation of the prompt  	|
-|     Image Classification    	|   mini-Imagenet   	|                    	|    Remove the recency bias with visual augmentations    	|
-|       Video Captioning      	|       TGIF        	|         5000        	|       Explore the in-context abilities of FROMAGe       	|
-| Visual Question Answering     |    Guided-VQA        	|         300          	| Reveal possible limitations of ICL & prompt augmentations |
-
+|             Task            	|      Dataset        |                           Goal                          	|
+|:---------------------------:	|:-----------------:	|:-------------------------------------------------------:	|
+|     Visual Storytelling     	|       VIST        	|             Verify the claims of the authors            	|
+|       Image Captioning      	| Cropped Flickr-8k 	| Explore the effect of visual augmentation of the prompt 	|
+| Image Retrieval (from text) 	| Cropped Flickr-8k 	| Explore the effect of text augmentation of the prompt  	|
+|     Image Classification    	|   mini-Imagenet   	| Remove the recency bias with visual augmentations    	|
+|       Video Captioning      	|       TGIF        	| Explore the in-context abilities of FROMAGe       	|
+| Visual Question Answering     |    Guided-VQA       | Reveal possible limitations of ICL & prompt augmentations |
+| Visual Question Answering     |    Guided-VQA       | Reveal possible limitations of ICL & prompt augmentations |
+|        Visual Dialog          |     VisDial         | Explore the effect of compressing a dialog prompt          |
+  
 </div>
 
 &nbsp;
