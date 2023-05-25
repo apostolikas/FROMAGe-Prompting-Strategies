@@ -29,22 +29,14 @@ if __name__ == '__main__':
     unaugmented = pd.read_csv('flickr_vis_augm2.txt', header=None, delimiter='\r\n')
     answers = pd.read_csv('flickr_vis_augm3.txt', header=None, delimiter='\r\n')
 
-    augmented_output = {}
-    unaugmented_output = {}
+    refs = {}
     targets = {}
 
     for i in range(len(augmented)):
-        augmented_output[i] = [(augmented.iloc[i,0])]
+        refs[i] = [(unaugmented.iloc[i,0]),(augmented.iloc[i,0])]
         targets[i] = [(answers.iloc[i,0])]
-        unaugmented_output[i] = [(unaugmented.iloc[i,0])]
         
     print('\n')
-    print('Scores for unaugmented output - labels')
-    cider(unaugmented_output,targets)
-    rouge(unaugmented_output,targets)
-    bleu(unaugmented_output,targets)
-    print('\n')
-    print('Scores for augmented output - labels')
-    cider(augmented_output,targets)
-    rouge(augmented_output,targets)
-    bleu(augmented_output,targets)
+    cider(refs,targets)
+    rouge(refs,targets)
+    bleu(refs,targets)
