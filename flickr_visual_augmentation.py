@@ -46,7 +46,7 @@ if __name__ == '__main__':
     for img_id, cap_id in zip(cropped_df.image_id, cropped_df.caption_id):
         caption = cap_dict[cap_id]
         data_dict[img_id] = caption
-    vqa_data = split_dictionary(data_dict,1)
+    data = split_dictionary(data_dict,1)
 
     # Load model used in the paper.
     model_dir = './fromage_model/'
@@ -56,28 +56,30 @@ if __name__ == '__main__':
     tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
     lm = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
 
-    np.random.seed(0)
-    np.random.shuffle(vqa_data)
-    vqa_images_folder = './Flicker8k_Dataset/'
+    flickr_images_folder = './Flicker8k_Dataset/'
     unaugmented_scores = []
     augmented_scores = []
     i = 0
+    line = []
+    line1 = []
+    line2 = []
+    line3 = []    
 
-    for vqa_dict in vqa_data:
+    for dict_data in data:
         try:
             i+=1
-            vqa_keys = list(vqa_dict.keys())
-            vqa_values = list(vqa_dict.values())
+            sample_keys = list(dict_data.keys())
+            sample_values = list(dict_data.values())
 
             # Load query image & caption
-            question_image_path = vqa_keys[0]
+            question_image_path = sample_keys[0]
             question_image = Image \
-                .open(os.path.join(vqa_images_folder,question_image_path)) \
+                .open(os.path.join(flickr_images_folder,question_image_path)) \
                 .resize((224, 224)) \
                 .convert('RGB')
             #question_image.save(str(i)+'_query_image.jpg')
             question = 'Caption the image.'
-            answer = vqa_values[0]
+            answer = sample_values[0]
 
             # Generate caption using the unaugmented prompt
             unaugmented_prompt = [question_image,question]
@@ -126,8 +128,20 @@ if __name__ == '__main__':
             print("Ground truth :", answer)
             print('---------------------------------')
 
+            line1.append(str(augmented_output[0])+'\n')
+            line2.append(str(unaugmented_output[0])+'\n')
+            line3.append(str(answer)+'\n')
         except:
             continue
 
     print("Average Cosine Similarity with target using visual augmentations :",np.mean(augmented_scores))
     print("Average Cosine Similarity with target without augmentations :",np.mean(unaugmented_scores))
+
+    with open('flickr_vis_augm.txt', 'w') as f: 
+        f.writelines(line)
+    with open('flickr_vis_augm1.txt', 'w') as f1: 
+        f1.writelines(line1)
+    with open('flickr_vis_augm2.txt', 'w') as f2: 
+        f2.writelines(line2)
+    with open('flickr_vis_augm3.txt', 'w') as f3: 
+        f3.writelines(line3)
