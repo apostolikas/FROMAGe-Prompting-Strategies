@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage-2/
 
-srun python -u frames_eval.py
+srun python -u eval.py

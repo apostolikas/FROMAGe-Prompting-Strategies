@@ -3,9 +3,9 @@ import torch.nn.functional as F
 import numpy as np
 import pandas as pd
 from transformers import AutoTokenizer, AutoModel
-from eval_metrics.cider import Cider
-from eval_metrics.rouge import Rouge
-from eval_metrics.bleu import Bleu
+from src.video_captioning.scripts.eval_metrics.cider import Cider
+from src.video_captioning.scripts.eval_metrics.rouge import Rouge
+from src.video_captioning.scripts.eval_metrics.bleu import Bleu
 import pandas as pd
 
 
@@ -75,20 +75,13 @@ print('==================')
 print(np.mean(cos_sim_scores))
 print(np.std(cos_sim_scores))
 
-        
-res5 = pd.read_csv('results5.csv',  delimiter=';')
-res10 = pd.read_csv('results10.csv', delimiter=';')
-
-captions5 = list(res5['model_caption'])
-captions10 = list(res10['model_caption'])
-ans = list(res10['gif_caption'])
 
 refs = {}
 targets_refs = {}
 
-for i in range(len(ans)):
-    refs[i] = [list(res5['model_caption'])[i],list(res10['model_caption'])[i]]
-    targets_refs[i] = [ans[i]]
+for i in range(len(targets)):
+    refs[i] = [preds[i]]
+    targets_refs[i] = [targets[i]]
     
 print('\n')
 cider(refs,targets_refs)
