@@ -296,7 +296,7 @@ Three settings are being used for retrieving images:
 
 To evaluate the difference in performance, the average accuracy of 3 retrieved images was measured. The images were annotated with a '0' if the retrieved images were incorrect, '0.5' if they captured the most important information, and '1' if they captured all the information. An example of the dialog together with the augmented caption created by ChatGPT is shown in the table below. Also, the images that are being retrieved at the highest ranked are shown for the 3 different settings with their corresponding score.
 
-<img src="example_imgs/img_table.png" alt="Image" />
+<img src="images_report/img_table.png" alt="Image" />
 
 For each of the three settings displayed in the example, 50 textual inputs were given to the model and 3 images were retrieved for each input. Those 3 images were taken into account to establish the performance for each run. The results are shown in the table below:
 
