@@ -113,7 +113,7 @@ For the first experiment, the authors assessed the performance of FROMAGe in ret
 
 The goal of this experiment was to observe the performance of FROMAGe in image retrieval when more context was provided as input. The first setting provided only the last sentence of the dialog, the second setting provided all but only the sentences of the dialog and the third setting provided the whole dialog (sentences and images except the last image of course).
 
-From those different settings, it was observed that the performance in image retrieval increased when more context was given as input. A lot of manual annotation was necessary for the evaluation of this experiment, which was infeasible in the context of this project.
+From those different settings, it was observed that the performance in image retrieval increased when more context was given as input. A lot of manual annotation was necessary for evaluating this experiment in terms of the metrics used by the authors, which was infeasible in the context of this project.
 
 <p align="center">
   <img src="images_report/vist-trend-from-paper.png" />
@@ -153,7 +153,7 @@ Although the model was trained on the CC3M dataset, it is useful to check how it
   <img src="images_report/Visual_augmentation_of_prompt.png" />
 </p>
 
-After obtaining the embeddings, the cosine similarity was computed using each token in the text output of the model with each token in the original caption for both cases (i.e. using visual augmentation or not). The results of this experiment can be seen in the following table.
+After obtaining the embeddings, the cosine similarity was computed using each token in the text output of the model with each token in the original caption for both cases (i.e. using visual augmentation or not). The results of this experiment are shown in the following table.
 
 <div align="center">
 
@@ -164,7 +164,7 @@ After obtaining the embeddings, the cosine similarity was computed using each to
 
 </div>
 
-It can be seen from the table that giving some similar examples along with the query image leads to the model generating a representative caption of the original image. This means that the generated caption using visual augmentation is closer to the original caption, which serves as a target.
+This table illustrates that giving some similar examples along with the query image leads to the model generating a representative caption of the original image. This indicates that the generated caption using visual augmentation is closer to the original caption, which serves as a target.
 
 
 &nbsp;
@@ -195,7 +195,7 @@ Looking at the results table above, the conclusion is that in most cases, a text
 
 ## Image classification
 
-We evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add to the input two demonstrations -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what was reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predicts the label of the demonstration that is closest in proximity to the test input.
+We evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add two demonstrations to the input -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what was reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predicts the label of the demonstration that is closest in proximity to the test input.
 
 <div align="center">
 
