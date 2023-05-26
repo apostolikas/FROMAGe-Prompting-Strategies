@@ -42,48 +42,51 @@ def mean_pooling(model_output: torch.Tensor, attention_mask: torch.Tensor) -> to
     return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
 
-results_path = 'src/video_captioning/experiments/uniform_5/results.csv'
+if __name__ == '__main__':
 
-results = pd.read_csv(results_path, sep=';', encoding='utf8')
+    # CHANGE THIS PATH TO EVALUATE THE RESULTS OF ANY EXPERIMENT
+    results_path = 'src/gif_captioning/experiments/uniform_5/results.csv'
 
-preds = results['model_caption'].tolist()
-targets = results['gif_caption'].tolist()
+    results = pd.read_csv(results_path, sep=';', encoding='utf8')
 
-tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
-lm = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+    preds = results['model_caption'].tolist()
+    targets = results['gif_caption'].tolist()
 
-cos_sim_scores = []
+    tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+    lm = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
 
-for pred, target in zip(preds, targets):
-     
-    encoded_pred = tokenizer(pred, padding=True, truncation=True, return_tensors='pt')
-    encoded_target = tokenizer(target, padding=True, truncation=True, return_tensors='pt')
+    cos_sim_scores = []
 
-    with torch.no_grad():
-        model_pred = lm(**encoded_pred)
-        model_target = lm(**encoded_target)
+    for pred, target in zip(preds, targets):
+        
+        encoded_pred = tokenizer(pred, padding=True, truncation=True, return_tensors='pt')
+        encoded_target = tokenizer(target, padding=True, truncation=True, return_tensors='pt')
 
-    pred_embeddings = F.normalize(mean_pooling(model_pred, encoded_pred['attention_mask']), p=2, dim=1)
-    target_embeddings = F.normalize(mean_pooling(model_target, encoded_target['attention_mask']), p=2, dim=1)
+        with torch.no_grad():
+            model_pred = lm(**encoded_pred)
+            model_target = lm(**encoded_target)
 
-    score = cos_sim(pred_embeddings, target_embeddings)
-    cos_sim_scores.append(score.item())
+        pred_embeddings = F.normalize(mean_pooling(model_pred, encoded_pred['attention_mask']), p=2, dim=1)
+        target_embeddings = F.normalize(mean_pooling(model_target, encoded_target['attention_mask']), p=2, dim=1)
 
-
-print(results_path)
-print('==================')
-print(np.mean(cos_sim_scores))
-print(np.std(cos_sim_scores))
+        score = cos_sim(pred_embeddings, target_embeddings)
+        cos_sim_scores.append(score.item())
 
 
-refs = {}
-targets_refs = {}
+    print(results_path)
+    print('==================')
+    print(np.mean(cos_sim_scores))
+    print(np.std(cos_sim_scores))
 
-for i in range(len(targets)):
-    refs[i] = [preds[i]]
-    targets_refs[i] = [targets[i]]
-    
-print('\n')
-cider(refs,targets_refs)
-rouge(refs,targets_refs)
-bleu(refs,targets_refs)
+
+    refs = {}
+    targets_refs = {}
+
+    for i in range(len(targets)):
+        refs[i] = [preds[i]]
+        targets_refs[i] = [targets[i]]
+        
+    print('\n')
+    cider(refs,targets_refs)
+    rouge(refs,targets_refs)
+    bleu(refs,targets_refs)
