@@ -231,24 +231,24 @@ In our experiments, we average the logits from 2 content-free inputs: a black im
 
 &nbsp;
 
-## Video Captioning
+## GIF Captioning
 
 FROMAGe was trained with the goals of image captioning and image retrieval based on text. It was also shown by the authors that the model is able to work with a combination of visual and text input and hold a dialog. Every time, though, the model considered images to be independent from each other. This is why we wanted to test the model's ability to receive a sequence of images and caption them as a single video. For this purpose, we used the TGIF dataset [[3]](#tgif) and more specifically this [file](https://github.com/raingo/TGIF-Release/blob/master/data/tgif-v1.0.tsv) as evaluation dataset. 
 
 GIFs usually have a duration of a few seconds. This means that they contain far fewer frames to choose from than longer videos. Frame selection is a difficult task on its own since we want the frames to be different from each other and representative of the original sequence as well. For these reasons, we chose to work with GIFs instead of videos for captioning.
 
-To simplify the frame selection procedure we sampled frames uniformly. In addition, to experiment with different amounts of visual context, we run the evaluation for two settings: 5 frames per GIF and 10 frames per GIF. We used cosine similarity as an evaluation metric to compare the contextual similarity of the model's captions and the original ones. Exactly 5,000 GIFs of the evaluation dataset were evaluated for each setting. The prompt template used was to add "Give caption as video." after the list of selected frames. The results are shown in the table bellow.
+To simplify the frame selection procedure we sampled frames uniformly. In addition, to experiment with different amounts of visual context, we run the evaluation for two settings: 5 frames per GIF and 10 frames per GIF. We used cosine similarity, CIDEr, Rouge and BLEU as evaluation metrics to compare the contextual similarity of the model's captions and the original ones. Exactly 5,000 GIFs of the evaluation dataset were evaluated for each setting. The prompt template used was to add "Give caption as video." after the list of selected frames. The results are shown in the table bellow.
 
 <div align="center">
 
-| Frames per GIF | Average Cosine Similarity | CIDEr | Rouge | BLEU                         |
-| -------------- | ------------------------- | ----- | ----- | ---------------------------- | 
-| 5              | 0.307 ± 0.186             | 0.180 | 0.165 | [ 0.182, 0.081, 0.035, 0.017 ] |
-| 10             | 0.288 ± 0.174             | 0.181 | 0.159 | [ 0.161, 0.073, 0.031, 0.014 ] |
+| Frames per GIF | Average Cosine Similarity | CIDEr | Rouge | BLEU-1 | BLEU-2 | BLEU-3 | BLEU-4 |
+| -------------- | ------------------------- | ----- | ----- | ------ | ------ | ------ | ------ | 
+| 5              | 0.307 ± 0.186             | 0.180 | 0.165 | 0.182  | 0.081  | 0.035  | 0.017  |
+| 10             | 0.288 ± 0.174             | 0.181 | 0.159 | 0.161  | 0.073  | 0.031  | 0.014  |
 
 </div>
 
-We see that the model's captions are not very close to the meaning of the original captions. Furthermore, we see a small yet insignificant decline in the metric when providing more frames as input. In fact, upon closer inspection, we see that the model's captions are getting worse with 10 frames as input. An example is shown below. 
+We see that the model's captions are not very close to the meaning of the original captions. Furthermore, we see a small yet significant decline in the metric when providing more frames as input. In fact, upon closer inspection, we see that the model's captions are getting worse with 10 frames as input. An example is shown below. When more visual context is provided, the model seems to ignore the "Give caption as video." instruction and focuses on the main object across the images. As a result, the model fails to produce a good GIF caption.
 
 <p align="center">
   <img src="images_report/skating.gif" /><br>
@@ -265,8 +265,6 @@ We see that the model's captions are not very close to the meaning of the origin
   Caption with 10 frames: a skateboarder skateboarder in the skateboarder in the art.
   
 </p>   
-
-When more visual context is provided, the model seems to ignore the "Give caption as video." instruction and focuses on the main object across the images. As a result, the model fails to produce a good video caption.
 
 
 &nbsp;
