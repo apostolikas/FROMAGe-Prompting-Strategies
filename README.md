@@ -5,7 +5,7 @@ This repository contains the implementation of the FROMAGe model as proposed in 
 # Instructions
 
 The blogpost.md provides a mini report of the strategies and the experiments conducted in this work. It also contains the results and a discussion of them. 
-For your convenience, there are also some demos in the demos folder where you can run them and get a first experience of how the model works in each task and how some augmentations might actually help it perform even better.
+For your convenience, there are also some demos you can run and get a first experience of how the model works in each task and how some augmentations might actually help it perform even better.
 
 Before you run anything, it is very important to follow the steps below:
 1. Clone this repo:
