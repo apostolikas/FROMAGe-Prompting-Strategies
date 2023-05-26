@@ -2,12 +2,12 @@
 
 #SBATCH --partition=gpu_titanrtx_shared_course
 #SBATCH --gres=gpu:1
-#SBATCH --job-name=frames_inference
+#SBATCH --job-name=gif_inference
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
 #SBATCH --time=00:10:00
 #SBATCH --mem=64000M
-#SBATCH --output=frames_inference_%A.out
+#SBATCH --output=gif_inference_%A.out
 
 module purge
 module load 2021
@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage-2/
 
-srun python -u frames_inference.py
+srun python -u gif_inference.py
