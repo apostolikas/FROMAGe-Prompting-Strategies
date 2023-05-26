@@ -1,4 +1,4 @@
-from src.video_captioning.scripts.eval_metrics.cider_scorer import CiderScorer
+from src.gif_captioning.scripts.eval_metrics.cider_scorer import CiderScorer
 import pdb
 
 class Cider:

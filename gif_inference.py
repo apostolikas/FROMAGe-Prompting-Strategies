@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 from fromage import models
-from src.video_captioning.scripts import help_functions as hf
+from src.gif_captioning.scripts import help_functions as hf
 
 
 num_gifs = 2

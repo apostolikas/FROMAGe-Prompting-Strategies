@@ -1,4 +1,4 @@
-from src.video_captioning.scripts.eval_metrics.bleu_scorer import BleuScorer
+from src.gif_captioning.scripts.eval_metrics.bleu_scorer import BleuScorer
 
 class Bleu:
     def __init__(self, n=4):

@@ -3,9 +3,9 @@ import torch.nn.functional as F
 import numpy as np
 import pandas as pd
 from transformers import AutoTokenizer, AutoModel
-from src.video_captioning.scripts.eval_metrics.cider import Cider
-from src.video_captioning.scripts.eval_metrics.rouge import Rouge
-from src.video_captioning.scripts.eval_metrics.bleu import Bleu
+from src.gif_captioning.scripts.eval_metrics.cider import Cider
+from src.gif_captioning.scripts.eval_metrics.rouge import Rouge
+from src.gif_captioning.scripts.eval_metrics.bleu import Bleu
 import pandas as pd
 
 
