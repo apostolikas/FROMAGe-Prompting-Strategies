@@ -295,7 +295,7 @@ The Visual Dialog dataset is chosen to perform this experiment. This dataset con
 
 Three settings are being used for retrieving images: 
 1. Caption Only
-2. Unaugmented dialog
+2. Unaugmented caption and dialog
 3. Augmented dialog by GPT-3
 
 To evaluate the difference in performance, the average accuracy of 3 retrieved images was measured. The images were annotated with a '0' if the retrieved images were incorrect, '0.5' if they captured the most important information, and '1' if they captured all the information. An example of the dialog together with the augmented caption created by GPT-3 is shown in the table below. Also, the images that are being retrieved at the highest ranked are shown for the 3 different settings with their corresponding score.
@@ -309,7 +309,7 @@ For each of the three settings displayed in the example, 50 textual inputs were 
 | Input                                      | Accuracy                  |
 | ------------------------------------------ | ------------------------- |
 | Caption only                               | 0.54                      |
-| Unaugmented dialog                         | 0.40                      |
+| Unaugmented caption and dialog             | 0.40                      |
 | Augmented dialog by GPT-3                  | 0.60                      |
 
 </div>
