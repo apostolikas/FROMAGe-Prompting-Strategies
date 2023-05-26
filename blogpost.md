@@ -159,22 +159,14 @@ After obtaining the embeddings, the cosine similarity was computed using each to
 
 <div align="center">
 
-|  Prompt  	| Cosine Similarity 	| 
-|:---------:	|:-----------------:	|
-| With augmentation 	|         0.478         |
-| No augmentation 	    |         0.343         |
+|  Prompt  	| Cosine Similarity |  CIDEr  	| ROUGE 	|  BLEU-1 |  BLEU-2 |  BLEU-3 |  BLEU-4 |
+|:---------:	|:-----------------:	|:---------:	|:-------------:	|:------:	|:----------:	|:----------:	|:--------- |
+| With augmentation 	|         0.478         |0.241|0.144|0.135| 0.06| 0.02| 0.01|
+| No augmentation 	    |         0.343         |0.339|0.204|0.203| 0.102| 0.05| 0.02|
 
 </div>
 
-This table illustrates that giving some similar examples along with the query image leads to the model generating a representative caption of the original image. This indicates that the generated caption using visual augmentation is closer to the original caption, which serves as a target. In order to have a more clear view of the results, some additional metrics are reported in the following table.
-
-<div align="center">
-
-|  CIDEr  	| ROUGE 	|  BLEU-1 |  BLEU-2 |  BLEU-3 |  BLEU-4 
-|:---------:	|:-------------:	|:------:	|:----------:	|:----------:	|:---------:	|
-| 0.282 	|     0.240    | 0.249 | 0.127 | 0.06 | 0.03|
-
-</div>
+This table illustrates that giving some similar examples along with the query image leads to the model generating a representative caption of the original image. This indicates that the generated caption using visual augmentation is closer to the original caption, which serves as a target. In order to have a more clear view of the results, some additional metrics are also reported 
 
 In short, these metrics are commonly used in the field of image captioning. 
 - CIDEr takes into account both the quality of individual words and the overall consensus between the generated and reference captions. It considers that a good caption should use diverse and descriptive vocabulary, capture important visual information, and be understandable to humans. CIDEr involves many steps such as calculating tf, tf-idf, cosine similarity etc.
