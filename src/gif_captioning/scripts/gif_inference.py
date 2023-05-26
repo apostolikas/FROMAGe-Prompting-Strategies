@@ -3,15 +3,15 @@ import os
 import pandas as pd
 
 from fromage import models
-from src.video_captioning.scripts import help_functions as hf
+from src.gif_captioning.scripts import help_functions as hf
 
 
 num_gifs = 2
 frames_per_gif = 5
-temp_path = 'src/video_captioning/scripts/temp.gif'
+temp_path = 'temp.gif'
 model_dir = 'fromage_model/'
-results_path = f'src/video_captioning/experiments/uniform_{frames_per_gif}/results-2.csv'
-tgif_path = 'src/video_captioning/data/tgif_dataset.csv'
+results_path = f'src/gif_captioning/experiments/uniform_{frames_per_gif}/results.csv'
+tgif_path = 'src/gif_captioning/data/tgif_dataset.csv'
 
 
 # Load model used in the paper.
