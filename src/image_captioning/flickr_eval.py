@@ -29,14 +29,23 @@ if __name__ == '__main__':
     unaugmented = pd.read_csv('flickr_vis_augm2.txt', header=None, delimiter='\r\n')
     answers = pd.read_csv('flickr_vis_augm3.txt', header=None, delimiter='\r\n')
 
-    refs = {}
+    unaugmented_refs = {}
+    augmented_refs = {}
     targets = {}
 
     for i in range(len(augmented)):
-        refs[i] = [(unaugmented.iloc[i,0]),(augmented.iloc[i,0])]
+        unaugmented_refs[i] = [(unaugmented.iloc[i,0])]
+        augmented_refs[i] = [(augmented.iloc[i,0])]
         targets[i] = [(answers.iloc[i,0])]
         
+    print('Printing scores for the case of not using any augmentation:')
+    cider(unaugmented_refs,targets)
+    rouge(unaugmented_refs,targets)
+    bleu(unaugmented_refs,targets)
     print('\n')
-    cider(refs,targets)
-    rouge(refs,targets)
-    bleu(refs,targets)
+    print('Printing scores for the case of using visual augmentation:')
+    cider(augmented_refs,targets)
+    rouge(augmented_refs,targets)
+    bleu(augmented_refs,targets)
+
+
