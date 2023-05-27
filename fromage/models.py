@@ -472,19 +472,8 @@ class FromageModel(nn.Module):
                temperature: float = 0.0, top_p: float = 1.0, min_word_tokens: int = 0,
                ret_scale_factor: float = 1.0, filter_value: float = -float('Inf'), content_free_logits: list = [],
                constrained_ids:Tensor=None):
-    """Runs greedy decoding and returns generated captions.
+    """Runs constraint decoding and/or scales based on content_free logits.
 
-    Args:
-      embeddings: Input condition that the model uses for autoregressive generation.
-      max_len: Maximum number of tokens to generate.
-      temperature: Used to modulate logit distribution.
-      top_p: If set to < 1, the smallest set of tokens with highest probabilities that add up to top_p or higher are kept for generation.
-      min_word_tokens: Minimum number of words to generate before allowing a [RET] output.
-      ret_scale_factor: Proportion to scale [RET] token logits by. A higher value may increase the probability of the model generating [RET] outputs.
-      filter_value: Value to assign to tokens that should never be generated.
-    Outputs:
-      out: (N, T) int32 sequence of output tokens.
-      output_embeddings: (N, T, 256) sequence of text output embeddings.
     """
     self.lm.eval()
 
@@ -525,7 +514,7 @@ class FromageModel(nn.Module):
         #! new code subtract the content_free logits
         if content_free_logits!= [] and i <= 4: #not baseline
           logits -= content_free_logits[i]
-        if constrained_ids is not None:
+        if constrained_ids is not None: #! for constrained ids case
           logits = torch.index_select(logits, 1, constrained_ids) # take subset of logits
 
           subset_id = torch.argmax(logits, keepdim=True, dim=-1).item()  # find max in subset
@@ -538,32 +527,6 @@ class FromageModel(nn.Module):
         output_logits.append(logits)
 
         past_key_values = output.past_key_values
-
-        # if temperature == 0.0:
-        #   if top_p != 1.0:
-        #     raise ValueError('top_p cannot be set if temperature is 0 (greedy decoding).')
-        #   next_token = torch.argmax(logits, keepdim=True, dim=-1)  # (N, 1)
-        # else:
-        #   logits = logits / temperature
-
-        #   # Apply top-p filtering.
-        #   if top_p < 1.0:
-        #     assert top_p > 0, f'top_p should be above 0, got {top_p} instead.'
-        #     sorted_logits, sorted_indices = torch.sort(logits, descending=True)  # (N, D) and (N, D)
-        #     cumulative_probs = torch.cumsum(F.softmax(sorted_logits, dim=-1), dim=-1) # (N, D)
-
-        #     # Remove tokens with cumulative probability above the threshold
-        #     sorted_indices_to_remove = cumulative_probs > top_p
-        #     # Shift the indices to the right to keep also the first token above the threshold
-        #     sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()
-        #     sorted_indices_to_remove[..., 0] = 0
-
-        #     for j in range(sorted_indices.shape[0]):
-        #       indices_to_remove = sorted_indices[j, sorted_indices_to_remove[j, :]]
-        #       logits[j, indices_to_remove] = filter_value
-
-        #   token_weights = logits.exp()   # (N, vocab_size)
-        #   next_token = torch.multinomial(token_weights, 1)  # (N, 1)
 
         next_token = next_token.long().to(embeddings.device)
         if out is not None:

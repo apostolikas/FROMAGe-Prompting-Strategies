@@ -10,6 +10,7 @@ from PIL import Image, UnidentifiedImageError
 import torch
 import argparse
 from fromage.data import load_real_mi
+from similarities import get_ordered_dict
 
 
 def get_constrained_ids(dict_model_input, num_examples=2):
@@ -58,9 +59,8 @@ def main(args):
     create_pickle(f'dict_model_input_int_ways_{args.num_ways}.pickle', dict_model_input)
 
   if args.order and args.num_ways==2:
-    similaties = load_pickle('clip_sim_img2img.pickle')
     print(f'{dict_model_input[1]}')
-    dict_model_input = change_order(dict_model_input, similaties)
+    dict_model_input = get_ordered_dict(dict_model_input,args.num_ways)  
     print('changed order of examples')
     print(f'{dict_model_input[1]}')
   if args.constraint:
@@ -82,6 +82,7 @@ def main(args):
   pairs=[]
   num_words = args.num_words
   print(f'num_words {num_words}')
+  order_str = '_order_sim' if args.order else ''
   for i in tqdm(dict_model_input):
     prompts = dict_model_input[i]
     ans = dict_question_captions[i]
@@ -93,10 +94,14 @@ def main(args):
                                                     constrained_ids=tmp_constr_ids, baseline=baseline) 
     pairs.append((model_outputs, ans))
     if i%100==0:
-      create_pickle(f'{constraint_str}_{baseline_str}_ways{args.num_ways}.pickle',pairs)
-
-  create_pickle(f'{constraint_str}_{baseline_str}_ways{args.num_ways}.pickle',pairs)
-  # create_pickle('all_mini_net.pickle',pairs)
+      create_pickle(f'{constraint_str}_{baseline_str}_ways{args.num_ways}{order_str}_last.pickle',pairs)
+      
+  tp=0
+  print(f'{constraint_str}_{baseline_str}_ways{args.num_ways}{order_str}_last')
+  for i,(pred,true_label) in enumerate(pairs):
+    if true_label in pred[0]:
+        tp+=1
+  print(f'ACCURACY = {tp/len(pairs)}')
 
 if __name__=='__main__':
   parser = argparse.ArgumentParser(description='Simple settings.')

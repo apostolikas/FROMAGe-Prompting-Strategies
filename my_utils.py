@@ -22,6 +22,25 @@ def change_order(dict_model_input, similaties):
     print('Max similarity first',max_first)
     return ordered_dict_model_input
 
+def change_order_5(dict_model_input, similaties):
+    '''
+        Change the order of the in-context examples based on the images similarities
+        between the images in the input
+    '''
+    ordered_dict_model_input = {}
+    for i,(scores) in enumerate(similaties):
+        key = i+1
+        input = dict_model_input[key]
+        indices = np.argsort(scores)
+        assert(indices.shape[0]*2+2 == len(input))
+        new_input  = []
+        for id in indices:
+            new_input.extend([input[2*id],input[2*id+1]])
+        new_input.extend([input[-2],input[-1]])
+        ordered_dict_model_input[key] = new_input
+
+    return ordered_dict_model_input
+
 def create_pickle(filename, object):
     with open(filename, 'wb') as f:
         pickle.dump(object, f)
