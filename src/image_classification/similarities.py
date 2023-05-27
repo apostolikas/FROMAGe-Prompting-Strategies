@@ -3,6 +3,7 @@ import argparse
 import torch
 from tqdm import tqdm
 from src.image_classification.classification_utils import load_pickle, create_pickle
+import os
 
 # from transformers import ViTImageProcessor, ViTModel
 # def calculate_similarities(dict_model_input, num_ways):
@@ -33,7 +34,8 @@ from src.image_classification.classification_utils import load_pickle, create_pi
 #     return img_sim
 
 def get_similarities(num_ways):
-    img_sim = load_pickle(f'sim_img2img_{num_ways}.pickle')
+    path = os.path.join('./src/image_classification/vision_embeddings_scores/',f'sim_img2img_{num_ways}.pickle')
+    img_sim = load_pickle(path)
     return img_sim
 
 def get_ordered_dict(dict_model_input, num_ways):
