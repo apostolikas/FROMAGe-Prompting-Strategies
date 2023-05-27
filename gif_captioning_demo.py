@@ -1,5 +1,3 @@
-import pandas as pd
-
 from fromage import models
 from src.gif_captioning.scripts import help_functions as hf
 
@@ -29,8 +27,8 @@ num_frames = 5
 ###### PREPARE GIF AS INPUT ######
 
 
-gif_path = 'example.gif'
-frames_path = 'example.png'
+gif_path = 'demo_outputs/gif_example.gif'
+frames_path = 'demo_outputs/gif_example_frames.png'
 
 # You can open the created files to view the gif and the frames.
 # You can delete them after that.
