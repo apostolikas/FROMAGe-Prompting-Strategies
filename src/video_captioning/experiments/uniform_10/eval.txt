@@ -1,4 +1,0 @@
-src/video_captioning/uniform_10/results.csv
-==================
-0.2880963531896938
-0.17418523049048376
