@@ -83,6 +83,7 @@ def get_prompt_list(dialogs_df, num_rows, num_qa_per_dialog, adapt_gpt_prompt, i
 # Display the output of the model, retrieve the images by their url
 def display_output(story_list):
     for element in story_list:
+        print(type(element))
         if type(element) == str:
             # If a dialog is observed, display it line by line
             split_Q = element.split('Q')
@@ -118,9 +119,6 @@ dialog_list_cap = get_prompt_list(dialogs_df, num_rows, num_qa_per_dialog, False
 dialog_list_cap_dialog = get_prompt_list(dialogs_df, num_rows, num_qa_per_dialog, False, True)
 dialog_list_gpt = get_prompt_list(dialogs_df, num_rows, num_qa_per_dialog, True, True)
 
-print("DIALOG LIST")
-print(dialog_list_cap)
-
 counter = 0
 for i in range(len(dialog_list_cap)):
     print("Experiment num is", i)
@@ -137,12 +135,6 @@ for i in range(len(dialog_list_cap)):
 
         # Add the prompts with the image id to the prompt list and the output containing urls to the model outputs
         if image_outputs_cap is not None and image_outputs_cap_dialog is not None and image_outputs_gpt is not None:
-            print('\n\n')
-            print("THIS IS THE INPUT + OUTPUT LIST AND INPUT TO DISPLAY FUNCTION")
-            print(prompt_cap)
-            print(prompt_cap_dialog)
-            print(prompt_gpt)
-            print('\n\n')
             print("Model output for only the caption")
             display_output(prompt_cap)
             display_output(image_outputs_cap)
