@@ -89,27 +89,31 @@ if __name__ == '__main__':
 
     # Load data
     print('Loading data...')
-    with open('./guided_vqa/guided_vqa_shots_1_ways_2_all_questions.json', 'r') as f:
-        vqa_data = json.load(f)
-    vqa_sublist = vqa_data[20:22]
-    vqa_images_folder = './guided_vqa'
+
+    question_image_1 = Image.open(os.path.join('./src/visual_qa/demo_images/','gvqa_1_3.jpg')).resize((224, 224)).convert('RGB')
+    image_1 = Image.open(os.path.join('./src/visual_qa/demo_images/','gvqa_1_1.jpg')).resize((224, 224)).convert('RGB')
+    image_2 = Image.open(os.path.join('./src/visual_qa/demo_images/','gvqa_1_2.jpg')).resize((224, 224)).convert('RGB')
+
+    question_image_2 = Image.open(os.path.join('./src/visual_qa/demo_images/','gvqa_2_3.jpg')).resize((224, 224)).convert('RGB')
+    image_3 = Image.open(os.path.join('./src/visual_qa/demo_images/','gvqa_2_1.jpg')).resize((224, 224)).convert('RGB')
+    image_4 = Image.open(os.path.join('./src/visual_qa/demo_images/','gvqa_2_2.jpg')).resize((224, 224)).convert('RGB')
+    
+    vqa_list = [
+                [image_1, "This is a coat", image_2, "This is a jacket", question_image_1, "What kind of a coat is that?", "That is a blue coat."],
+                [image_3, "This is a sink", image_4, "This is a cabinet", question_image_2, "What color is the sink on the left?", "Black."]
+                ]
     print('Data loaded successfully!')
 
     print('Inference loop for 2 samples starts.\n')
-    for vqa_dict in vqa_sublist:
+    for vqa_data in vqa_list:
         
-        image1_path = vqa_dict['image_1']
-        image1 = Image.open(os.path.join(vqa_images_folder,image1_path)).resize((224, 224)).convert('RGB')
-        caption1 = vqa_dict['caption_1']
-
-        image2_path = vqa_dict['image_2']
-        image2 = Image.open(os.path.join(vqa_images_folder,image2_path)).resize((224, 224)).convert('RGB')
-        caption2 = vqa_dict['caption_2']
-
-        question_image_path = vqa_dict['question_image']
-        question_image = Image.open(os.path.join(vqa_images_folder,question_image_path)).resize((224, 224)).convert('RGB')
-        question = vqa_dict['question']
-        answer = vqa_dict['answer']
+        image1 = vqa_data[0]
+        caption1 = vqa_data[1]
+        image2 = vqa_data[2]
+        caption2 = vqa_data[3]
+        question_image = vqa_data[4]
+        question = vqa_data[5]
+        answer = vqa_data[6]
 
         # ClipSeg - segment query image 
         segmented_pil_image = clipseg_segment_image(question_image)
