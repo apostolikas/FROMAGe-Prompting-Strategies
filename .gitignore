@@ -12,3 +12,4 @@ guided_vqa/
 *.out
 *.pt 
 real_name_mi/
+/visual_dialog/VisualDialog_val2018/
