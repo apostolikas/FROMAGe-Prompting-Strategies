@@ -21,62 +21,6 @@ def collate_fn(batch):
     batch = list(filter(lambda x: x is not None, batch))
     return torch.utils.data.dataloader.default_collate(batch)
 
-def load_real_mi():
-
-  with open('./real_name_mi/real_name_mi_shots_1_ways_2_all_questions.json', 'r') as f:
-        mi_data = json.load(f)
-
-  mi_images_folder = './real_name_mi'
-  #onlyfiles = [f for f in listdir(mi_images_folder) if isfile(join(mi_images_folder, f))]
-
-  test_images_info = []
-  mi_images_folder = './real_name_mi'
-
-  #! it seems that SAM automatically resizes the images to (1024, 1024) by using padding
-  dict_model_input = {} #question_id: [img1, caption1, img2, caption2, img3]
-  dict_question_captions = {} # question_id: caption
-  dict_prompt_images = {} # question_id:[img1,img2]
-  dict_prompt_captions = {} # question_id:[caption1, caption2]
-  for i,image_info in enumerate(mi_data):
-      # img_q = Image.open(os.path.join(mi_images_folder,image_info['question_image']))
-      # img_prompt1 = Image.open(os.path.join(mi_images_folder,image_info['image_1']))
-      # img_prompt2 = Image.open(os.path.join(mi_images_folder,image_info['image_2']))
-      question_id = int(image_info['question_id'])
-      assert(i+1 == question_id)
-      # read the images the same way like the segment_anything paper does
-      img_q = cv2.imread(os.path.join(mi_images_folder,image_info['question_image']))
-      img_q = cv2.cvtColor(img_q, cv2.COLOR_BGR2RGB)
-      img_q = Image.fromarray(img_q)
-      img_q = img_q.resize((224,224))
-
-      img_ex1 = cv2.imread(os.path.join(mi_images_folder,image_info['image_1']))
-      img_ex1 = cv2.cvtColor(img_ex1, cv2.COLOR_BGR2RGB)
-      img_ex1 = Image.fromarray(img_ex1)
-      img_ex1 = img_ex1.resize((224,224))
-
-      img_ex2 = cv2.imread(os.path.join(mi_images_folder,image_info['image_2']))
-      img_ex2 = cv2.cvtColor(img_ex2, cv2.COLOR_BGR2RGB)
-      img_ex2 = Image.fromarray(img_ex2)
-      img_ex2 = img_ex2.resize((224,224))
-      
-      dict_prompt_images[question_id] = [img_ex1, img_ex2]
-      
-      caption_q_answer = image_info['answer']
-      text_q_prompt = image_info['question']
-      text_ex1 = image_info['caption_1']
-      text_ex2 = image_info['caption_2']
-
-      
-      dict_question_captions[question_id] = caption_q_answer
-      # only_caption_ex1_no_text = remove_caption_prefix(caption_ex1)
-      # only_caption_ex2_no_text = remove_caption_prefix(caption_ex2)
-      dict_prompt_captions[question_id] = [text_ex1, text_ex2]
-
-      model_input_list = [img_ex1, text_ex1, img_ex2, text_ex2, img_q, text_q_prompt]
-      dict_model_input[question_id] = model_input_list
-
-  return dict_model_input, dict_question_captions
-
 def preprocess_image(mi_images_folder, img):
   img_q = cv2.imread(os.path.join(mi_images_folder,img))
   img_q = cv2.cvtColor(img_q, cv2.COLOR_BGR2RGB)

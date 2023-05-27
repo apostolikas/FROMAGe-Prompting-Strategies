@@ -163,38 +163,6 @@ class FromageModel(nn.Module):
     if self.args.freeze_vm:
       self.visual_model.eval()
 
-  def calculate_class_ids(self):
-    classes=[' electric guitar',			
-    ' golden retriever',
-    ' malamute',
-    ' mixing bowl',
-    ' cuirass',
-    ' dalmatian',
-    ' african hunting dog',
-    ' lion',
-    ' crate',
-    ' bookshop',
-    ' vase',
-    ' nematode',
-    ' hourglass',
-    ' ant',
-    ' king crab',
-    ' black-footed ferret',
-    ' scoreboard',
-    ' theater curtain',
-    ' school bus',
-    ' trifle']
-    set_class_ids = set()
-    for class_ in classes:
-        ids = self.tokenizer.encode_plus(class_)['input_ids'][1:]
-        set_class_ids.update(ids)
-
-    class_ids = torch.tensor(list(set_class_ids))
-    self.class_ids = class_ids
-
-  def get_class_ids(self):
-    return self.class_ids
-
   def forward(
     self,
     pixel_values: torch.FloatTensor,

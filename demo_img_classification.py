@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 from fromage import models
-from my_utils import load_pickle
+from classification_utils import load_pickle
 
 model_dir = './fromage_model/'
 model = models.load_fromage(model_dir)

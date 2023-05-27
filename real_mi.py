@@ -1,4 +1,4 @@
-from my_utils import load_pickle, create_pickle, set_seed, remove_caption_prefix, change_order
+from classification_utils import load_pickle, create_pickle, set_seed, remove_caption_prefix, change_order
 from fromage import models
 import torch.utils.data as data
 from transformers import GPT2Tokenizer

@@ -1,8 +1,8 @@
-from my_utils import load_pickle,change_order, change_order_5
+from classification_utils import load_pickle,change_order, change_order_5
 import argparse
 import torch
 from tqdm import tqdm
-from my_utils import load_pickle, create_pickle
+from classification_utils import load_pickle, create_pickle
 
 # from transformers import ViTImageProcessor, ViTModel
 # def calculate_similarities(dict_model_input, num_ways):
