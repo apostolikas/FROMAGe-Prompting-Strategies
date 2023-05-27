@@ -15,7 +15,7 @@ from torch.utils.data import Dataset
 import json
 import cv2#!
 from fromage import utils
-
+import os
 
 def collate_fn(batch):
     batch = list(filter(lambda x: x is not None, batch))
@@ -29,14 +29,13 @@ def preprocess_image(mi_images_folder, img):
   return img_q
 
 def load_real_mi(k=2):
-
-  with open(f'./real_name_mi/real_name_mi_shots_1_ways_{k}_all_questions.json', 'r') as f:
+  path=os.path.join(f'./src/image_classification/real_name_mi/',f'real_name_mi_shots_1_ways_{k}_all_questions.json')
+  with open(path, 'r') as f:
         mi_data = json.load(f)
 
-  mi_images_folder = './real_name_mi'
+  mi_images_folder = './src/image_classification/real_name_mi/'
   #onlyfiles = [f for f in listdir(mi_images_folder) if isfile(join(mi_images_folder, f))]
 
-  mi_images_folder = './real_name_mi'
   dict_model_input = {} #question_id: [img1, caption1, img2, caption2, img3]
   dict_question_captions = {} # question_id: caption
   dict_prompt_images = {} # question_id:[img1,img2]

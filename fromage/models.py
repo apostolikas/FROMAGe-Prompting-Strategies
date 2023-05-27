@@ -562,7 +562,7 @@ class Fromage(nn.Module):
     self.white_visual_embs = white_visual_embs
 
 
-  def generate_constr_content_free(self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
+  def other_generate(self, prompts: List, num_words: int = 0, ret_scale_factor: float = 1.0, top_p: float = 1.0, temperature: float = 0.0,
     max_num_rets: int = 1, max_img_per_ret: int = 1, constrained_ids:Tensor=None, baseline:bool=False):
     """
     Encode prompts into embeddings.

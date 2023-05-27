@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 from fromage import models
-from classification_utils import load_pickle
+from src.image_classification.classification_utils import load_pickle
 
 model_dir = './fromage_model/'
 model = models.load_fromage(model_dir)
@@ -22,7 +22,7 @@ print(f'Baseline prediction: {model_outputs[0]} TRUE: {label}')
 
 
 # content free extensio unconstrained
-model_outputs = model.generate_constr_content_free(prompt, num_words=9,max_num_rets=0,
+model_outputs = model.other_generate(prompt, num_words=9,max_num_rets=0,
                                                     constrained_ids=None, baseline=False)
 print('--'*10)
 print(f'Content free extension prediction: {model_outputs[0]} TRUE: {label}')
