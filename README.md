@@ -14,5 +14,5 @@ Before you run anything, it is very important to follow the steps below:
 3. Download the Guided-vqa dataset from this [link](https://drive.google.com/drive/folders/1wkQAqNnIPPijeKgyCUEDtWa56OFkugEY?usp=sharing), unzip and put the folder inside the main directory of the project.
 4. Make sure to install the environment before running any script.
 5. Before running anything make sure to download the cc3m embeddings from this [link](https://drive.google.com/file/d/1wMojZNqEwApNlsCZVvSgQVtZLgbeLoKi/view) and place them in ` fromage_model/ ` directory.
-6. Run the demos (.py format) and explore the FROMAGe's potential on several tasks.
+6. Run the demos (.py format) and explore the FROMAGe's potential on several tasks (The demo_instructions.ipynb contains some further info about the demos).
 
