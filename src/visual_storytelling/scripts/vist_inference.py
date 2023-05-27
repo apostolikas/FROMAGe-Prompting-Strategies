@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 
 from fromage import models
-from visual_storytelling import story_in_sequence
+from src.visual_storytelling.scripts import story_in_sequence
 
 
 parser = argparse.ArgumentParser()
@@ -24,7 +24,7 @@ model = models.load_fromage(model_dir)
 
 
 # Load stories from csv
-stories_csv_path = './visual_storytelling/stories.csv'
+stories_csv_path = './src/visual_storytelling/data/stories.csv'
 stories_df = story_in_sequence.load_stories(stories_csv_path)
 
 
@@ -34,7 +34,7 @@ story_ids = stories_df['story_id'].unique()
 np.random.shuffle(story_ids)
 
 
-vist_images_folder = './visual_storytelling/images'
+vist_images_folder = './src/visual_storytelling/images'
 
 experiment_subfolder = f'{num_captions}_captions_{"with" if include_images else "no"}_images'
 
