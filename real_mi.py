@@ -95,7 +95,7 @@ def main(args):
     pairs.append((model_outputs, ans))
     if i%100==0:
       create_pickle(f'{constraint_str}_{baseline_str}_ways{args.num_ways}{order_str}_last.pickle',pairs)
-      
+
   tp=0
   print(f'{constraint_str}_{baseline_str}_ways{args.num_ways}{order_str}_last')
   for i,(pred,true_label) in enumerate(pairs):
