@@ -1,13 +1,10 @@
-import pandas as pd 
 from PIL import Image
 import os
-import numpy as np
 from fromage import models
 from transformers import AutoTokenizer, AutoModel
 import torch
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
-from src.image_captioning.flickr_visual_augmentation import split_dictionary, cos_sim, mean_pooling
+from src.image_captioning.flickr_visual_augmentation import cos_sim, mean_pooling
 
 
 def compare_embeddings(augmented_caption, unaugmented_caption, answer):
@@ -49,33 +46,24 @@ if __name__ == '__main__':
     print('Models loaded successfully!')
 
     print('Loading data...')
-    # Prepare data for inference
-    df = pd.read_csv('./Flickr8k_text/ExpertAnnotations.txt',delimiter='\t')
-    cropped_df = df.loc[df['expert1'] == 4]
-    cap_df = pd.read_csv('./Flickr8k_text/Flickr8k.token.txt',delimiter='\t')
-    cap_dict = pd.Series(cap_df.cap.values,index=cap_df.cap_id).to_dict()
-    data_dict = {}
-    for img_id, cap_id in zip(cropped_df.image_id, cropped_df.caption_id):
-        caption = cap_dict[cap_id]
-        data_dict[img_id] = caption
-    flickr_data = split_dictionary(data_dict,1)
-    flickr_images_folder = './Flicker8k_Dataset/'
-    flickr_data = [flickr_data[70], flickr_data[32]]
+    image1 = Image.open(os.path.join('./src/image_captioning/demo_images/','ic_1.jpg')).resize((224, 224)).convert('RGB')
+    caption1 = 'Two men are talking on the street ; one is pointing at a sign that says " Jesus or Hell " beneath a red box , and the other is standing there listening .'
+
+    image2 = Image.open(os.path.join('./src/image_captioning/demo_images/','ic_2.jpg')).resize((224, 224)).convert('RGB')
+    caption2 = 'A wrinkled dog wading in shallow water .'
+
+    flickr_data = [[image1,caption1],[image2,caption2]]
     print('Data loaded successfully!')
 
     print('Inference loop for 2 samples starts.\n')
     # Inference loop for 2 samples
-    for flickr_dict in flickr_data:
+    for flickr_list in flickr_data:
         try:
 
-            flickr_keys = list(flickr_dict.keys())
-            flickr_values = list(flickr_dict.values())
-
-            # Load query image & caption
-            question_image_path = flickr_keys[0]
-            question_image = Image.open(os.path.join(flickr_images_folder,question_image_path)).resize((224, 224)).convert('RGB')
+            question_image = flickr_list[0]
             question = 'Caption the image.'
-            answer = flickr_values[0]
+            answer = flickr_list[1]
+
 
             # Generate caption using the unaugmented prompt
             unaugmented_prompt = [question_image,question]
