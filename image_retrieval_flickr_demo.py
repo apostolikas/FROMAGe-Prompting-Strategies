@@ -1,26 +1,8 @@
-import pandas as pd 
 from PIL import Image
 import os
-import numpy as np
 from fromage import models
 from torchvision.transforms import ToTensor
 import torch
-import matplotlib.pyplot as plt
-
-
-def split_dictionary(input_dict: dict, chunk_size: int) -> list:
-    res = []
-    new_dict = {}
-    for k, v in input_dict.items():
-        if len(new_dict) < chunk_size:
-            new_dict[k] = v
-        else:
-            res.append(new_dict)
-            new_dict = {k: v}
-    res.append(new_dict)
-    return res
-
-
 
 
 if __name__ == '__main__':
@@ -32,46 +14,35 @@ if __name__ == '__main__':
     print('Models loaded successfully!')
 
     print('Loading data...')
-    # Extended caption for text augmentation
-    extended_captions = open("./src/image_retrieval_flickr/extended_captions.txt", "r")
-    augmented_captions = [x.rstrip("\n") for x in extended_captions.readlines()]
 
-    # Read the data for the image retrieval task
-    df = pd.read_csv('./Flickr8k_text/ExpertAnnotations.txt',delimiter='\t')
-    cropped_df = df.loc[df['expert1'] == 4]
-    img_cap_list = list(zip(cropped_df.image_id, cropped_df.caption_id))
-    cap_df = pd.read_csv('./Flickr8k_text/Flickr8k.token.txt',delimiter='\t')
-    cap_dict = pd.Series(cap_df.cap.values,index=cap_df.cap_id).to_dict()
-    data_dict = {}
-    for img_id, cap_id in zip(cropped_df.image_id, cropped_df.caption_id):
-        caption = cap_dict[cap_id]
-        data_dict[img_id] = caption 
-    for i,content in enumerate(zip(data_dict.keys(),data_dict.values())):
-        data_dict[content[0]] = (content[1],augmented_captions[i])
-    ic_data = split_dictionary(data_dict,1)
-    ic_data = [ic_data[17], ic_data[27]] 
+    image1 = Image.open(os.path.join('./src/image_retrieval_flickr/demo_images/','ir_1.jpg')).resize((224, 224)).convert('RGB')
+    caption1 = 'Three boys play around a fountain in an office building courtyard .'
+    extended_caption1 = 'Three boys play around a fountain in an office building courtyard, water-splashing, energetic, joyful, playful, urban, outdoor.'
+
+    image2 = Image.open(os.path.join('./src/image_retrieval_flickr/demo_images/','ir_2.jpg')).resize((224, 224)).convert('RGB')
+    caption2 = 'The kid is on a float in the snow .'
+    extended_caption2 = 'The kid is on a float in the snow, enjoying, sled, winter, cold, snowflakes, outdoor activities, recreation.'
+
+    flickr_data = [[image1,caption1,extended_caption1],[image2,caption2,extended_caption2]]
     print('Data loaded successfully!')
 
     j=0
 
     print('Inference loop for 2 samples starts.')
-    for ic_dict in ic_data:
+    for flick_list in flickr_data:
 
+        image = flick_list[0]
+        original_caption = flick_list[1]
+        augmented_caption = flick_list[2]
         j+=1
-        image_path = list(ic_dict.keys())[0]
-        image = Image.open(os.path.join('./Flicker8k_Dataset/',image_path)).resize((224, 224)).convert('RGB') 
-        caption_tuple = list(ic_dict.values())[0]
 
         try:
-
             # Retrieve image based on the original caption
-            original_caption = caption_tuple[0]
             original_prompt = [original_caption[:-1] + ' [RET] ']
             model_output_orig = model.generate_for_images_and_texts(original_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
             unaugmented_output = model_output_orig[-1][0]
 
             # Retrieve image based on the augmented caption
-            augmented_caption = caption_tuple[1]
             augmented_prompt = [image, augmented_caption[:-1] + ' [RET] ']
             model_output = model.generate_for_images_and_texts(augmented_prompt, max_img_per_ret=1, max_num_rets=1, num_words=0)
             augmented_output = model_output[-1][0]
