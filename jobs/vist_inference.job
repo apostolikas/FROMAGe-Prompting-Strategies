@@ -5,7 +5,7 @@
 #SBATCH --job-name=vist_inference
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
-#SBATCH --time=01:00:00
+#SBATCH --time=00:10:00
 #SBATCH --mem=64000M
 #SBATCH --output=vist_inference_%A.out
 
