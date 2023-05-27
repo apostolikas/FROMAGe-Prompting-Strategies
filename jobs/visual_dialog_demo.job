@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage-2/
 
-srun python -u visual_dialog_demo.py --num_tests 3 --num_qa_per_dialog 5 --openai_key "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"
+srun python -u visual_dialog_demo.py --num_tests 3 --num_qa_per_dialog 5 --openai_key ""
