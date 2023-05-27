@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#SBATCH --partition=gpu_titanrtx_shared_course
+#SBATCH --gres=gpu:1
+#SBATCH --job-name=visual_dialog_demo
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=3
+#SBATCH --time=00:20:00
+#SBATCH --mem=64000M
+#SBATCH --output=visual_dialog_demo_%A.out
+
+module purge
+module load 2021
+module load Anaconda3/2021.05
+
+source activate dl2_gpu
+
+cd $HOME/fromage-2/
+
+srun python -u visual_dialog_demo.py
