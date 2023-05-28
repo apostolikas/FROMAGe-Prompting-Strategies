@@ -1,6 +1,6 @@
 # Description
 Download real_name_mi.tar.gz file from https://fh295.github.io/frozen.html and put them inside src/image_classification
-Thus, you should have a directory src/image_classification/real_mi that will contain the data
+Thus, you should have a directory src/image_classification/real_name_mi that will contain the data
 
 1.fromage 2 baseline unconstrained  
 python -u real_mi.py --num_ways 2 --baseline
