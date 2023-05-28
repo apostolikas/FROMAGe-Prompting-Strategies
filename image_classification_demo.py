@@ -8,9 +8,9 @@ model = models.load_fromage(model_dir)
 
 model.calculate_black_image()
 model.calculate_white_image()
-question_image_1 = Image.open(os.path.join('./demo_images/','image_classification_q.jpg')).resize((224, 224)).convert('RGB')
-image_1 = Image.open(os.path.join('./demo_images/','image_classification_ex1.jpg')).resize((224, 224)).convert('RGB')
-image_2 = Image.open(os.path.join('./demo_images/','image_classification_ex2.jpg')).resize((224, 224)).convert('RGB')
+question_image_1 = Image.open(os.path.join('./src/image_classification/demo_images/','image_classification_q.jpg')).resize((224, 224)).convert('RGB')
+image_1 = Image.open(os.path.join('./src/image_classification/demo_images/','image_classification_ex1.jpg')).resize((224, 224)).convert('RGB')
+image_2 = Image.open(os.path.join('./src/image_classification/demo_images/','image_classification_ex2.jpg')).resize((224, 224)).convert('RGB')
 label = 'hourglass'
 prompt =[image_1,'This is a ant', image_2,'This is a hourglass',
             question_image_1,'This is a']
