@@ -90,7 +90,6 @@ For simplicity, the table below provides an overview of the experiments conducte
 |     Image Classification    	|   mini-Imagenet   	| Remove the recency bias with visual augmentations    	|
 |       GIF Captioning      	|       TGIF        	| Explore the in-context abilities of FROMAGe       	|
 | Visual Question Answering     |    Guided-VQA       | Reveal possible limitations of ICL & prompt augmentations |
-| Visual Question Answering     |    Guided-VQA       | Reveal possible limitations of ICL & prompt augmentations |
 |        Visual Dialog          |     VisDial         | Explore the effect of compressing a dialog prompt          |
   
 </div>
@@ -203,19 +202,84 @@ Looking at the results table above, the conclusion is that in most cases, a text
 
 We evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add two demonstrations to the input -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what was reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predicts the label of the demonstration that is closest in proximity to the test input.
 
-<div align="center">
 
-|Model |Accuracy|                         
-|-----|--------|
-|Frozen|33.7      |
-|FROMAGe  |35.56      |
+<div style="display:flex;">
+  <div style="flex:1; margin-right: 20px;">
+    <h2>Unconstrained 2-shot</h2>
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Accuracy</th>
+      </tr>
+      <tr>
+        <td>In-context learning</td>
+        <td>35.56</td>
+      </tr>
+      <tr>
+        <td>+calibrate</td>
+        <td>10.08</td>
+      </tr>
+      <tr>
+        <td>+embedding_order</td>
+        <td>66.32</td>
+      </tr>
+    </table>
+  </div>
 
+  <div style="flex:1; margin-right: 20px;">
+    <h2>Constrained 2-shot</h2>
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Accuracy</th>
+      </tr>
+      <tr>
+        <td>In-context learning</td>
+        <td>42.2</td>
+      </tr>
+      <tr>
+        <td>+calibrate</td>
+        <td>52.16</td>
+      </tr>
+      <tr>
+        <td>+embedding_order</td>
+        <td>79.68</td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="flex:1;">
+    <h2>Constrained 5-shot</h2>
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Accuracy</th>
+      </tr>
+      <tr>
+        <td>In-context learning</td>
+        <td>21.08</td>
+      </tr>
+      <tr>
+        <td>+calibrate</td>
+        <td>30.</td>
+      </tr>
+      <tr>
+        <td>+embedding_order</td>
+        <td>48.64</td>
+      </tr>
+    </table>
+  </div>
 </div>
+
+
+
+
+
 
 To mitigate the recency bias problem we can estimate the model's bias toward specific answers by replacing the test image with a content-free test image such as a black image. Specifically, we first calculate the logits for a *content-free* test image such as a black or white image. Then we scale the logits for the real test image based on the logits of the content-free image. The following figure explains the aforementioned procedure. 
 
 <p align="center">
-  <img src="images_report/calibrate_small.png" />
+  <img src="images_report/calibrate_before_use.png" />
 </p>
 
 In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. Similarly to (cite) approach to text classification, we constrain FROMAGe to only generate subwords from the input labels. 
