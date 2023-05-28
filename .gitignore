@@ -14,3 +14,4 @@ flicklr30k-images/
 real_name_mi/
 *.pickle
 *.pt
+guided_vqa/
