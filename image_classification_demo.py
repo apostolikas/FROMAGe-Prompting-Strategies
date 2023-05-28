@@ -1,6 +1,6 @@
 from PIL import Image
 import os
-from fromage import models
+from src.image_classification.fromage import models
 from src.image_classification.classification_utils import load_pickle
 
 model_dir = './fromage_model/'
