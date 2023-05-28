@@ -4,9 +4,13 @@ __pycache__
 .pytest_cache
 venv
 runs/
-data/
 cc3m_embeddings.pkl
 *.out
 guided_vqa/
 Flicker8k_Dataset/
 Flickr8k_text/
+visual_storytelling/
+datasets/
+filtered_capt.csv
+image_similarity_demo_output.csv
+prompt_similarity_last.csv

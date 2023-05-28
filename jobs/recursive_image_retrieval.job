@@ -2,12 +2,12 @@
 
 #SBATCH --partition=gpu_titanrtx_shared_course
 #SBATCH --gres=gpu:1
-#SBATCH --job-name=guided_vqa_inference
+#SBATCH --job-name=img-ret
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00
 #SBATCH --mem=64000M
-#SBATCH --output=guided_vqa_inference_%A.out
+#SBATCH --output=prompt_fromage%A.out
 
 module purge
 module load 2021
@@ -17,4 +17,4 @@ source activate dl2_gpu
 
 cd $HOME/fromage-2/
 
-srun python -u guided_vqa_inference.py 
+srun python -u recursive_image_retrieval.py 

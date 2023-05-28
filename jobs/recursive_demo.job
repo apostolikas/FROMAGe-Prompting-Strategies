@@ -2,17 +2,19 @@
 
 #SBATCH --partition=gpu_titanrtx_shared_course
 #SBATCH --gres=gpu:1
-#SBATCH --job-name=install_env
+#SBATCH --job-name=img-ret
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
-#SBATCH --time=01:00:00
-#SBATCH --mem=32000M
-#SBATCH --output=install_env_%A.out
+#SBATCH --time=0:20:00
+#SBATCH --mem=64000M
+#SBATCH --output=recursive_demo%A.out
 
 module purge
 module load 2021
 module load Anaconda3/2021.05
 
+source activate dl2_gpu
+
 cd $HOME/fromage-2/
 
-conda env create -f dl2_gpu.yml
+srun python -u recursive_image_retrieval_demo.py 
