@@ -9,7 +9,7 @@ import openai
 import time 
 
 
-openai.api_key = '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'
+openai.api_key = 'Your API key'
 
 # Initialize the models and processor
 model_dir = './fromage_model/'

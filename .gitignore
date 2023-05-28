@@ -14,3 +14,4 @@ datasets/
 filtered_capt.csv
 image_similarity_demo_output.csv
 prompt_similarity_last.csv
+temp_ignore/
