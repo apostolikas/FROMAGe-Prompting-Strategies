@@ -13,7 +13,7 @@ from torchvision import transforms as T
 from PIL import Image, ImageFont
 from torch.utils.data import Dataset
 import json
-import cv2#!
+
 from fromage import utils
 import os
 
@@ -22,11 +22,10 @@ def collate_fn(batch):
     return torch.utils.data.dataloader.default_collate(batch)
 
 def preprocess_image(mi_images_folder, img):
-  img_q = cv2.imread(os.path.join(mi_images_folder,img))
-  img_q = cv2.cvtColor(img_q, cv2.COLOR_BGR2RGB)
-  img_q = Image.fromarray(img_q)
-  img_q = img_q.resize((224,224))
-  return img_q
+  image_q = Image.open(os.path.join(mi_images_folder, img))
+  image_q = image_q.convert('RGB')
+  image_q = image_q.resize((224, 224))
+  return image_q
 
 def load_real_mi(k=2):
   path=os.path.join(f'./src/image_classification/real_name_mi/',f'real_name_mi_shots_1_ways_{k}_all_questions.json')
