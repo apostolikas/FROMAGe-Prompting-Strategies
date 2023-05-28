@@ -81,7 +81,7 @@ def gpt_addition(original_prompt, retrieved_caption):
 
 
 
-standard_path = 'visual_storytelling/images/fromage_dialogue_demo/'
+standard_path = 'demo_outputs/'
 
 results = []
 # Increase this hyperparameter to upweight the probability of FROMAGe returning an image.
