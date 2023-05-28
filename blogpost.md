@@ -198,7 +198,7 @@ Looking at the results table above, the conclusion is that in most cases, a text
 &nbsp;
 ## Image classification
 
-We evaluated our model on the real mini-Imagenet dataset [[15]](#frozen). Previous work has found out that language models suffer from recency bias [[14]](#calibrate), meaning they almost always predicts the label of the demonstration that is closest in proximity to the test input. We also observed this behaviour when evaluating on the mini-Imagenet dataset.
+We also evaluated our model on a image classification task, specifically the real mini-Imagenet dataset [[15]](#frozen). Previous work has found out that language models suffer from recency bias [[14]](#calibrate), meaning they almost always predicts the label of the demonstration that is closest in proximity to the test input. We also observed this behaviour when evaluating on the mini-Imagenet dataset.
 
 To mitigate the recency bias problem we can estimate the model's bias toward specific answers by replacing the test image with a content-free test image such as a black image. Specifically, we first calculate the logits for a *content-free* test image such as a black or white image. Then we scale the logits for the real test image based on the logits of the content-free image. The following figure explains the aforementioned "contextual calibration" procedure. In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. 
 
@@ -206,7 +206,7 @@ To mitigate the recency bias problem we can estimate the model's bias toward spe
   <img src="images_report/calibrate_before_use.png" />
 </p>
 
-Another way to reduce the recency bias problem is to order the few-shot examples based on the visual embedding similarity with the test image. We uses ViT to calculate the embeddings similarities.
+Another way to reduce the recency bias problem is to order the few-shot examples based on the visual embedding similarity with the test image. We used ViT [[15]](#vit) to calculate the embeddings similarities.
 
 We will examine two scenarios for dealing with the output:
 1. Unconstrained case: In this case, we consider the argmax of the logits across the entire vocabulary as the output.
@@ -469,3 +469,7 @@ PMLR. 2021, pp. 12697–12706.
 <a id="frozen"></a> [15] Maria Tsimpoukelli et al. “Multimodal few-shot learning with frozen lan-
 guage models”. In: Advances in Neural Information Processing Systems 34
 (2021), pp. 200–212.
+
+<a id="vit"></a> [16] Alexey Dosovitskiy et al. “An image is worth 16x16 words: Transform-
+ers for image recognition at scale”. In: arXiv preprint arXiv:2010.11929
+(2020).
