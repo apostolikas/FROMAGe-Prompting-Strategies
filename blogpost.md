@@ -197,37 +197,57 @@ As an evaluation metric, cosine similarity was used to compare the visual embedd
 Looking at the results table above, the conclusion is that in most cases, a text augmentation of the input can actually help the model retrieve a better image (i.e. more similar to the target image).
 
 &nbsp;
-
 ## Image classification
 
-We evaluated our model on the mini-Imagenet dataset. Specifically, we worked on the few-shot setting where we add two demonstrations to the input -one with the correct label and another with a different label. As shown in the table above, the model's performance in this setting was poor, similar to what was reported in the Frozen paper. We observed that the model suffers from recency bias (cite), meaning it almost always predicts the label of the demonstration that is closest in proximity to the test input.
+We evaluated our model on the mini-Imagenet dataset. Previous work has found out that language models suffer from recency bias (cite), meaning they almost always predicts the label of the demonstration that is closest in proximity to the test input. We also observed
+this behaviour when evaluating on the mini-Imagenet dataset.
 
+To mitigate the recency bias problem we can estimate the model's bias toward specific answers by replacing the test image with a content-free test image such as a black image. Specifically, we first calculate the logits for a *content-free* test image such as a black or white image. Then we scale the logits for the real test image based on the logits of the content-free image. The following figure explains the aforementioned procedure. In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. 
 
+<p align="center">
+  <img src="images_report/calibrate_before_use.png" />
+</p>
+
+Another way to reduce the recency bias problem is to order the few-shot examples based on the visual embedding similarity with the test image. We uses ViT to calculate the embeddings similarities.
+
+We will examine two scenarios for dealing with the output:
+1. Unconstrained case: In this case, we consider the argmax of the logits across the entire vocabulary as the output.
+
+2. Constrained case: In this case, we consider the argmax of the logits associated with each label name as the output. This is similar to what was used by cite()
+
+We hereby define further terminology useful for the task:
+- Number of ways The number of object classes in the task.
+- Number of inner-shots The number of distinct instances from each label that are present in the prompt.
+
+The results are shown in the tables below:
 <div style="display:flex;">
-  <div style="flex:1; margin-right: 20px;">
-    <h2>Unconstrained 2-shot</h2>
+  <div style="flex:1; margin-right: 5px;">
+    <h2>Unconstrained 1-shot 2-way</h2>
     <table>
       <tr>
         <th>Method</th>
         <th>Accuracy</th>
       </tr>
       <tr>
-        <td>In-context learning</td>
+        <td>in-context learning</td>
         <td>35.56</td>
       </tr>
       <tr>
-        <td>+calibrate</td>
+        <td>content-free</td>
         <td>10.08</td>
       </tr>
       <tr>
-        <td>+embedding_order</td>
+        <td>order embeddings</td>
         <td>66.32</td>
       </tr>
     </table>
   </div>
+</div>
 
-  <div style="flex:1; margin-right: 20px;">
-    <h2>Constrained 2-shot</h2>
+
+<div style="display: flex;">
+  <div style="flex:1; margin-right: 5px;">
+    <h2>Constrained 1-shot 5-way</h2>
     <table>
       <tr>
         <th>Method</th>
@@ -238,18 +258,18 @@ We evaluated our model on the mini-Imagenet dataset. Specifically, we worked on 
         <td>42.2</td>
       </tr>
       <tr>
-        <td>+calibrate</td>
+        <td>content-free</td>
         <td>52.16</td>
       </tr>
       <tr>
-        <td>+embedding_order</td>
+        <td>order embeddings</td>
         <td>79.68</td>
       </tr>
     </table>
   </div>
 
   <div style="flex:1;">
-    <h2>Constrained 5-shot</h2>
+    <h2>Constrained 1-shot 5-way</h2>
     <table>
       <tr>
         <th>Method</th>
@@ -260,31 +280,20 @@ We evaluated our model on the mini-Imagenet dataset. Specifically, we worked on 
         <td>21.08</td>
       </tr>
       <tr>
-        <td>+calibrate</td>
-        <td>30.</td>
+        <td>content-free</td>
+        <td>30.0</td>
       </tr>
       <tr>
-        <td>+embedding_order</td>
+        <td>order embeddings</td>
         <td>48.64</td>
       </tr>
     </table>
   </div>
 </div>
 
+We observe that the content-free approach only improves performance in the constrained scenario. In the unconstrained case, it performs poorly as it generates irrelevant text.
 
-
-
-
-
-To mitigate the recency bias problem we can estimate the model's bias toward specific answers by replacing the test image with a content-free test image such as a black image. Specifically, we first calculate the logits for a *content-free* test image such as a black or white image. Then we scale the logits for the real test image based on the logits of the content-free image. The following figure explains the aforementioned procedure. 
-
-<p align="center">
-  <img src="images_report/calibrate_before_use.png" />
-</p>
-
-In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. Similarly to (cite) approach to text classification, we constrain FROMAGe to only generate subwords from the input labels. 
-
-
+Ordering the in-context examples based on embedding similarity yields the best results across all settings by a wide margin. This approach proves most effective because the model can just predict the  label of the example closest in proximity to the test input. In this scenario, the test input and the example closest in proximity maybe share ignificant similarities.
 &nbsp;
 
 ## GIF Captioning
