@@ -19,8 +19,7 @@ images_path = 'visual_dialog/VisualDialog_val2018/'
 dialogs_csv_path = 'dialogs.csv'
 openai.api_key = os.getenv("OPENAI_KEY")
 
-# CREATE DIALOG DATAFRAME
-
+# Create the dialog dataframe
 def create_stories(dialogs_path:str) -> pd.DataFrame:
 
     # Read the JSON file and load it into a Python object
@@ -29,7 +28,7 @@ def create_stories(dialogs_path:str) -> pd.DataFrame:
 
     dialog_df = pd.DataFrame(columns=['id', 'round', 'image_id', 'question_id', 'question', 'answer_id', 'answer'])
 
-    # LOAD STORY-IN-SEQUENCE JSON
+    # Read the json file and convert it into a dataframe
     for i in range(len(dialogs['data']['dialogs'])):
         id = i
 
@@ -88,6 +87,7 @@ with a question and answer dialogue about an image
 into a caption as short as possible while capturing 
 all the information that is given: """
 
+# Adjust the prompt by GPT-3
 def gpt_prompt(prompt):
     input_prompt = instruction + prompt
     print("INPUT PROMPT TO GPT")
@@ -105,27 +105,28 @@ def gpt_prompt(prompt):
     adapted_prompt = response.choices[0].text.strip()
     return adapted_prompt
 
-# Create prompts from dataframe
+# Get prompts from dataframe
 def get_prompt_list(dialogs_df, num_rows, prompt_length, ret_img=True, adapt_gpt_prompt=True, include_Q_A=False):
     text = ""
     dialog, url_dialog, input_dialog_list, url_dialog_list = [], [], [], []
     for i in range(num_rows-1):
+        # Obtain the caption and the image
         if int(dialogs_df['round'][i]) == 1:
             image_id = dialogs_df['image_id'][i]
             caption = dialogs_df['caption'][i]
             text += f"Caption: {caption}. "
             img = get_image(image_id)
-            # dialog.append(img)
+        # Obtain the required amount of Q and A's
         if int(dialogs_df['round'][i]) <= prompt_length:
             if include_Q_A == True:
                 text += f"Q: {dialogs_df['question'][i]}, "
                 text += f"A: {dialogs_df['answer'][i]}, "
+        # Append all the information after extracting one full dialog
         if dialogs_df['id'][i+1] != dialogs_df['id'][i]:
             text = text[:-2]
             if adapt_gpt_prompt == True:
                 text = gpt_prompt(text)
-                print("ADAPTED GPT PROMPT")
-                print(text)
+            # Structure the dialog based on the intention of retrieving either text or image
             if ret_img == True: 
                 dialog.append(text)
                 dialog.append(img)

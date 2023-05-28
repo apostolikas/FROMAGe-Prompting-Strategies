@@ -65,6 +65,7 @@ for i in range(len(dialog_list)):
         prompt += [dialog_list[i][0]]
         prompt_to_save += [url_dialog_list[i][0]]
 
+        # Adjust the parameters based on the intention of retrieving image or text
         if ret_img == True:
             num_words = 0
             prompt += ['[RET]']
