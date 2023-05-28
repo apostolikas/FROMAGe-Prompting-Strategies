@@ -218,7 +218,10 @@ We hereby define further terminology useful for the task:
 - **Number of shots** The number of distinct instances from each label that are present in the prompt.
 
 The results are shown in the tables below:
-<div style="display:flex;">
+
+
+
+<div style="display: flex;" align="center">
   <div style="flex:1; margin-right: 5px;">
     <h2>Unconstrained 1-shot 2-way</h2>
     <table>
@@ -240,10 +243,6 @@ The results are shown in the tables below:
       </tr>
     </table>
   </div>
-</div>
-
-
-<div style="display: flex;">
   <div style="flex:1; margin-right: 5px;">
     <h2>Constrained 1-shot 2-way</h2>
     <table>
@@ -371,7 +370,9 @@ Three settings are being used for retrieving images:
 
 To evaluate the difference in performance, the average accuracy of 3 retrieved images was measured. The images were annotated with a '0' if the retrieved images were incorrect, '0.5' if they captured the most important information, and '1' if they captured all the information. An example of the dialog together with the augmented caption created by GPT-3 is shown in the table below. Also, the images that are being retrieved at the highest ranked are shown for the 3 different settings with their corresponding score.
 
-<img src="images_report/visualdialog_scheme.png" alt="Image" />
+<div align="center">
+  <img src="images_report/visualdialog_scheme.png" alt="Image" />
+</div>
 
 For each of the three settings displayed in the example, 50 textual inputs were given to the model and 3 images were retrieved for each input. Those 3 images were taken into account to establish the performance for each run. The results are shown in the table below:
 
