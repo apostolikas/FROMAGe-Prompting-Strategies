@@ -196,6 +196,59 @@ As an evaluation metric, cosine similarity was used to compare the visual embedd
 Looking at the results table above, the conclusion is that in most cases, a text augmentation of the input can actually help the model retrieve a better image (i.e. more similar to the target image).
 
 &nbsp;
+## Recursive Image retrieval from text + captioning.
+
+This experiment expands on this augmentation with a feedback mechanism. It attempts to combine two different tasks for the FROMAGe model: image retrieval and captioning. We use the original captions from the Flickr Dataset to retrieve an image, after which we have the FROMAGe model assess this retrieved image by captioning it. To evaluate the result, we feed this caption to GPT 3.5, which we prompt to assess the differences between our new caption and our original Flickr caption. We use the differences between those captions to prompt the model to retrieve an image that includes the missing details. For each newly retrieved image, we compare its similarity using the CLIP model's image embedding. After retrieving the feature embeddings for the original image and the retrieved image, we compare their embeddings by calculating the cosine similarity. Throughout the experiment, the model is prompted five times for each original caption. An important point to note for this experiment is that this happens in a dialogue, which means that FROMAGe retains a memory of the previous conversation and retrieved images.
+
+
+<p align="center">
+  <img src="images_report/pipelinefromage.jpg" width="700"/>
+</p>
+
+The FROMAGe model shows decent performance in the first stage of this experiment: the initial retrieval of an image based on a caption, demonstrated by a cosine similarity of 0.707 for the initial retrieval. However, afterwards, it appears that the FROMAGe model lacks in its ability to caption retrieved images, as it does not concentrate on primary objects present in the image. For instance, an image depicting a dog in a field is captioned as "A dog is a person's best friend." leading to a potentially misleading response from GPT3.5. An average similarity score for each experiment is displayed in Table 1.
+
+
+<div align="center">
+Table 1: Cosine Similarity per Experiment
+
+| Experiment | Cosine similarity |
+|------------|------------------|
+| E1         | 0.706            |
+| E2         | 0.584            |
+| E3         | 0.486            |
+| E4         | 0.474            |
+| E5         |  0.468           |
+
+</div>
+
+Our findings indicate that only 15.5% of the time, the second retrieval attempt outperforms the first attempt. We observe that with each retrieval, the cosine similarity in comparison to the initial retrieval decreases.
+
+
+<div align="center">
+Table 2: Retrieval Improvement Rate compared to Experiment 1
+
+| Experiment vs E1 | Percentage |
+|------------------|------------|
+| E2               |  15.5%     |
+| E3               |  3.6%      |
+| E4               |  4.1%      |
+| E5               |  2.06%     |
+</div>
+
+Consistent with these results, we observe the relative changes in similarity for each successive experiment. We observe a pattern after Experiment 3, where we find no significant changes. This aligns with expectations, as upon review of the retrieved images, the same image is frequently retrieved in Experiments 4 and 5.
+
+<div align="center">
+Table 3: Relative Similarity Change per Experiment
+
+| Experiments | Relative similarity change |
+|-------------|----------------------------|
+| E1 vs E2    | -16.8%                     |
+| E2 vs E3    | -13.3%                     |
+| E3 vs E4    | 0.514%                     |
+| E4 vs E5    | 0.483%                     |
+</div>
+
+&nbsp;
 ## Image classification
 
 We also evaluated our model on a image classification task, specifically the real mini-Imagenet dataset [[15]](#frozen). Previous work has found out that language models suffer from recency bias [[14]](#calibrate), meaning they almost always predicts the label of the demonstration that is closest in proximity to the test input. We also observed this behaviour when evaluating on the mini-Imagenet dataset.
