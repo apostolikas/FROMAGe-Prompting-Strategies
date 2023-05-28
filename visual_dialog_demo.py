@@ -12,17 +12,11 @@ import openai
 def load_dialogs(stories_csv_path: str) -> pd.DataFrame:
     return pd.read_csv(stories_csv_path, encoding='utf8', dtype=str)
 
-instruction = """Transform the following caption 
-with a question and answer dialogue about an image 
-into a caption as short as possible while capturing 
-all the information that is given: """
-
 def gpt_prompt(prompt):
-    input_prompt = instruction + prompt
     # Generate text with a maximum length of 100 tokens
     response = openai.Completion.create(
         engine='text-davinci-003',
-        prompt= input_prompt,
+        prompt=prompt,
         temperature=0,
         max_tokens=100,
         n=1,
@@ -48,7 +42,7 @@ def get_prompt_list(dialogs_df, num_rows, num_qa_per_dialog, adapt_gpt_prompt, i
             text = text[:-2]
             # Compress the dialog + caption into one compact caption
             if adapt_gpt_prompt == True:
-                text = gpt_prompt(text)
+                text = gpt_prompt(gpt_instruction + text)
             text += ' [RET]'
 
             # Append the dialog when a new dialog will start next
@@ -99,7 +93,7 @@ if __name__ == "__main__":
 
     # Print the amount of experiments and the number of Q and A's per experiment
     print(f"number of experiments = {num_tests+1}, number of qa's per dialog = {num_qa_per_dialog}")
-    output_image_path = "demo_outputs/visual_dialog"
+    output_image_path = "demo_outputs/visual_dialog/"
 
     # Load model used in the paper.
     model_dir = './fromage_model/'
@@ -108,6 +102,11 @@ if __name__ == "__main__":
     # Load dialog csv
     dialogs_csv_path = 'src/image_retrieval_vdialog/data/dialogs.csv'
     dialogs_df = load_dialogs(dialogs_csv_path)
+
+    gpt_instruction = """Transform the following caption 
+    with a question and answer dialogue about an image 
+    into a caption as short as possible while capturing 
+    all the information that is given: """
 
     # Obtain a certain amount of dialogs (twice as much as needed to have enough data to compensate the unused data because of errors)
     max_q_a_per_caption = 10
@@ -138,17 +137,17 @@ if __name__ == "__main__":
                 display_output(prompt_cap)
                 print(f"Images for experiment {counter+1} with setting 'caption only' is stored under corresponding name in folder 'demo_outputs/visual_dialog'\n")
                 for num, image in enumerate(image_outputs_cap[1]):
-                    image.save(f"demo_outputs/visual_dialog/experiment_{counter+1}_caption_only_image_{num+1}.png")
+                    image.save(f"{output_image_path}experiment_{counter+1}_caption_only_image_{num+1}.png")
                 print(f"prompt for experiment {counter+1} with setting 'caption & dialog':")
                 display_output(prompt_cap_dialog)
                 print(f"Images for experiment {counter+1} with setting 'caption & dialog' is stored under corresponding name in folder 'demo_outputs/visual_dialog'\n")
                 for num, image in enumerate(image_outputs_cap_dialog[1]):
-                    image.save(f"demo_outputs/visual_dialog/experiment_{counter+1}_caption_dialog_image_{num+1}.png")
+                    image.save(f"{output_image_path}experiment_{counter+1}_caption_dialog_image_{num+1}.png")
                 print(f"prompt for exmeriment {counter+1} with setting 'augmented caption & dialog by GPT-3':")
                 display_output(prompt_gpt)
                 print(f"Images for experiment {counter+1} with setting 'augmented caption & dialog by GPT-3' is stored under corresponding name in folder 'demo_outputs/visual_dialog'\n\n")
                 for num, image in enumerate(image_outputs_gpt[1]):
-                    image.save(f"demo_outputs/visual_dialog/experiment_{counter+1}_gpt_image_{num+1}.png")
+                    image.save(f"{output_image_path}experiment_{counter+1}_gpt_image_{num+1}.png")
 
             # Skip if the model did not return images
             else:
