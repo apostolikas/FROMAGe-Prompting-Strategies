@@ -86,8 +86,8 @@ For simplicity, the table below provides an overview of the experiments conducte
 |     Visual Storytelling     	|       VIST        	|             Verify the claims of the authors            	|
 |       Image Captioning      	| Cropped Flickr-8k 	| Explore the effect of visual augmentation of the prompt 	|
 | Image Retrieval (from text) 	| Cropped Flickr-8k 	| Explore the effect of text augmentation of the prompt  	|
-|     Image Classification    	|   mini-Imagenet   	| Remove the recency bias with visual augmentations    	|
-|       GIF Captioning      	|       TGIF        	| Explore the in-context abilities of FROMAGe       	|
+|     Image Classification    	|   mini-Imagenet   	| Remove the recency bias     	|
+|       GIF Captioning      	|       TGIF        	| Explore the effect of visual context length        	|
 | Visual Question Answering     |    Guided-VQA       | Reveal possible limitations of ICL & prompt augmentations |
 |        Visual Dialog          |     VisDial         | Explore the effect of compressing a dialog prompt          |
   
@@ -209,7 +209,7 @@ To mitigate the recency bias problem we can estimate the model's bias toward spe
 Another way to reduce the recency bias problem is to order the few-shot examples based on the visual embedding similarity with the test image. We used ViT [[15]](#vit) to calculate the embeddings similarities.
 
 We will examine two scenarios for dealing with the output:
-1. Unconstrained case: In this case, we consider the argmax of the logits across the entire vocabulary as the output.
+1. Unconstrained case: In this case, we consider the argmax of the logits across the entire vocabulary as the output like standard greedy decoding.
 
 2. Constrained case: In this case, we consider the argmax of the logits associated with each label name as the output. This is similar to what was used by [[14]](#calibrate).
 
@@ -245,7 +245,7 @@ The results are shown in the tables below:
 
 <div style="display: flex;">
   <div style="flex:1; margin-right: 5px;">
-    <h2>Constrained 1-shot 5-way</h2>
+    <h2>Constrained 1-shot 2-way</h2>
     <table>
       <tr>
         <th>Method</th>
