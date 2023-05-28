@@ -39,7 +39,7 @@ Despite its intriguing properties, the models may be sensitive to the prompt tha
 First, let’s review the model architecture. FROMAGe combines a vision encoder and a decoder language model while keeping their parameters fixed. Specifically, it employs the CLIP model as a vision encoder and OPT as a language model to be able to handle multimodal data. To map the visual space into the text space and vice versa, learnable linear layers are utilized. FROMAGe has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
 
 <p align="center">
-  <img src="images_report/fromage_architecture.png" />
+  <img src="images_report/fromage_architecture.PNG" />
 </p>
 
 <!--- I am not sure whether talking about Conceptual Caption is a 
