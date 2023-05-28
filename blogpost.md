@@ -3,8 +3,7 @@ March 2023 | Nikolaos Apostolikas, Panagiotis Tsakas, Vasileios Vythoulkas, Bram
 
 ---------------
 ## Overview 
-
-In this blog post, we will discuss the paper "Grounding Language Models to Images for Multimodal Generation". The paper proposes a method to ground pretrained text-only language models to the visual domain, enabling them to process and generate arbitrarily interleaved image-and-text data. 
+In this blog post, we will discuss the paper "Grounding Language Models to Images for Multimodal Generation" [[4]](#fromage). The paper proposes a method to ground pretrained text-only language models to the visual domain, enabling them to process and generate arbitrarily interleaved image-and-text data. 
 
 The goal of this blog post is:
 
@@ -30,13 +29,13 @@ This is where in-context learning comes up. In-context learning or priming lever
 
 In-context learning seems very appealing because it reduces the need for task-specific data. Hence, zero-shot and few-shot learning can be used. Additionally, no parameters are updated so catastrophic forgetting cannot occur and we can use the same model for multiple tasks. Furthermore, by employing in-context learning in an interface even inexperienced users could easily use AI systems.
 
-Despite its intriguing properties, the models may be sensitive to the prompt that is added to the input. Therefore, the exploration of prompting strategies is useful to improve the performance of large models. We will explore the in-context learning abilities of FROMAGe.
+Despite its intriguing properties, the models may be sensitive to the prompt that is added to the input [[8]](#prompt). Therefore, the exploration of prompting strategies is useful to improve the performance of large models. We will explore the in-context learning abilities of FROMAGe.
 
 &nbsp;
 
 ## FROMAGe Model Architecture
 
-First, let’s review the model architecture. FROMAGe combines a vision encoder and a decoder language model while keeping their parameters fixed. Specifically, it employs the CLIP model as a vision encoder and OPT as a language model to be able to handle multimodal data. To map the visual space into the text space and vice versa, learnable linear layers are utilized. FROMAGe has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
+First, let’s review the model architecture. FROMAGe combines a vision encoder and a decoder language model while keeping their parameters fixed. Specifically, it employs the CLIP model [[5]](#clip) as a vision encoder and OPT [[6]](#opt) as a language model to be able to handle multimodal data. To map the visual space into the text space and vice versa, learnable linear layers are utilized. FROMAGe has been trained on the Conceptual Caption dataset [[1]](#cc3m) containing 3.3 million image-text pairs for image-captioning and image-text retrieval. The original paper utilized this dataset for the tasks of image captioning and image-text retrieval.
 
 <p align="center">
   <img src="images_report/fromage_architecture.PNG" />
@@ -51,25 +50,25 @@ we need to add a picture here
 
 ## Related Work
 
-There are several vision-language models described in the literature. Models such as Clip and ALIGN use vision and text encoders and calculate the similarity between the different modalities' representations. <!--- Nonetheless, these models are restricted to cases where pre-defined labels are available.--> Other models like our model, FROMAGe, differ by combining a vision encoder with a text decoder. This allows them to generate text and be used for more open-ended tasks like image-captioning. FROMAGe in contrast to other models like Flamingo is also able to retrieve images from the Conceptual Caption Dataset on which it was trained.
+There are several vision-language models described in the literature. Models such as CLIP [[5]](#clip) use vision and text encoders and calculate the similarity between the different modalities' representations. <!--- Nonetheless, these models are restricted to cases where pre-defined labels are available.--> Other models like our model, FROMAGe, differ by combining a vision encoder with a text decoder. This allows them to generate text and be used for more open-ended tasks like image-captioning. FROMAGe in contrast to other models like Flamingo is also able to retrieve images from the Conceptual Caption Dataset on which it was trained.
 
 <!---Another important distinction between different vision-language models is the way they bridge different modalities. Existing approaches include finetuning cross-attention layers (Flamingo), only vision encoders (Frozen), only text lightweight transformer blocks (Blip2), directly feeding the   -->
 <!---In-context learning became known with the remarkable success of the GPT-3 model in text tasks. Lately, in-context learning has been applied to both the vision-only models and vision-language models. A popular technique to boost the performance of in-context learning is demonstration selection by image or text retrieval. Other techniques include instruction tuning first on other datasets, making the LM generate the prompt, changing the order of the demonstrations or changing the instructions given to the model.-->
 
 Image augmentation: Retrieving similar examples and adding them to the input has been a popular prompting strategy in both
-the image and text domains. In our visual augmentation approach, we only add input examples without their corresponding labels.
+the image and text domains [[9,10]](#sel1,sel2). In our visual augmentation approach, we only add input examples without their corresponding labels.
 Additionally, to retrieve images, Fromage first generates a unique token and then compares the embedding similarities of this 
-token with the embeddings of the images from the Conceptual Caption dataset. This characteristic of our approach has also similarities with prompt generation techniques.
+token with the embeddings of the images from the Conceptual Caption dataset. This characteristic of our approach has also similarities with prompt generation techniques [[11]](#gen).
 
-Textual augmentation: Previous work has already explored the concept of augmenting textual input. As with other approaches, we use a language model to generate text to be added to 
-the prompt. In our study, we focus on employing text augmentation techniques for image captioning. Instead of computing
+Textual augmentation: Previous work has already explored the concept of augmenting textual input. As with other approaches, we use another language model to generate text to be added to 
+the prompt. Among other tasks, text augmentation was also utilized for image captioning in our study. Instead of computing
 the conditional probability P(y|x), where x represents the input image and y represents the text caption, our objective is to compute P(x|y). By adopting this perspective,
-our work can also be viewed as a channel-based approach for multi-modal data.
+our work can also be viewed as a channel-based approach [[12]](#channel) for multi-modal data.
 
 Recency bias: Language models have been shown to suffer from recency bias, often predicting the label of the demonstration that is closest in proximity
-to the test input. Several methods have been proposed to mitigate the order sensitivity of the demonstrations. These methods include entropy-based techniques,
-ordering the demonstrations based on their embedding similarity with the test example, and scaling the prediction scores based on the prediction of a content-free input. 
-We extend the last approach to the vision domain for image classification.
+to the test input. Several methods have been proposed to mitigate the order sensitivity of the demonstrations. These methods include entropy-based techniques [[13]](#ord1),
+ordering the demonstrations based on their embedding similarity with the test example [[13]](#ord1), and scaling the prediction scores based on the prediction of a content-free input [[14]](#calibrate). We experimented with the last two approaches. To the best of our knowledge, we are the first to apply the last approach in the vision domain
+
 
 
 &nbsp;
@@ -199,10 +198,9 @@ Looking at the results table above, the conclusion is that in most cases, a text
 &nbsp;
 ## Image classification
 
-We evaluated our model on the mini-Imagenet dataset. Previous work has found out that language models suffer from recency bias (cite), meaning they almost always predicts the label of the demonstration that is closest in proximity to the test input. We also observed
-this behaviour when evaluating on the mini-Imagenet dataset.
+We evaluated our model on the real mini-Imagenet dataset [[15]](#frozen). Previous work has found out that language models suffer from recency bias [[14]](#calibrate), meaning they almost always predicts the label of the demonstration that is closest in proximity to the test input. We also observed this behaviour when evaluating on the mini-Imagenet dataset.
 
-To mitigate the recency bias problem we can estimate the model's bias toward specific answers by replacing the test image with a content-free test image such as a black image. Specifically, we first calculate the logits for a *content-free* test image such as a black or white image. Then we scale the logits for the real test image based on the logits of the content-free image. The following figure explains the aforementioned procedure. In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. 
+To mitigate the recency bias problem we can estimate the model's bias toward specific answers by replacing the test image with a content-free test image such as a black image. Specifically, we first calculate the logits for a *content-free* test image such as a black or white image. Then we scale the logits for the real test image based on the logits of the content-free image. The following figure explains the aforementioned "contextual calibration" procedure. In our experiments, we average the logits from 2 content-free inputs: a black image and a white image. 
 
 <p align="center">
   <img src="images_report/calibrate_before_use.png" />
@@ -213,7 +211,7 @@ Another way to reduce the recency bias problem is to order the few-shot examples
 We will examine two scenarios for dealing with the output:
 1. Unconstrained case: In this case, we consider the argmax of the logits across the entire vocabulary as the output.
 
-2. Constrained case: In this case, we consider the argmax of the logits associated with each label name as the output. This is similar to what was used by cite()
+2. Constrained case: In this case, we consider the argmax of the logits associated with each label name as the output. This is similar to what was used by [[14]](#calibrate).
 
 We hereby define further terminology useful for the task:
 - Number of ways The number of object classes in the task.
@@ -233,7 +231,7 @@ The results are shown in the tables below:
         <td>35.56</td>
       </tr>
       <tr>
-        <td>content-free</td>
+        <td>contextual calibration</td>
         <td>10.08</td>
       </tr>
       <tr>
@@ -258,7 +256,7 @@ The results are shown in the tables below:
         <td>42.2</td>
       </tr>
       <tr>
-        <td>content-free</td>
+        <td>contextual calibration</td>
         <td>52.16</td>
       </tr>
       <tr>
@@ -280,7 +278,7 @@ The results are shown in the tables below:
         <td>21.08</td>
       </tr>
       <tr>
-        <td>content-free</td>
+        <td>contextual calibration</td>
         <td>30.0</td>
       </tr>
       <tr>
@@ -291,7 +289,7 @@ The results are shown in the tables below:
   </div>
 </div>
 
-We observe that the content-free approach only improves performance in the constrained scenario. In the unconstrained case, it performs poorly as it generates irrelevant text.
+We observe that the contextual calibration approach only improves performance in the constrained scenario. In the unconstrained case, it performs poorly as it generates irrelevant text.
 
 Ordering the in-context examples based on embedding similarity yields the best results across all settings by a wide margin. This approach proves most effective because the model can just predict the  label of the example closest in proximity to the test input. In this scenario, the test input and the example closest in proximity maybe share ignificant similarities.
 &nbsp;
@@ -336,7 +334,7 @@ We see that the model's captions are not very close to the meaning of the origin
 
 ## Visual Question Answering
 
-In this task, we used the guided vqa dataset (300 samples) (cite). A sample consists of two pairs of images-captions, a question, a question image and the answer to the question. It is found that the model struggles to perform well in this task. This is due to the fact that some of the questions refer to secondary objects of the image or objects in the background, thus making the task a bit tricky. A simple solution seemed to be to segment the query image and then add it to the prompt. For this visual augmentation of the prompt, we employed the CLIPSeg model and the Oneformer model. A demonstration of the above can be seen in the following figure.
+In this task, we used the guided vqa dataset (300 samples) [[15]](#frozen). A sample consists of two pairs of images-captions, a question, a question image and the answer to the question. It is found that the model struggles to perform well in this task. This is due to the fact that some of the questions refer to secondary objects of the image or objects in the background, thus making the task a bit tricky. A simple solution seemed to be to segment the query image and then add it to the prompt. For this visual augmentation of the prompt, we employed the CLIPSeg model and the Oneformer model. A demonstration of the above can be seen in the following figure.
 
 <p align="center">
   <img src="images_report/gvqa.png" />
@@ -401,7 +399,7 @@ These results show an improvement in the performance when the dialog is transfor
 
 3. Text augmentations (add descriptive words - Image retrieval flickr, summarization - Image retrieval visdial) are also very helpful.
 
-4. Mitigate the recency bias in Image Classification using a specific strategy.
+4. Mitigate the recency bias in Image Classification through contextual calibration and embedding similarities.
 
 5. Augmentations might not always yield significantly better results for tricky tasks (guided vqa).
     
@@ -425,3 +423,49 @@ Batra, D., et al. Visual storytelling. In NAACL-HLT,
 
 <a id="tgif"></a> [3] Li, Yuncheng, et al. "TGIF: A new dataset and benchmark on animated GIF description." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2016.
 
+<a id="fromage"></a> [4] Jing Yu Koh, Ruslan Salakhutdinov, and Daniel Fried. “Grounding lan
+guage models to images for multimodal generation”. In: arXiv preprint
+arXiv:2301.13823 (2023).
+
+<a id="clip"></a> [5] Alec Radford et al. “Learning transferable visual models from natural
+language supervision”. In: International conference on machine learning.
+PMLR. 2021, pp. 8748–8763.
+
+<a id="opt"></a> [6] Susan Zhang et al. “Opt: Open pre-trained transformer language models”.
+In: arXiv preprint arXiv:2205.01068 (2022).
+
+<a id="flamingo"></a> [7] Jean-Baptiste Alayrac et al. “Flamingo: a visual language model for few-
+shot learning”. In: Advances in Neural Information Processing Systems 35
+(2022).
+
+<a id="prompt"></a> [8] Albert Webson and Ellie Pavlick. “Do Prompt-Based Models Really Under-
+stand the Meaning of Their Prompts?” In: Proceedings of the 2022 Confer-
+ence of the North American Chapter of the Association for Computational
+Linguistics: Human Language Technologies. 2022.
+
+<a id="sel1"></a> [9] Jiachang Liu, Dinghan Shen, Yizhe Zhang, Bill Dolan, Lawrence Carin, and Weizhu Chen.
+"What Makes Good In-Context Examples for GPT-3?" 2021.
+
+<a id="sel2"></a> [10] Yuanhan Zhang, Kaiyang Zhou, and Ziwei Liu. “What Makes Good Exam-
+ples for Visual In-Context Learning?” In: arXiv preprint arXiv:2301.13670
+(2023)
+
+<a id="gen"></a> [11] Eyal Ben-David, Nadav Oved, and Roi Reichart. "Pada: A prompt-based autoregressive approach
+for adaptation to unseen domains". 2021.
+
+<a id="channel"></a> [12] Sewon Min et al. “Noisy Channel Language Model Prompting for Few-
+Shot Text Classification”. In: Proceedings of the 60th Annual Meeting of
+the Association for Computational Linguistics (Volume 1: Long Papers).
+2022.
+
+<a id="ord1"></a> [13] Yao Lu, Max Bartolo, Alastair Moore, Sebastian Riedel, and Pontus Stenetorp. "Fantastically
+ordered prompts and where to find them: Overcoming few-shot prompt order sensitivity".
+2021.
+
+<a id="calibrate"></a> [14] Zihao Zhao et al. “Calibrate before use: Improving few-shot performance
+of language models”. In: International Conference on Machine Learning.
+PMLR. 2021, pp. 12697–12706.
+
+<a id="frozen"></a> [15] Maria Tsimpoukelli et al. “Multimodal few-shot learning with frozen lan-
+guage models”. In: Advances in Neural Information Processing Systems 34
+(2021), pp. 200–212.
