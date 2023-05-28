@@ -15,6 +15,6 @@ module load Anaconda3/2021.05
 
 source activate dl2_gpu
 
-cd $HOME/fromage-2/
+cd $HOME/FROMAGe-Prompting-Strategies/
 
 srun python -u visual_storytelling_demo.py

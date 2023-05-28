@@ -4,7 +4,7 @@ This repository contains the implementation of the FROMAGe model as proposed in 
 
 # Instructions for the demos
 
-The demo_instructions.ipynb provides some information about the demos. You don't have to download any data manually, because there are already uploaded in this repo. This means that when you clone the repo you already have the data used in inference. Therefore the steps are the following:
+The `demo_instructions.ipynb` provides some information about the demos. You don't have to download any data manually, because there are already uploaded in this repo. This means that when you clone the repo you already have the data used in inference. Therefore the steps are the following:
 
 1. Clone this repo:
 `git clone https://github.com/apostolikas/FROMAGe-Prompting-Strategies.git `
