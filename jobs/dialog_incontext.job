@@ -15,6 +15,6 @@ module load Anaconda3/2021.05
 
 source activate dl2_gpu
 
-cd $HOME/fromage-2/
+cd $HOME/FROMAGe-Prompting-Strategies/
 
 srun python -u dialog_in_context.py --num_tests 50 --num_prompts_per_test 1 --ret_img "True" --num_qa_per_dialog 5 --augment_prompt "False" --include_Q_A "False"
