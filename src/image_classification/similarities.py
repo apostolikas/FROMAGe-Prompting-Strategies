@@ -34,7 +34,7 @@ import os
 #     return img_sim
 
 def get_similarities(num_ways):
-    path = os.path.join('./src/image_classification/vision_embeddings_scores/',f'sim_img2img_{num_ways}.pickle')
+    path = os.path.join('./src/image_classification/similarities/',f'sim_img2img_{num_ways}.pickle')
     img_sim = load_pickle(path)
     return img_sim
 

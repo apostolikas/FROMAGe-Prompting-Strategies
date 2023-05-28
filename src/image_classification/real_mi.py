@@ -56,9 +56,9 @@ def main(args):
     ans = dict_question_captions[i]
     tmp_constr_ids = constrained_ids[i] if args.constraint else None
     if baseline and not args.constraint: #baseline and full vocabulary
-      model_outputs = model.generate_for_images_and_texts(prompts, num_words=num_words,max_num_rets=0, id=i)
+      model_outputs = model.generate_for_images_and_texts(prompts, num_words=num_words,max_num_rets=0)
     else:# contraint OR (content_free and full vocab)
-      model_outputs = model.other_generate(prompts, num_words=num_words,max_num_rets=0, id=i,
+      model_outputs = model.other_generate(prompts, num_words=num_words,max_num_rets=0,
                                                     constrained_ids=tmp_constr_ids, baseline=baseline) 
     pairs.append((model_outputs, ans))
     

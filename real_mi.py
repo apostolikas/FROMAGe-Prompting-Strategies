@@ -56,9 +56,9 @@ def main(args):
     ans = dict_question_captions[i]
     tmp_constr_ids = constrained_ids[i] if args.constraint else None
     if baseline and not args.constraint: #baseline and full vocabulary
-      model_outputs = model.generate_for_images_and_texts(prompts, num_words=num_words,max_num_rets=0, id=i)
+      model_outputs = model.generate_for_images_and_texts(prompts, num_words=num_words,max_num_rets=0)
     else:# contraint OR (content_free and full vocab)
-      model_outputs = model.other_generate(prompts, num_words=num_words,max_num_rets=0, id=i,
+      model_outputs = model.other_generate(prompts, num_words=num_words,max_num_rets=0,
                                                     constrained_ids=tmp_constr_ids, baseline=baseline) 
     pairs.append((model_outputs, ans))
     
@@ -76,7 +76,7 @@ if __name__=='__main__':
   parser.add_argument('--order', action='store_true')
   parser.add_argument('--constraint', action='store_true')
   parser.add_argument('--load_pickle', action='store_true')
-  parser.add_argument('--num_words', type=int, default=20)
+  parser.add_argument('--num_words', type=int, default=16)
   parser.add_argument('--num_ways', type=int, default=2,
                       help='The number of object classes in the task. Either 2 or 5')
   args = parser.parse_args()
