@@ -76,7 +76,7 @@ We extend the last approach to the vision domain for image classification.
 
 ## Experiments & Results
 
-The approach followed was to first replicate the results of the paper and then explore the possibilities of in-context learning of the model, by working with different prompting strategies. Although the replication of the results was virtually impossible due to the need for manual annotators, we came up with a workaround to verify whether the results for the datasets used are accurate. Next, we tried to explore the in-context learning potential of FROMAGe, by evaluating it on several tasks (e.g. Video Captioning, Visual Question Answering, etc.). Last but not least, several prompt augmentation methods were used to explore different prompting strategies to determine the importance of the input for the model's output.
+The approach followed was to first replicate the results of the paper and then explore the possibilities of in-context learning of the model, by working with different prompting strategies. Although the replication of the results was virtually impossible due to the need for manual annotators, we came up with a workaround to verify whether the results for the datasets used are accurate. Next, we tried to explore the in-context learning potential of FROMAGe, by evaluating it on several tasks (e.g. GIF Captioning, Visual Question Answering, etc.). Last but not least, several prompt augmentation methods were used to explore different prompting strategies to determine the importance of the input for the model's output.
 
 For simplicity, the table below provides an overview of the experiments conducted.
 
@@ -88,7 +88,7 @@ For simplicity, the table below provides an overview of the experiments conducte
 |       Image Captioning      	| Cropped Flickr-8k 	| Explore the effect of visual augmentation of the prompt 	|
 | Image Retrieval (from text) 	| Cropped Flickr-8k 	| Explore the effect of text augmentation of the prompt  	|
 |     Image Classification    	|   mini-Imagenet   	| Remove the recency bias with visual augmentations    	|
-|       Video Captioning      	|       TGIF        	| Explore the in-context abilities of FROMAGe       	|
+|       GIF Captioning      	|       TGIF        	| Explore the in-context abilities of FROMAGe       	|
 | Visual Question Answering     |    Guided-VQA       | Reveal possible limitations of ICL & prompt augmentations |
 | Visual Question Answering     |    Guided-VQA       | Reveal possible limitations of ICL & prompt augmentations |
 |        Visual Dialog          |     VisDial         | Explore the effect of compressing a dialog prompt          |
@@ -322,7 +322,7 @@ These results show an improvement in the performance when the dialog is transfor
 ## Key findings - Insights of our novelty
 
 
-1.  FROMAGe as a multimodal model has in-context learning abilities (as shown for example in the Video Captioning task).
+1.  FROMAGe as a multimodal model has in-context learning abilities (as shown for example in the GIF Captioning task).
     
 2.  Visual augmentations (add similar images, segment query images, etc.) can actually help the model perform better.
 
