@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#SBATCH --partition=gpu_titanrtx_shared_course
+#SBATCH --gres=gpu:1
+#SBATCH --job-name=recursive_image_retrieval_demo
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=3
+#SBATCH --time=0:20:00
+#SBATCH --mem=64000M
+#SBATCH --output=recursive_image_retrieval_demo_%A.out
+
+module purge
+module load 2021
+module load Anaconda3/2021.05
+
+source activate dl2_gpu
+
+cd $HOME/fromage-2/
+
+srun python -u recursive_image_retrieval_demo.py 
