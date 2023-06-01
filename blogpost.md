@@ -159,8 +159,8 @@ After obtaining the embeddings, the cosine similarity was computed using each to
 
 |  Prompt  	| Cosine Similarity |  CIDEr  	| ROUGE 	|  BLEU-1 |  BLEU-2 |  BLEU-3 |  BLEU-4 |
 |:---------:	|:-----------------:	|:---------:	|:-------------:	|:------:	|:----------:	|:----------:	|:--------- |
-| With augmentation 	|         0.478         |0.241|0.144|0.135| 0.06| 0.02| 0.01|
-| No augmentation 	    |         0.343         |0.339|0.204|0.203| 0.102| 0.05| 0.02|
+| No augmentation 	|        0.343         |0.241|0.144|0.135| 0.06| 0.02| 0.01|
+| With augmentation 	    |         0.478         |0.339|0.204|0.203| 0.102| 0.05| 0.02|
 
 </div>
 
